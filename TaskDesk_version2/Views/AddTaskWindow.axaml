@@ -1,0 +1,68 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TaskDesk_version2.ViewModels"
+        x:Class="TaskDesk_version2.Views.AddTaskWindow"
+        x:DataType="vm:AddTaskWindowViewModel"
+        Title="Add Task"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid Name="Root" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Name="TitleCell" Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            
+            <TextBlock Text="Title:" VerticalAlignment="Center" Margin="5"/>
+            
+            <TextBox Name="TitleTextBox" Width="200" Watermark="Enter a title for the task" Margin="5"/>
+            
+        </StackPanel>
+        
+        <StackPanel Name="DescriptionCell" Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            
+            <TextBlock Text="Description:" VerticalAlignment="Center" Margin="5"/>
+            
+            <TextBox Name="DescriptionTextBox" Width="200" Watermark="Enter a description for the task" Margin="5"/>
+            
+        </StackPanel>
+        
+        <StackPanel Name="DueDateCell" Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            
+            <TextBlock Text="Target Date:" VerticalAlignment="Center" Margin="5"/>
+            
+            <DatePicker Name="DueDatePicker" Margin="5"/>
+            
+        </StackPanel>
+        
+        <StackPanel Name="StateCell" Grid.Row="3" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            
+            <TextBlock Text="State:" VerticalAlignment="Center" Margin="5"/>
+            
+            <ComboBox Name="StateCombo" PlaceholderText="Select a state"/>
+            
+        </StackPanel>
+        
+        <StackPanel Name="GroupCell" Grid.Row="4" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            
+            <TextBlock Text="Group:" VerticalAlignment="Center" Margin="5"/>
+            
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ListBox Name="GroupList" Width="200" Height="100" SelectionMode="Multiple, Toggle" Margin="5"/>
+            </ScrollViewer>
+            
+        </StackPanel>
+        
+        <StackPanel Name="ButtonCell" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Name="CancelButton" Content="Cancel" Command="{Binding CancelCommand}"/>
+            <Button Name="OkButton" Content="OK" Command="{Binding SaveCommand}"/>
+        </StackPanel>
+    </Grid>
+
+</Window>

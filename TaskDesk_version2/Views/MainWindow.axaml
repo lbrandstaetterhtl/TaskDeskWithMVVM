@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TaskDesk_version2.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TaskDesk_version2.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="TaskDesk_version2"
+        WindowState="Maximized">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid Name="Root">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <Menu Name="RootMenu" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <MenuItem Name="TasksMenuItem" Header="Tasks">
+                <MenuItem Name="AddTaskMenuItem" Header="Add Task"/>
+            </MenuItem>
+        </Menu>
+        
+        <StackPanel Grid.Row="1" Grid.Column="0" Name="TasksPlusHeader" Spacing="8">
+            <StackPanel Name="HeaderCell" Orientation="Horizontal">
+                <TextBlock Name="TitleHeader" Text="Title" Margin="5"/>
+                <TextBlock Name="DescriptionHeader" Text="Description" Margin="5"/>
+                <TextBlock Name="DueDateHeader" Text="Target Date" Margin="5"/>
+                <TextBlock Name="StateHeader" Text="State" Margin="5"/>
+                <TextBlock Name="UsersHeader" Text="Assigned Users" Margin="5"/>
+                <TextBlock Name="GroupsHeader" Text="Assigned Groups" Margin="5"/>
+            </StackPanel>
+            
+            <DataGrid Name="TasksGrid" ItemsSource="{Binding Tasks}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*"/>
+                    <DataGridTextColumn Header="Target Date" Binding="{Binding DueDate}" Width="*"/>
+                    <DataGridTextColumn Header="State" Binding="{Binding State}" Width="*"/>
+                    <DataGridTextColumn Header="Assigned Users" Binding="{Binding UsersAsString}" Width="*"/>
+                    <DataGridTextColumn Header="Assigned Groups" Binding="{Binding GroupsAsString}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Grid>
+
+</Window>
