@@ -4,17 +4,18 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Xml;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using TaskDesk_version2.Models;
 
 namespace TaskDesk_version2.ViewModels;
 
-public class AddTaskWindowViewModel : INotifyPropertyChanged
+public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
 {
     private string _taskTitle = string.Empty;
     private string _taskDescription = string.Empty;
-    private DateOnly _dateOn = DateOnly.MinValue;
-    private TaskState _taskState = TaskState.Pending;
+    private DateTimeOffset? _dateOn = DateTimeOffset.Now;
+    private string _taskStateString = "";
     private List<string> _groupNames = new();
 
     public string TaskTitle
@@ -43,7 +44,7 @@ public class AddTaskWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public DateOnly DateOn
+    public DateTimeOffset? DateOn
     {
         get => _dateOn;
         set
@@ -56,15 +57,15 @@ public class AddTaskWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public TaskState TaskState
+    public string TaskStateString
     {
-        get => _taskState;
+        get => _taskStateString;
         set
         {
-            if (_taskState != value)
+            if (_taskStateString != value)
             {
-                _taskState = value;
-                OnPropertyChanged(nameof(TaskState));
+                _taskStateString = value;
+                OnPropertyChanged(nameof(TaskStateString));
             }
         }
     }
@@ -93,26 +94,25 @@ public class AddTaskWindowViewModel : INotifyPropertyChanged
         CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
     }
     
-    private void SaveTask()
+    private async void SaveTask()
     {
         var groupIds = GroupOperator.GetIdsFromNames(GroupNames, MainData.Groups);
-
-        var newTask = new Task
-        {
-            Title = TaskTitle,
-            Description = TaskDescription,
-            DueDate = DateOn,
-            State = TaskState,
-            GroupIds = groupIds
-        };
         
-        MainData.Tasks.Add(newTask);
+        var due = DateOnly.FromDateTime(DateOn?.DateTime ?? DateTime.Now);
+        
+        var taskState = new Task().GetTaskStateFromString(TaskStateString);
+
+        var newTask = new Task(MainData.Tasks.Count, TaskTitle, TaskDescription, due, taskState, groupIds);
+        
+        await Dispatcher.UIThread.InvokeAsync(() => MainData.Tasks.Add(newTask));
+        
+        Console.WriteLine(MainData.Tasks.Count);
         
         RequestClose?.Invoke();
     }
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
+    private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

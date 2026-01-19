@@ -9,7 +9,7 @@ public enum UserRole
     ReadOnly
 }
 
-public class RoleConverter
+public static class RoleConverter
 {
     public static string RoleToString(UserRole role)
     {

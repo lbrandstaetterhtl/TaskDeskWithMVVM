@@ -14,27 +14,22 @@ public class Task
     public DateOnly DueDate { get; set; }
     public TaskState State { get; set; }
     public List<int> GroupIds { get; set; } = new List<int>();
-    public string GroupsAsString { get; set; }
     public List<int> UserIds { get; set; } = new List<int>();
-    public string UsersAsString { get; set; }
+    public string GroupsAsString => GetGroupsAsString(MainData.Groups);
+    public string UsersAsString => GetUsersAsString(MainData.Users);
     
 
-    public Task(int id, string title, string description, DateOnly dueDate, TaskState state)
+    public Task(int id, string title, string description, DateOnly dueDate, TaskState state, List<int> groupIds)
     {
         Id = id;
         Title = title;
         Description = description;
         DueDate = dueDate;
         State = state;
-        UsersAsString = GetUsersAsString(MainData.Users);
-        GroupsAsString = GetGroupsAsString(MainData.Groups);
+        GroupIds = groupIds;
     }
 
-    public Task()
-    {
-        UsersAsString = GetUsersAsString(MainData.Users);
-        GroupsAsString = GetGroupsAsString(MainData.Groups);
-    }
+    public Task() { }
 
     public string GetTaskStateAsString()
     {
@@ -53,41 +48,25 @@ public class Task
         foreach (var id in UserIds)
         {
             var user = allUsers.Find(x => x.Id == id);
-            
             if (user != null)
-            {
                 userNames.Add(user.FullName);
-            }
         }
 
-        if (userNames.Count > 0)
-        {
-            return string.Join(", ", userNames);
-        }
-        
-        return string.Empty;
+        return userNames.Count > 0 ? string.Join(", ", userNames) : string.Empty;
     }
     
-    public string GetGroupsAsString(List<Group> allGroups)
+    private string GetGroupsAsString(List<Group> allGroups)
     {
         List<string> groupNames = new List<string>();
         
         foreach (var id in GroupIds)
         {
             var group = allGroups.Find(x => x.Id == id);
-            
             if (group != null)
-            {
                 groupNames.Add(group.Name);
-            }
         }
 
-        if (groupNames.Count > 0)
-        {
-            return string.Join(", ", groupNames);
-        }
-        
-        return string.Empty;
+        return groupNames.Count > 0 ? string.Join(", ", groupNames) : string.Empty;
     }
 }
 

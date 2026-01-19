@@ -101,4 +101,21 @@ public static class GroupOperator
 
         return ids;
     }
+
+    public static List<string> GetNamesFromIds(List<int> groupIds, List<Group> allGroups)
+    {
+        List<string> names = new List<string>();
+        
+        foreach (var id in groupIds)
+        {
+            var group = allGroups.Find(x => x.Id == id);
+            
+            if (group != null)
+            {
+                names.Add(group.Name);
+            }
+        }
+        
+        return names;
+    }
 }

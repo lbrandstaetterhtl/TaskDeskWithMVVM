@@ -3,10 +3,10 @@
         xmlns:vm="using:TaskDesk_version2.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:TaskDesk_version2.Models"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TaskDesk_version2.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
         Title="TaskDesk_version2"
         WindowState="Maximized">
 
@@ -17,41 +17,40 @@
     <Grid Name="Root">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <Menu Name="RootMenu" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+        <Menu Name="RootMenu" Grid.Row="0" Grid.Column="0">
             <MenuItem Name="TasksMenuItem" Header="Tasks">
                 <MenuItem Name="AddTaskMenuItem" Header="Add Task"/>
             </MenuItem>
         </Menu>
         
-        <StackPanel Grid.Row="1" Grid.Column="0" Name="TasksPlusHeader" Spacing="8">
-            <StackPanel Name="HeaderCell" Orientation="Horizontal">
-                <TextBlock Name="TitleHeader" Text="Title" Margin="5"/>
-                <TextBlock Name="DescriptionHeader" Text="Description" Margin="5"/>
-                <TextBlock Name="DueDateHeader" Text="Target Date" Margin="5"/>
-                <TextBlock Name="StateHeader" Text="State" Margin="5"/>
-                <TextBlock Name="UsersHeader" Text="Assigned Users" Margin="5"/>
-                <TextBlock Name="GroupsHeader" Text="Assigned Groups" Margin="5"/>
-            </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="0" Name="TasksPlusHeader">
             
-            <DataGrid Name="TasksGrid" ItemsSource="{Binding Tasks}" AutoGenerateColumns="False">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <DataGrid MinHeight="500" Background="White" GridLinesVisibility="All" RowHeight="40" Grid.Row="0" x:Name="TasksGrid" ItemsSource="{Binding Tasks}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
-                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*"/>
-                    <DataGridTextColumn Header="Target Date" Binding="{Binding DueDate}" Width="*"/>
+                    <DataGridTextColumn x:DataType="models:Task" Header="Title" Binding="{Binding Title}" Width="2*"/>
+                    <DataGridTextColumn x:DataType="models:Task" Header="Description" Binding="{Binding Description}" Width="3*"/>
+                    <DataGridTextColumn  Header="Due Date" Binding="{Binding DueDate, StringFormat='{}{0:MM/dd/yyyy}'}" Width="*"/>
                     <DataGridTextColumn Header="State" Binding="{Binding State}" Width="*"/>
-                    <DataGridTextColumn Header="Assigned Users" Binding="{Binding UsersAsString}" Width="*"/>
-                    <DataGridTextColumn Header="Assigned Groups" Binding="{Binding GroupsAsString}" Width="*"/>
+                    <DataGridTextColumn Header="Groups" Binding="{Binding GroupsAsString}" Width="2*"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </StackPanel>
+            
+        </Grid>
+        
+        <Button Grid.Row="2" Name="DebugAddButton" Content="Debug Add" HorizontalAlignment="Right" Margin="8"/>
     </Grid>
 
 </Window>

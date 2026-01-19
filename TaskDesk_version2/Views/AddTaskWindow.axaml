@@ -21,7 +21,7 @@
             
             <TextBlock Text="Title:" VerticalAlignment="Center" Margin="5"/>
             
-            <TextBox Name="TitleTextBox" Width="200" Watermark="Enter a title for the task" Margin="5"/>
+            <TextBox Name="TitleTextBox" Width="200" Watermark="Enter a title for the task" Margin="5" Text="{Binding TaskTitle, Mode=TwoWay}"/>
             
         </StackPanel>
         
@@ -29,7 +29,7 @@
             
             <TextBlock Text="Description:" VerticalAlignment="Center" Margin="5"/>
             
-            <TextBox Name="DescriptionTextBox" Width="200" Watermark="Enter a description for the task" Margin="5"/>
+            <TextBox Name="DescriptionTextBox" Width="200" Watermark="Enter a description for the task" Margin="5" Text="{Binding TaskDescription, Mode=TwoWay}"/>
             
         </StackPanel>
         
@@ -37,7 +37,7 @@
             
             <TextBlock Text="Target Date:" VerticalAlignment="Center" Margin="5"/>
             
-            <DatePicker Name="DueDatePicker" Margin="5"/>
+            <DatePicker Name="DueDatePicker" Margin="5" SelectedDate="{Binding DateOn, Mode=TwoWay}"/>
             
         </StackPanel>
         
@@ -45,7 +45,7 @@
             
             <TextBlock Text="State:" VerticalAlignment="Center" Margin="5"/>
             
-            <ComboBox Name="StateCombo" PlaceholderText="Select a state"/>
+            <ComboBox Name="StateCombo" PlaceholderText="Select a state" SelectedItem="{Binding TaskStateString}"/>
             
         </StackPanel>
         
@@ -54,7 +54,7 @@
             <TextBlock Text="Group:" VerticalAlignment="Center" Margin="5"/>
             
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ListBox Name="GroupList" Width="200" Height="100" SelectionMode="Multiple, Toggle" Margin="5"/>
+                <ListBox Name="GroupList" Width="200" Height="100" SelectionMode="Multiple, Toggle" Margin="5" SelectedItems="{Binding GroupNames}"/>
             </ScrollViewer>
             
         </StackPanel>

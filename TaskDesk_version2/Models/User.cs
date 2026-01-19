@@ -11,8 +11,8 @@ public class User
     public string PasswordHash { get; set; }
     public string PasswordSalt { get; set; }
     public UserRole Role { get; set; }
-    public List<int> GroupIds { get; set; }
-    public List<int> TaskIds { get; set; }
+    public List<int> GroupIds { get; set; } = new List<int>();
+    public List<int> TaskIds { get; set; } = new List<int>();
     
     public User(int id, string fullName, string email, string passwordHash, UserRole role)
     {

@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Dynamic;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -7,13 +9,41 @@ using TaskDesk_version2.Models;
 
 namespace TaskDesk_version2.ViewModels;
 
-public class MainWindowViewModel
+public class MainWindowViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<Task> Tasks { get; }
+    private ObservableCollection<Task> _tasks = new ObservableCollection<Task>();
+    
+    public ObservableCollection<Task> Tasks
+    {
+        get => _tasks;
+        set
+        {
+            if (_tasks != value)
+            {
+                _tasks = value;
+                OnPropertyChanged(nameof(Tasks));
+            }
+        }
+    }
     
     public MainWindowViewModel()
     {
         Tasks = MainData.Tasks;
+
+        if (MainData.Tasks != null)
+        {
+            MainData.Tasks.CollectionChanged += (sender, args) =>
+            {
+                OnPropertyChanged(nameof(Tasks));
+            };
+        }
+    }
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+    
+    private void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     public static async void OnAddTaskClick(object? sender, RoutedEventArgs e)

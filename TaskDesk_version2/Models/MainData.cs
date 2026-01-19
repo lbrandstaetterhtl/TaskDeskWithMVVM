@@ -13,10 +13,17 @@ public class MainData
     
     public MainData()
     {
-        Tasks = TasksOperator.LoadTasksFromJson();
+        var loadedTasks = TasksOperator.LoadTasksFromJson();
+        Tasks.Clear();
+        foreach (var t in loadedTasks)
+            Tasks.Add(t);
         
-        Users = UserOperator.LoadUsersFromJson();
+        var loadedUsers = UserOperator.LoadUsersFromJson();
+        Users.Clear();
+        Users.AddRange(loadedUsers);
         
-        Groups = GroupOperator.LoadGroupsFromJson();
+        var loadedGroups = GroupOperator.LoadGroupsFromJson();
+        Groups.Clear();
+        Groups.AddRange(loadedGroups);
     }
 }
