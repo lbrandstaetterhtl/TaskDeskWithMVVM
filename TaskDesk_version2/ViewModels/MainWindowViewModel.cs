@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Dynamic;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using TaskDesk_version2.Models;
 
 namespace TaskDesk_version2.ViewModels;
@@ -12,7 +14,7 @@ namespace TaskDesk_version2.ViewModels;
 public class MainWindowViewModel : INotifyPropertyChanged
 {
     private ObservableCollection<Task> _tasks = new ObservableCollection<Task>();
-    
+
     public ObservableCollection<Task> Tasks
     {
         get => _tasks;
@@ -25,18 +27,16 @@ public class MainWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public MainWindowViewModel()
     {
         Tasks = MainData.Tasks;
+        MainData.Tasks.CollectionChanged += Tasks_CollectionChanged;
+    }
 
-        if (MainData.Tasks != null)
-        {
-            MainData.Tasks.CollectionChanged += (sender, args) =>
-            {
-                OnPropertyChanged(nameof(Tasks));
-            };
-        }
+    private void Tasks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(Tasks)));
     }
     
     public event PropertyChangedEventHandler? PropertyChanged;

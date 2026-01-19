@@ -14,7 +14,7 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid Name="Root">
+    <Grid x:Name="Root">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -26,23 +26,34 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <Menu Name="RootMenu" Grid.Row="0" Grid.Column="0">
-            <MenuItem Name="TasksMenuItem" Header="Tasks">
-                <MenuItem Name="AddTaskMenuItem" Header="Add Task"/>
+        <Menu x:Name="RootMenu" Grid.Row="0" Grid.Column="0">
+            <MenuItem x:Name="TasksMenuItem" Header="Tasks">
+                <MenuItem x:Name="AddTaskMenuItem" Header="Add Task"/>
             </MenuItem>
         </Menu>
         
-        <Grid Grid.Row="1" Grid.Column="0" Name="TasksPlusHeader">
+        <Grid Grid.Row="1" Grid.Column="0" x:Name="TasksPlusHeader">
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <DataGrid MinHeight="500" Background="White" GridLinesVisibility="All" RowHeight="40" Grid.Row="0" x:Name="TasksGrid" ItemsSource="{Binding Tasks}" AutoGenerateColumns="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <DataGrid MinHeight="500"
+                      IsVisible="True"
+                      GridLinesVisibility="All"
+                      RowHeight="40"
+                      Grid.Row="0"
+                      x:Name="TasksGrid"
+                      ItemsSource="{Binding Tasks}"
+                      AutoGenerateColumns="False"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Foreground="#FFFFFF"
+                      RowBackground="#1E1E1E">
                 <DataGrid.Columns>
-                    <DataGridTextColumn x:DataType="models:Task" Header="Title" Binding="{Binding Title}" Width="2*"/>
-                    <DataGridTextColumn x:DataType="models:Task" Header="Description" Binding="{Binding Description}" Width="3*"/>
-                    <DataGridTextColumn  Header="Due Date" Binding="{Binding DueDate, StringFormat='{}{0:MM/dd/yyyy}'}" Width="*"/>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}"  Width="2*"/>
+                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="3*"/>
+                    <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat='{}{0:MM/dd/yyyy}'}" Width="*"/>
                     <DataGridTextColumn Header="State" Binding="{Binding State}" Width="*"/>
                     <DataGridTextColumn Header="Groups" Binding="{Binding GroupsAsString}" Width="2*"/>
                 </DataGrid.Columns>
@@ -50,7 +61,7 @@
             
         </Grid>
         
-        <Button Grid.Row="2" Name="DebugAddButton" Content="Debug Add" HorizontalAlignment="Right" Margin="8"/>
+        <Button Grid.Row="2" x:Name="DebugAddButton" Content="Debug Add" HorizontalAlignment="Right" Margin="8"/>
     </Grid>
 
 </Window>

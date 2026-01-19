@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
 
@@ -13,7 +14,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
-        DataContext = new MainWindowViewModel();
+        var vm = new MainWindowViewModel();
+        
+        DataContext = vm;
         
         AddTaskMenuItem.Click += MainWindowViewModel.OnAddTaskClick;
 
@@ -54,6 +57,5 @@ public partial class MainWindow : Window
             Console.WriteLine($"VM.Tasks count (after): {vm2?.Tasks.Count}");
             Console.WriteLine("---- DebugAdd END ----");
         };
-    
     }
 }
