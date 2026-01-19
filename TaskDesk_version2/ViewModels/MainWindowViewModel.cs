@@ -31,14 +31,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public MainWindowViewModel()
     {
         Tasks = MainData.Tasks;
-        MainData.Tasks.CollectionChanged += Tasks_CollectionChanged;
     }
 
-    private void Tasks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(Tasks)));
-    }
-    
     public event PropertyChangedEventHandler? PropertyChanged;
     
     private void OnPropertyChanged(string propertyName)
