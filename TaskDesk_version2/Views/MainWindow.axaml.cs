@@ -38,7 +38,7 @@ public partial class MainWindow : Window
 
     private void TaskDoubleClick(object? sender, TappedEventArgs e)
     {
-        if (sender is Border border && border.DataContext is Task task)
+        if (sender is Border { DataContext: Task task })
         {
             MainWindowViewModel.OnOpenTaskClick(task);
         }
@@ -46,7 +46,7 @@ public partial class MainWindow : Window
     
     private void TaskOpenClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is MenuItem menuItem && menuItem.DataContext is Task task)
+        if (sender is MenuItem { DataContext: Task task})
         {
             MainWindowViewModel.OnOpenTaskClick(task);
         }
