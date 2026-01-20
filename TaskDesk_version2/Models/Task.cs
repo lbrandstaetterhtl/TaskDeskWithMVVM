@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 
 namespace TaskDesk_version2.Models;
 
@@ -137,5 +138,13 @@ public static class TasksOperator
         });
         
         File.WriteAllText(filePath, json);
+    }
+    
+    public static int GetNextTaskId()
+    {
+        if (MainData.Tasks.Count == 0)
+            return 1;
+
+        return MainData.Tasks.Max(t => t.Id) + 1;
     }
 }

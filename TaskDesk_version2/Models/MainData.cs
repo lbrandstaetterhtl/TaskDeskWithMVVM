@@ -20,18 +20,18 @@ public class MainData
         
         TasksOperator.SaveTasksToJson(Tasks);
 
-        var loadedUsers = UserOperator.LoadUsersFromJson();
+        var loadedUsers = UsersOperator.LoadUsersFromJson();
         Users.Clear();
         foreach (var u in loadedUsers)
             Users.Add(u);
         
-        UserOperator.SaveUsersToJson(Users);
+        UsersOperator.SaveUsersToJson(Users);
 
-        var loadedGroups = GroupOperator.LoadGroupsFromJson();
+        var loadedGroups = GroupsOperator.LoadGroupsFromJson();
         Groups.Clear();
         foreach (var g in loadedGroups)
             Groups.Add(g);
         
-        GroupOperator.SaveGroupsToJson(Groups);
+        GroupsOperator.SaveGroupsToJson(Groups);
     }
 }

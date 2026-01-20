@@ -31,9 +31,9 @@ public partial class MainWindow : Window
     {
         TasksOperator.SaveTasksToJson(MainData.Tasks);
         
-        UserOperator.SaveUsersToJson(MainData.Users);
+        UsersOperator.SaveUsersToJson(MainData.Users);
         
-        GroupOperator.SaveGroupsToJson(MainData.Groups);
+        GroupsOperator.SaveGroupsToJson(MainData.Groups);
     }
 
     private void TaskDoubleClick(object? sender, TappedEventArgs e)

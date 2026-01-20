@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 namespace TaskDesk_version2.Models;
 
@@ -79,7 +80,7 @@ public class User
     }
 }
 
-public static class UserOperator
+public static class UsersOperator
 {
     public static ObservableCollection<User> LoadUsersFromJson()
     {
@@ -124,5 +125,32 @@ public static class UserOperator
         }
 
         return ids;
+    }
+    
+    public static List<User> GetListFromIds(List<int> userIds, ObservableCollection<User> allUsers)
+    {
+        List<User> users = new List<User>();
+        
+        foreach (var id in userIds)
+        {
+            foreach (var user in allUsers)
+            {
+                if (user.Id == id)
+                {
+                    users.Add(user);
+                    break;
+                }
+            }
+        }
+
+        return users;
+    }
+    
+    public static int GetNextTaskId()
+    {
+        if (MainData.Users.Count == 0)
+            return 1;
+
+        return MainData.Users.Max(t => t.Id) + 1;
     }
 }

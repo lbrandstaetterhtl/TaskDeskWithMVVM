@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 namespace TaskDesk_version2.Models;
 
@@ -57,7 +58,7 @@ public class Group(int id, string name, string description)
     }
 }
 
-public static class GroupOperator
+public static class GroupsOperator
 {
     public static ObservableCollection<Group> LoadGroupsFromJson()
     {
@@ -97,6 +98,7 @@ public static class GroupOperator
                 if (group.Name == name)
                 {
                     ids.Add(group.Id);
+                    break;
                 }
             }
         }
@@ -119,5 +121,32 @@ public static class GroupOperator
         }
         
         return names;
+    }
+    
+    public static List<Group> GetListFromIds(List<int> groupIds, ObservableCollection<Group> allGroups)
+    {
+        List<Group> groups = new List<Group>();
+        
+        foreach (var id in groupIds)
+        {
+            foreach (var group in allGroups)
+            {
+                if (group.Id == id)
+                {
+                    groups.Add(group);
+                    break;
+                }
+            }
+        }
+        
+        return groups;
+    }
+    
+    public static int GetNextTaskId()
+    {
+        if (MainData.Groups.Count == 0)
+            return 1;
+
+        return MainData.Groups.Max(t => t.Id) + 1;
     }
 }

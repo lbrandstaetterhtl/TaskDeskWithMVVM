@@ -12,10 +12,10 @@ namespace TaskDesk_version2.ViewModels;
 
 public class AddUserWindowViewModel : INotifyPropertyChanged
 {
-    private string _fullname;
-    private string _email;
-    private string _password;
-    private UserRole _role;
+    private string _fullname = string.Empty;
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private string _roleString;
     private List<string> _groupnames = new();
     
     public string Fullname
@@ -57,15 +57,15 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public UserRole Role
+    public string RoleString
     {
-        get => _role;
+        get => _roleString;
         set
         {
-            if (_role != value)
+            if (_roleString != value)
             {
-                _role = value;
-                OnPropertyChanged(nameof(Role));
+                _roleString = value;
+                OnPropertyChanged(nameof(RoleString));
             }
         }
     }
@@ -103,13 +103,33 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
     
     private async void SaveUser()
     {
-        var groupIds = GroupOperator.GetIdsFromNames(GroupNames, MainData.Groups);
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
         
-        var newUser = new User(MainData.Users.Count, Fullname, Email, Password, Role, groupIds);
+        var groupIds = GroupsOperator.GetIdsFromNames(GroupNames, MainData.Groups);
+        
+        if (Fullname == string.Empty || Email == string.Empty || Password == string.Empty)
+        {
+            var errorWindow = new Views.ErrorWindow("Please fill in all required fields.");
+            await errorWindow.ShowDialog(desktop.MainWindow);
+            return;
+        }
+        
+        UserRole role;
+        try
+        {
+            role = RoleConverter.StringToRole(RoleString);
+        }
+        catch (Exception)
+        {
+            var errorWindow = new Views.ErrorWindow("Invalid role selected.");
+            await errorWindow.ShowDialog(desktop.MainWindow);
+            return;
+        }
+        
+        var newUser = new User(MainData.Users.Count, Fullname, Email, Password, role, groupIds);
         
         await Dispatcher.UIThread.InvokeAsync(() => MainData.Users.Add(newUser));
-        
-        Console.WriteLine($"{MainData.Users.Count} users added");
         
         RequestClose?.Invoke();
     }

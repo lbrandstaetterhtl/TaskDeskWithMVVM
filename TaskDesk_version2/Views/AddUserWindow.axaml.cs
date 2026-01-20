@@ -40,7 +40,7 @@ public partial class AddUserWindow : Window
         foreach (var enumValue in Enum.GetValues(typeof(UserRole)))
         {
             UserRole value = (UserRole)enumValue;
-            RoleComboBox.Items.Add(value.ToString());
+            RoleComboBox.Items.Add(RoleConverter.RoleToString(value));
         }
     }
 }

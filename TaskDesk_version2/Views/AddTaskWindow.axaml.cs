@@ -63,5 +63,7 @@ public partial class AddTaskWindow : Window
                 StateCombo.Items.Add(StateConverter.StateToString(value));
             }
         }
+        
+        StateCombo.SelectedIndex = 0;
     }
 }

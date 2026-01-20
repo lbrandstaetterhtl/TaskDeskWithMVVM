@@ -43,7 +43,7 @@
                         
                         <TextBlock Text="Role:" VerticalAlignment="Center" Margin="5"/>
                         
-                        <ComboBox Name="RoleComboBox" Width="200" PlaceholderText="Select a role" Margin="5" SelectedItem="{Binding Role}"/>
+                        <ComboBox Name="RoleComboBox" Width="200" PlaceholderText="Select a role" Margin="5" SelectedItem="{Binding RoleString}"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="4" Name="GroupsCell" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">

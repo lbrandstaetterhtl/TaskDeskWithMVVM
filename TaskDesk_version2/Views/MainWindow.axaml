@@ -19,10 +19,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
@@ -34,6 +34,10 @@
             <MenuItem x:Name="UsersMenuItem" Header="Users">
                 <MenuItem x:Name="AddUserMenuItem" Header="Add User"/>
             </MenuItem>
+            
+            <MenuItem x:Name="GroupsMenuItem" Header="Groups">
+                <MenuItem x:Name="AddGroupMenuItem" Header="Add Group"/>
+            </MenuItem>
         </Menu>
         
         <Grid Grid.Row="1" Grid.Column="0" x:Name="TasksPlusHeader">
@@ -43,7 +47,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <Border Padding="8" Margin="4" Background="#1E1E1E" BorderBrush="White">
+            <Border Padding="8" Margin="4" Background="#1E1E1E">
             <StackPanel Grid.Row="0" Name="Header" Orientation="Horizontal" Spacing="10">
                 <TextBlock Text="Title" FontWeight="Bold" Width="150"/>
                 <TextBlock Text="Description" FontWeight="Bold" Width="150"/>
@@ -54,16 +58,18 @@
             </StackPanel>
             </Border>
             
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ItemsControl Grid.Row="1" ItemsSource="{Binding Tasks}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="8" Margin="4" Background="#1E1E1E" BorderBrush="White" Name="TaskBorder" DoubleTapped="TaskDoubleClick">
+                        <Border Padding="8" Margin="4" Background="#1E1E1E" DoubleTapped="TaskDoubleClick">
                             <Border.ContextFlyout>
                                 <MenuFlyout>
                                     <MenuItem Header="Open Task" Click="TaskOpenClick"/>
+                                    <MenuItem Header="Delete Task"/>
                                 </MenuFlyout>
                             </Border.ContextFlyout>
-                            <StackPanel Orientation="Horizontal" Spacing="10">
+                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="10,0,10,10">
                                 <TextBlock Text="{Binding Title}" Width="150"/>
                                 <TextBlock Text="{Binding Description}" Width="150"/>
                                 <TextBlock Text="{Binding DateAsString}" Width="150"/>
@@ -75,7 +81,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
+            </ScrollViewer>
         </Grid>
     </Grid>
 

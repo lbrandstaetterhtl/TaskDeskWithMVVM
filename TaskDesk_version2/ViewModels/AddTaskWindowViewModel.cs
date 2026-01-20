@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Xml;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
@@ -15,7 +16,7 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
     private string _taskTitle = string.Empty;
     private string _taskDescription = string.Empty;
     private DateTimeOffset? _dateOn = DateTimeOffset.Now;
-    private string _taskStateString = "";
+    private string _taskStateString = string.Empty;
     private List<string> _groupNames = new();
     private List<string> _userNames = new();
 
@@ -63,7 +64,7 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
         get => _taskStateString;
         set
         {
-            if (_taskStateString != value)
+            if (_taskStateString != value && value != "" && value != string.Empty)
             {
                 _taskStateString = value;
                 OnPropertyChanged(nameof(TaskStateString));
@@ -110,15 +111,44 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
     
     private async void SaveTask()
     {
-        var groupIds = GroupOperator.GetIdsFromNames(GroupNames, MainData.Groups);
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
         
-        var userIds = UserOperator.GetIdsFromNames(UserNames, MainData.Users);
+        var groupIds = GroupsOperator.GetIdsFromNames(GroupNames, MainData.Groups);
+        
+        var userIds = UsersOperator.GetIdsFromNames(UserNames, MainData.Users);
         
         var due = DateOnly.FromDateTime(DateOn?.DateTime ?? DateTime.Now);
-        
-        var taskState = new Task().GetTaskStateFromString(TaskStateString);
 
-        var newTask = new Task(MainData.Tasks.Count, TaskTitle, TaskDescription, due, taskState, groupIds, userIds);
+        var taskState = TaskState.Pending;
+        try
+        {
+            taskState = StateConverter.StringToState(TaskStateString);
+        }
+        catch (Exception)
+        {
+            var errorWindow = new Views.ErrorWindow("Invalid Task State provided.");
+            await errorWindow.ShowDialog(desktop.MainWindow!);
+            return;
+        }
+        
+        var id = TasksOperator.GetNextTaskId();
+        
+        if (string.IsNullOrEmpty(TaskTitle) || string.IsNullOrEmpty(TaskDescription))
+        {
+            var errorWindow = new Views.ErrorWindow("Title and Description cannot be empty.");
+            await errorWindow.ShowDialog(desktop.MainWindow!);
+            return;
+        }
+
+        if (id < 1)
+        {
+            var errorWindow = new Views.ErrorWindow("Failed to generate a valid Task ID.");
+            await errorWindow.ShowDialog(desktop.MainWindow!);
+            return;
+        }
+        
+        var newTask = new Task(id, TaskTitle, TaskDescription, due, taskState, groupIds, userIds);
         
         await Dispatcher.UIThread.InvokeAsync(() => MainData.Tasks.Add(newTask));
         
