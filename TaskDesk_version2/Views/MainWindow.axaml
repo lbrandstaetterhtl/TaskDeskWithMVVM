@@ -58,6 +58,11 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Padding="8" Margin="4" Background="#1E1E1E" BorderBrush="White" Name="TaskBorder" DoubleTapped="TaskDoubleClick">
+                            <Border.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuItem Header="Open Task" Click="TaskOpenClick"/>
+                                </MenuFlyout>
+                            </Border.ContextFlyout>
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock Text="{Binding Title}" Width="150"/>
                                 <TextBlock Text="{Binding Description}" Width="150"/>

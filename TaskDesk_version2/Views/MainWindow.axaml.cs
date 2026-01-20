@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
 
@@ -38,6 +39,14 @@ public partial class MainWindow : Window
     private void TaskDoubleClick(object? sender, TappedEventArgs e)
     {
         if (sender is Border border && border.DataContext is Task task)
+        {
+            MainWindowViewModel.OnOpenTaskClick(task);
+        }
+    }
+    
+    private void TaskOpenClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem menuItem && menuItem.DataContext is Task task)
         {
             MainWindowViewModel.OnOpenTaskClick(task);
         }
