@@ -12,7 +12,6 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
     private string _description = string.Empty;
     private DateTimeOffset? _dueDate = DateTimeOffset.Now;
     private string _state = string.Empty;
-    private int _taskId;
     private List<User> _assignedUsers = new();
     private List<Group> _assignedGroups = new();
     
@@ -68,19 +67,6 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public int TaskId
-    {
-        get => _taskId;
-        set
-        {
-            if (_taskId != value)
-            {
-                _taskId = value;
-                OnPropertyChanged(nameof(TaskId));
-            }
-        }
-    }
-    
     public List<User> AssignedUsers
     {
         get => _assignedUsers;
@@ -120,7 +106,6 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
         Description = task.Description;
         DueDate = new DateTimeOffset(task.DueDate.ToDateTime(TimeOnly.MinValue));
         State = task.GetTaskStateAsString();
-        TaskId = task.Id;
         
         AssignedGroups = GroupsOperator.GetListFromIds(task.GroupIds, MainData.Groups);
         AssignedUsers = UsersOperator.GetListFromIds(task.UserIds, MainData.Users);
