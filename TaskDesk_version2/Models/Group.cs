@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace TaskDesk_version2.Models;
@@ -58,22 +59,22 @@ public class Group(int id, string name, string description)
 
 public static class GroupOperator
 {
-    public static List<Group> LoadGroupsFromJson()
+    public static ObservableCollection<Group> LoadGroupsFromJson()
     {
         string filePath = MainData.DataPath + "/groups.json";
 
         if (!File.Exists(filePath))
         {
             File.Create(filePath).Close();
-            return new List<Group>();
+            return new ObservableCollection<Group>();
         }
         
         string json = File.ReadAllText(filePath);
         
-        return System.Text.Json.JsonSerializer.Deserialize<List<Group>>(json) ?? new List<Group>();
+        return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<Group>>(json) ?? new ObservableCollection<Group>();
     }
 
-    public static void SaveGroupsToJson(List<Group> allGroups)
+    public static void SaveGroupsToJson(ObservableCollection<Group> allGroups)
     {
         string filePath = MainData.DataPath + "/groups.json";
         
@@ -85,17 +86,18 @@ public static class GroupOperator
         File.WriteAllText(filePath, json);
     }
     
-    public static List<int> GetIdsFromNames(List<string> groupNames, List<Group> allGroups)
+    public static List<int> GetIdsFromNames(List<string> groupNames, ObservableCollection<Group> allGroups)
     {
         List<int> ids = new List<int>();
         
         foreach (var name in groupNames)
         {
-            var group = allGroups.Find(x => x.Name == name);
-            
-            if (group != null)
+            foreach (var group in allGroups)
             {
-                ids.Add(group.Id);
+                if (group.Name == name)
+                {
+                    ids.Add(group.Id);
+                }
             }
         }
 

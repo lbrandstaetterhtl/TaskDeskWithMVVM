@@ -1,0 +1,49 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TaskDesk_version2.ViewModels"
+        x:Class="TaskDesk_version2.Views.OpenTaskWindow"
+        Title="Task"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner">
+        
+        <Grid Name="Root" Margin="10">
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="10">
+                <TextBlock Name="TitleBlock" Foreground="White" Width="200" MaxWidth="200" Margin="5" FontSize="24"/>
+                
+                <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Height="150">
+                    <TextBlock Name="DescriptionBlock" TextWrapping="Wrap" Padding="5" Width="200" MaxWidth="200" Background="#1E1E1E" Foreground="White" Margin="5" FontSize="16"/>
+                </ScrollViewer>
+                
+            </StackPanel>
+            
+            <StackPanel Grid.Row="0" Grid.Column="1" Name="DataPanel" Margin="20">
+                <Border BorderBrush="#1E1E1E" Width="200" BorderThickness="1" Margin="0,0,0,8"/>
+                <TextBlock Name="DueDateBlock" Foreground="White" FontSize="16" Margin="5"/>
+                
+                <Border BorderBrush="#1E1E1E" Width="200" BorderThickness="1" Margin="0,0,0,8"/>
+                
+                <TextBlock Name="StateBlock" Foreground="White" Margin="5" FontSize="16"/>
+                
+                <Border BorderBrush="#1E1E1E" Width="200" BorderThickness="1" Margin="0,0,0,8"/>
+                
+                <TextBlock Name="GroupsBlock" Foreground="White" Margin="5" FontSize="16"/>
+                
+                <Border BorderBrush="#1E1E1E" Width="200" BorderThickness="1" Margin="0,0,0,8"/>
+                
+                <TextBlock Name="UsersBlock" Foreground="White" Margin="5" FontSize="16"/>
+                <Border BorderBrush="#1E1E1E" Width="200" BorderThickness="1" Margin="0,0,0,8"/>
+            </StackPanel>
+                
+        </Grid>
+        
+</Window>

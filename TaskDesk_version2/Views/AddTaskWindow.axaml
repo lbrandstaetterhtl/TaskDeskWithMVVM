@@ -15,6 +15,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
         <StackPanel Name="TitleCell" Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
@@ -29,8 +30,9 @@
             
             <TextBlock Text="Description:" VerticalAlignment="Center" Margin="5"/>
             
-            <TextBox Name="DescriptionTextBox" Width="200" Watermark="Enter a description for the task" Margin="5" Text="{Binding TaskDescription, Mode=TwoWay}"/>
-            
+            <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
+                <TextBox Name="DescriptionTextBox" MaxHeight="100" Width="200" TextWrapping="Wrap" Watermark="Enter a description for the task" Margin="5" Text="{Binding TaskDescription, Mode=TwoWay}"/>
+            </ScrollViewer>
         </StackPanel>
         
         <StackPanel Name="DueDateCell" Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
@@ -51,7 +53,7 @@
         
         <StackPanel Name="GroupCell" Grid.Row="4" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
             
-            <TextBlock Text="Group:" VerticalAlignment="Center" Margin="5"/>
+            <TextBlock Text="Groups:" VerticalAlignment="Center" Margin="5"/>
             
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <ListBox Name="GroupList" Width="200" Height="100" SelectionMode="Multiple, Toggle" Margin="5" SelectedItems="{Binding GroupNames}"/>
@@ -59,7 +61,17 @@
             
         </StackPanel>
         
-        <StackPanel Name="ButtonCell" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+        <StackPanel Name="UserCell" Grid.Row="5" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            
+            <TextBlock Text="Users:" VerticalAlignment="Center" Margin="5"/>
+            
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ListBox Name="UserList" Width="200" Height="100" SelectionMode="Multiple, Toggle" Margin="5" SelectedItems="{Binding UserNames}"/>
+            </ScrollViewer>
+            
+        </StackPanel>
+        
+        <StackPanel Name="ButtonCell" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
             <Button Name="CancelButton" Content="Cancel" Command="{Binding CancelCommand}"/>
             <Button Name="OkButton" Content="OK" Command="{Binding SaveCommand}"/>
         </StackPanel>

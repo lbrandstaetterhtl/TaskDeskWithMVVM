@@ -1,0 +1,46 @@
+﻿using System;
+using Avalonia.Controls;
+using TaskDesk_version2.Models;
+using TaskDesk_version2.ViewModels;
+
+namespace TaskDesk_version2.Views;
+
+public partial class AddUserWindow : Window
+{
+    public AddUserWindow()
+    {
+        InitializeComponent();
+        
+        SetGroupList();
+        
+        SetRoleCombo();
+        
+        var vm = new AddUserWindowViewModel();
+        vm.RequestClose += Close;
+        DataContext = vm;
+    }
+    
+    private void SetGroupList()
+    {
+        if (MainData.Groups.Count <= 0)
+        {
+            return;
+        }
+
+        var groups = MainData.Groups;
+
+        foreach (var group in groups)
+        {
+            GroupList.Items.Add(group.Name);
+        }
+    }
+    
+    private void SetRoleCombo()
+    {
+        foreach (var enumValue in Enum.GetValues(typeof(UserRole)))
+        {
+            UserRole value = (UserRole)enumValue;
+            RoleComboBox.Items.Add(value.ToString());
+        }
+    }
+}

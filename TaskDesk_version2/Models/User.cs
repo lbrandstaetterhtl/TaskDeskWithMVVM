@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace TaskDesk_version2.Models;
@@ -8,19 +9,19 @@ public class User
     public int Id { get; set; }
     public string FullName { get; set; }
     public string Email { get; set; }
-    public string PasswordHash { get; set; }
-    public string PasswordSalt { get; set; }
+    public string Password { get; set; }
     public UserRole Role { get; set; }
     public List<int> GroupIds { get; set; } = new List<int>();
     public List<int> TaskIds { get; set; } = new List<int>();
     
-    public User(int id, string fullName, string email, string passwordHash, UserRole role)
+    public User(int id, string fullName, string email, string password, UserRole role, List<int> groupIds)
     {
         Id = id;
         FullName = fullName;
         Email = email;
-        PasswordHash = passwordHash;
+        Password = password;
         Role = role;
+        GroupIds = groupIds;
     }
     
     public string GetRoleAsString()
@@ -80,22 +81,22 @@ public class User
 
 public static class UserOperator
 {
-    public static List<User> LoadUsersFromJson()
+    public static ObservableCollection<User> LoadUsersFromJson()
     {
         string filePath = MainData.DataPath + "/users.json";
         
         if (!File.Exists(filePath))
         {
             File.Create(filePath).Close();
-            return new List<User>();
+            return new ObservableCollection<User>();
         }
         
         string json = File.ReadAllText(filePath);
         
-        return System.Text.Json.JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
+        return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<User>>(json) ?? new ObservableCollection<User>();
     }
 
-    public static void SaveUsersToJson(List<User> allUsers)
+    public static void SaveUsersToJson(ObservableCollection<User> allUsers)
     {
         string filePath = MainData.DataPath + "/users.json";
         
@@ -105,5 +106,23 @@ public static class UserOperator
         });
         
         File.WriteAllText(filePath, json);
+    }
+    
+    public static List<int> GetIdsFromNames(List<string> userNames, ObservableCollection<User> allUsers)
+    {
+        List<int> ids = new List<int>();
+        
+        foreach (var name in userNames)
+        {
+            foreach (var user in allUsers)
+            {
+                if (user.FullName == name)
+                {
+                    ids.Add(user.Id);
+                }
+            }
+        }
+
+        return ids;
     }
 }

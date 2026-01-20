@@ -47,5 +47,33 @@ public class MainWindowViewModel : INotifyPropertyChanged
         
         var addTaskWindow = new Views.AddTaskWindow();
         await addTaskWindow.ShowDialog(desktop.MainWindow!);
+        
+        if (desktop.MainWindow?.DataContext is MainWindowViewModel vm)
+        {
+            vm.Tasks = vm.Tasks; 
+        }
+    }
+
+    public static async void OnOpenTaskClick(Task task)
+    {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var taskWindow = new Views.OpenTaskWindow(task);
+        await taskWindow.ShowDialog(desktop.MainWindow!);
+        
+        if (desktop.MainWindow?.DataContext is MainWindowViewModel vm)
+        {
+            vm.Tasks = vm.Tasks; 
+        }
+    }
+    
+    public static async void OnAddUserClick(object? sender, RoutedEventArgs e)
+    {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var addUserWindow = new Views.AddUserWindow();
+        await addUserWindow.ShowDialog(desktop.MainWindow!);
     }
 }

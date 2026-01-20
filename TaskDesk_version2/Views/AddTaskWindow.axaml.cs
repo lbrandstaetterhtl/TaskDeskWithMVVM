@@ -15,6 +15,8 @@ public partial class AddTaskWindow : Window
         
         SetStateCombo();
         
+        SetUserList();
+        
         var vm = new AddTaskWindowViewModel();
         vm.RequestClose += Close;
         DataContext = vm;
@@ -32,6 +34,21 @@ public partial class AddTaskWindow : Window
         foreach (var group in groups)
         {
             GroupList.Items.Add(group.Name);
+        }
+    }
+    
+    private void SetUserList()
+    {
+        if (MainData.Users.Count <= 0)
+        {
+            return;
+        }
+
+        var users = MainData.Users;
+
+        foreach (var user in users)
+        {
+            UserList.Items.Add(user.FullName);
         }
     }
 

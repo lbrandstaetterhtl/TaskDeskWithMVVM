@@ -13,13 +13,34 @@ public class Task
     public string Description { get; set; }
     public DateOnly DueDate { get; set; }
     public TaskState State { get; set; }
+
+    public string StateAsString
+    {
+        get => GetTaskStateAsString();
+        set {}
+    }
     public List<int> GroupIds { get; set; } = new List<int>();
     public List<int> UserIds { get; set; } = new List<int>();
-    public string GroupsAsString => GetGroupsAsString(MainData.Groups);
-    public string UsersAsString => GetUsersAsString(MainData.Users);
-    
 
-    public Task(int id, string title, string description, DateOnly dueDate, TaskState state, List<int> groupIds)
+    public string GroupsAsString
+    {
+        get => GetGroupsAsString(MainData.Groups);
+        set {  }
+    }
+
+    public string UsersAsString
+    {
+        get => GetUsersAsString(MainData.Users);
+        set {  }
+    }
+    
+    public string DateAsString
+    {
+        get => GetDateAsString();
+        set { }
+    }
+
+    public Task(int id, string title, string description, DateOnly dueDate, TaskState state, List<int> groupIds, List<int> userIds)
     {
         Id = id;
         Title = title;
@@ -27,6 +48,9 @@ public class Task
         DueDate = dueDate;
         State = state;
         GroupIds = groupIds;
+        UserIds = userIds;
+        GroupsAsString = GetGroupsAsString(MainData.Groups);
+        UsersAsString = GetUsersAsString(MainData.Users);
     }
 
     public Task() { }
@@ -41,32 +65,47 @@ public class Task
         return StateConverter.StringToState(state);
     }
 
-    private string GetUsersAsString(List<User> allUsers)
+    private string GetUsersAsString(ObservableCollection<User> allUsers)
     {
         List<string> userNames = new List<string>();
         
         foreach (var id in UserIds)
         {
-            var user = allUsers.Find(x => x.Id == id);
-            if (user != null)
-                userNames.Add(user.FullName);
+            foreach (var user in allUsers)
+            {
+                if (id == user.Id)
+                {
+                    userNames.Add(user.FullName);
+                    break;
+                }
+            }
         }
 
-        return userNames.Count > 0 ? string.Join(", ", userNames) : string.Empty;
+        return userNames.Count > 0 ? string.Join(", ", userNames) : "No users assigned";
     }
     
-    private string GetGroupsAsString(List<Group> allGroups)
+    private string GetGroupsAsString(ObservableCollection<Group> allGroups)
     {
         List<string> groupNames = new List<string>();
         
         foreach (var id in GroupIds)
         {
-            var group = allGroups.Find(x => x.Id == id);
-            if (group != null)
-                groupNames.Add(group.Name);
+            foreach (var group in allGroups)
+            {
+                if (id == group.Id)
+                {
+                    groupNames.Add(group.Name);
+                    break;
+                }
+            }
         }
 
-        return groupNames.Count > 0 ? string.Join(", ", groupNames) : string.Empty;
+        return groupNames.Count > 0 ? string.Join(", ", groupNames) : "No groups assigned";
+    }
+    
+    private string GetDateAsString()
+    {
+        return DueDate.ToString("dd/MM/yyyy");
     }
 }
 

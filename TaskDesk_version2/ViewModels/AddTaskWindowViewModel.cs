@@ -17,6 +17,7 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
     private DateTimeOffset? _dateOn = DateTimeOffset.Now;
     private string _taskStateString = "";
     private List<string> _groupNames = new();
+    private List<string> _userNames = new();
 
     public string TaskTitle
     {
@@ -83,6 +84,19 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
         }
     }
     
+    public List<string> UserNames
+    {
+        get => _userNames;
+        set
+        {
+            if (_userNames != value)
+            {
+                _userNames = value;
+                OnPropertyChanged(nameof(UserNames));
+            }
+        }
+    }
+    
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
     
@@ -98,15 +112,15 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
     {
         var groupIds = GroupOperator.GetIdsFromNames(GroupNames, MainData.Groups);
         
+        var userIds = UserOperator.GetIdsFromNames(UserNames, MainData.Users);
+        
         var due = DateOnly.FromDateTime(DateOn?.DateTime ?? DateTime.Now);
         
         var taskState = new Task().GetTaskStateFromString(TaskStateString);
 
-        var newTask = new Task(MainData.Tasks.Count, TaskTitle, TaskDescription, due, taskState, groupIds);
+        var newTask = new Task(MainData.Tasks.Count, TaskTitle, TaskDescription, due, taskState, groupIds, userIds);
         
         await Dispatcher.UIThread.InvokeAsync(() => MainData.Tasks.Add(newTask));
-        
-        Console.WriteLine(MainData.Tasks.Count);
         
         RequestClose?.Invoke();
     }

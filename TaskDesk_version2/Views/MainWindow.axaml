@@ -30,38 +30,48 @@
             <MenuItem x:Name="TasksMenuItem" Header="Tasks">
                 <MenuItem x:Name="AddTaskMenuItem" Header="Add Task"/>
             </MenuItem>
+            
+            <MenuItem x:Name="UsersMenuItem" Header="Users">
+                <MenuItem x:Name="AddUserMenuItem" Header="Add User"/>
+            </MenuItem>
         </Menu>
         
         <Grid Grid.Row="1" Grid.Column="0" x:Name="TasksPlusHeader">
             
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <DataGrid MinHeight="500"
-                      IsVisible="True"
-                      GridLinesVisibility="All"
-                      RowHeight="40"
-                      Grid.Row="0"
-                      x:Name="TasksGrid"
-                      ItemsSource="{Binding Tasks}"
-                      AutoGenerateColumns="False"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      Foreground="#FFFFFF"
-                      RowBackground="#1E1E1E">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title" Binding="{Binding Title}"  Width="2*"/>
-                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="3*"/>
-                    <DataGridTextColumn Header="Due Date" Binding="{Binding DueDate, StringFormat='{}{0:MM/dd/yyyy}'}" Width="*"/>
-                    <DataGridTextColumn Header="State" Binding="{Binding State}" Width="*"/>
-                    <DataGridTextColumn Header="Groups" Binding="{Binding GroupsAsString}" Width="2*"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <Border Padding="8" Margin="4" Background="#1E1E1E" BorderBrush="White">
+            <StackPanel Grid.Row="0" Name="Header" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Title" FontWeight="Bold" Width="150"/>
+                <TextBlock Text="Description" FontWeight="Bold" Width="150"/>
+                <TextBlock Text="Due Date" FontWeight="Bold" Width="150"/>
+                <TextBlock Text="Users" FontWeight="Bold" Width="150"/>
+                <TextBlock Text="Groups" FontWeight="Bold" Width="150"/>
+                <TextBlock Text="State" FontWeight="Bold" Width="150"/>
+            </StackPanel>
+            </Border>
+            
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Tasks}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="8" Margin="4" Background="#1E1E1E" BorderBrush="White" Name="TaskBorder" DoubleTapped="TaskDoubleClick">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{Binding Title}" Width="150"/>
+                                <TextBlock Text="{Binding Description}" Width="150"/>
+                                <TextBlock Text="{Binding DateAsString}" Width="150"/>
+                                <TextBlock Text="{Binding UsersAsString}" Width="150"/>
+                                <TextBlock Text="{Binding GroupsAsString}" Width="150"/>
+                                <TextBlock Text="{Binding StateAsString}" Width="150"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             
         </Grid>
-        
-        <Button Grid.Row="2" x:Name="DebugAddButton" Content="Debug Add" HorizontalAlignment="Right" Margin="8"/>
     </Grid>
 
 </Window>
