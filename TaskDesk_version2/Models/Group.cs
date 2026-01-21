@@ -142,7 +142,7 @@ public static class GroupsOperator
         return groups;
     }
     
-    public static int GetNextTaskId()
+    public static int GetNextGroupId()
     {
         if (MainData.Groups.Count == 0)
             return 1;

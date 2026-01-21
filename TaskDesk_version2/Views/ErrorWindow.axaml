@@ -6,10 +6,10 @@
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
         
-        <StackPanel Name="Root">
-                <TextBlock Name="ErrorMassageBlock" TextWrapping="Wrap" Padding="10" Width="300" MaxWidth="300" Foreground="Red" FontSize="16"/>
+        <StackPanel x:Name="Root">
+                <TextBlock x:Name="ErrorMassageBlock" TextWrapping="Wrap" Padding="10" Width="300" MaxWidth="300" Foreground="Red" FontSize="16"/>
                 
-                <Button Name="OkButton" Content="OK" Width="40" HorizontalAlignment="Center" Margin="10"/>
+                <Button x:Name="OkButton" Content="OK" Width="40" HorizontalAlignment="Center" Margin="10"/>
         </StackPanel>
         
 </Window>

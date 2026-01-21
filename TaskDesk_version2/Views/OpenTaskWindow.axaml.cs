@@ -49,6 +49,31 @@ public partial class OpenTaskWindow : Window
             UsersList.SelectedItems.Add(user.FullName);
         }
     }
+
+    private void SetGroupList()
+    {
+        if (MainData.Users.Count <= 0)
+        {
+            return;
+        }
+        
+        var groups = MainData.Groups;
+        
+        foreach (var group in groups)
+        {
+            GroupsList.Items.Add(group.Name);
+        }
+
+        if (DataContext is not OpenTaskWindowViewModel vm)
+        {
+            return;
+        }
+
+        foreach (var group in vm.AssignedGroups)
+        {
+            GroupsList.SelectedItems.Add(group.Name);
+        }
+    }
     
     private void SetStateCombo()
     {

@@ -127,7 +127,7 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             return;
         }
         
-        var newUser = new User(MainData.Users.Count, Fullname, Email, Password, role, groupIds);
+        var newUser = new User(Fullname, Email, Password, role, groupIds);
         
         await Dispatcher.UIThread.InvokeAsync(() => MainData.Users.Add(newUser));
         

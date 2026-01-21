@@ -15,9 +15,9 @@ public class User
     public List<int> GroupIds { get; set; } = new List<int>();
     public List<int> TaskIds { get; set; } = new List<int>();
     
-    public User(int id, string fullName, string email, string password, UserRole role, List<int> groupIds)
+    public User( string fullName, string email, string password, UserRole role, List<int> groupIds)
     {
-        Id = id;
+        Id = UsersOperator.GetNextUserId();
         FullName = fullName;
         Email = email;
         Password = password;
@@ -146,7 +146,7 @@ public static class UsersOperator
         return users;
     }
     
-    public static int GetNextTaskId()
+    public static int GetNextUserId()
     {
         if (MainData.Users.Count == 0)
             return 1;
