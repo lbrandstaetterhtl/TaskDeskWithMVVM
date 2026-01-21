@@ -2,14 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="TaskDesk_version2.App"
              xmlns:local="using:TaskDesk_version2"
+             xmlns:sty="using:FluentAvalonia.Styling"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-  
+
     <Application.Styles>
-                 <FluentTheme/>
+        <sty:FluentAvaloniaTheme />
     </Application.Styles>
+    
+    <Application.Resources>
+        <Color x:Key="SystemAccentColorDark1">DarkBlue</Color>
+    </Application.Resources>
 </Application>

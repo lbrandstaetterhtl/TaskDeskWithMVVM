@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Input;
+using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.Input;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.Views;
 
@@ -14,6 +17,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
     private string _state = string.Empty;
     private List<User> _assignedUsers = new();
     private List<Group> _assignedGroups = new();
+    private readonly Task _originalTask;
     
     public string Title
     {
@@ -93,6 +97,10 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
         }
     }
     
+    public ICommand SaveTaskCommand { get; }
+    public ICommand CloseCommand { get; }
+    public Action? RequestClose;
+    
     public event PropertyChangedEventHandler? PropertyChanged;
     
     private void OnPropertyChanged(string propertyName)
@@ -102,6 +110,9 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
 
     public OpenTaskWindowViewModel(Task task)
     {
+        SaveTaskCommand = new RelayCommand(SaveTask);
+        CloseCommand = new RelayCommand(() => RequestClose?.Invoke());
+        
         Title = task.Title;
         Description = task.Description;
         DueDate = new DateTimeOffset(task.DueDate.ToDateTime(TimeOnly.MinValue));
@@ -109,10 +120,53 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
         
         AssignedGroups = GroupsOperator.GetListFromIds(task.GroupIds, MainData.Groups);
         AssignedUsers = UsersOperator.GetListFromIds(task.UserIds, MainData.Users);
+        
+        _originalTask = task;
     }
 
-    private void SaveTask()
+    private async void SaveTask()
     {
+        if (App.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
         
+        if (Title == string.Empty || Description == string.Empty || DueDate == null || State == string.Empty)
+        {
+            var errorWindow = new ErrorWindow("All fields must be filled out.");
+            await errorWindow.ShowDialog(desktop.MainWindow!);
+            return;
+        }
+
+        TaskState taskState;
+        try
+        {
+            taskState = StateConverter.StringToState(State);
+        }
+        catch (Exception)
+        {
+            var errorWindow = new ErrorWindow("Invalid Task State provided.");
+            await errorWindow.ShowDialog(desktop.MainWindow!);
+            return;
+        }
+        
+        var assignedUserIds = UsersOperator.GetIdsFromList(AssignedUsers, MainData.Users);
+        var assignedGroupIds = GroupsOperator.GetIdsFromList(AssignedGroups, MainData.Groups);
+        
+        var due = DateOnly.FromDateTime(DueDate?.DateTime ?? DateTime.Now);
+
+        var updatedTask = new Task(_originalTask.Id, Title, Description, due, taskState, assignedGroupIds, assignedUserIds);
+        
+        for (int i = 0; i < MainData.Tasks.Count; i++)
+        {
+            if (MainData.Tasks[i].Id == _originalTask.Id)
+            {
+                MainData.Tasks.RemoveAt(i);
+                MainData.Tasks.Insert(i, updatedTask);
+                break;
+            }
+        }
+        
+        RequestClose?.Invoke();
     }
 }

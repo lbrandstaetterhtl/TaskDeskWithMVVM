@@ -51,4 +51,20 @@ public partial class MainWindow : Window
             MainWindowViewModel.OnOpenTaskClick(task);
         }
     }
+    
+    private void PointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            border.Opacity = 0.8;
+        }
+    }
+    
+    private void PointerExited(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border border)
+        {
+            border.Opacity = 1.0;
+        }
+    }
 }

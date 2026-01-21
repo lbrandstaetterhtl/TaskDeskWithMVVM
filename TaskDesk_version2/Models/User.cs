@@ -146,6 +146,24 @@ public static class UsersOperator
         return users;
     }
     
+    public static List<int> GetIdsFromList(List<User> users, ObservableCollection<User> allUsers)
+    {
+        List<int> ids = new List<int>();
+        
+        foreach (var user in users)
+        {
+            foreach (var userFromData in allUsers)
+            {
+                if (user.Id == userFromData.Id)
+                {
+                    ids.Add(user.Id);
+                }
+            }
+        }
+
+        return ids;
+    }
+    
     public static int GetNextUserId()
     {
         if (MainData.Users.Count == 0)

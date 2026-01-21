@@ -1,3 +1,2 @@
 ﻿TODOs
-SaveButtonClickHandler in openTaskWindow
-CancelButtonClickHandler in openTaskWindow
+Bug in OpenTaskWindowViewModel.cs: when saving state,users,groups are not saved correctly.

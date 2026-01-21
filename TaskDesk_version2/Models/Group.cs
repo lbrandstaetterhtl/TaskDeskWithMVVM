@@ -142,6 +142,25 @@ public static class GroupsOperator
         return groups;
     }
     
+    public static List<int> GetIdsFromList(List<Group> groups, ObservableCollection<Group> allGroups)
+    {
+        List<int> resultGroupIds = new List<int>();
+        
+        foreach (var group in groups)
+        {
+            foreach (var groupFromData in allGroups)
+            {
+                if (group.Id == groupFromData.Id)
+                {
+                    resultGroupIds.Add(group.Id);
+                    break;
+                }
+            }
+        }
+        
+        return resultGroupIds;
+    }
+    
     public static int GetNextGroupId()
     {
         if (MainData.Groups.Count == 0)

@@ -15,6 +15,7 @@ public partial class OpenTaskWindow : Window
         
         var vm = new OpenTaskWindowViewModel(task);
         DataContext = vm;
+        vm.RequestClose += Close;
         
         _task = task;
         
