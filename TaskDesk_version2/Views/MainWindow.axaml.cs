@@ -15,24 +15,26 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        
+
         var vm = new MainWindowViewModel();
-        
+
         DataContext = vm;
-        
+
         AddTaskMenuItem.Click += MainWindowViewModel.OnAddTaskClick;
-        
+
         AddUserMenuItem.Click += MainWindowViewModel.OnAddUserClick;
         
+        AddGroupMenuItem.Click += MainWindowViewModel.OnAddGroupClick;
+
         Closing += OnClosing;
     }
 
     private void OnClosing(object sender, WindowClosingEventArgs e)
     {
         TasksOperator.SaveTasksToJson(MainData.Tasks);
-        
+
         UsersOperator.SaveUsersToJson(MainData.Users);
-        
+
         GroupsOperator.SaveGroupsToJson(MainData.Groups);
     }
 
@@ -43,15 +45,15 @@ public partial class MainWindow : Window
             MainWindowViewModel.OnOpenTaskClick(task);
         }
     }
-    
+
     private void TaskOpenClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is MenuItem { DataContext: Task task})
+        if (sender is MenuItem { DataContext: Task task })
         {
             MainWindowViewModel.OnOpenTaskClick(task);
         }
     }
-    
+
     private void PointerEntered(object? sender, PointerEventArgs e)
     {
         if (sender is Border border)
@@ -59,7 +61,7 @@ public partial class MainWindow : Window
             border.Opacity = 0.8;
         }
     }
-    
+
     private void PointerExited(object? sender, PointerEventArgs e)
     {
         if (sender is Border border)

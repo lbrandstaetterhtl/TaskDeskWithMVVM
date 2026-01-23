@@ -1,0 +1,34 @@
+﻿using Avalonia.Controls;
+using TaskDesk_version2.Models;
+using TaskDesk_version2.ViewModels;
+
+namespace TaskDesk_version2.Views;
+
+public partial class AddGroupWindow : Window
+{
+    public AddGroupWindow()
+    {
+        InitializeComponent();
+        
+        var vm = new AddGroupWindowViewModel();
+        vm.RequestClose += Close;
+        DataContext = vm;
+        
+        SetUserList();
+    }
+    
+    private void SetUserList()
+    {
+        if (MainData.Users.Count <= 0)
+        {
+            return;
+        }
+
+        var users = MainData.Users;
+
+        foreach (var user in users)
+        {
+            UsersList.Items.Add(user.FullName);
+        }
+    }
+}

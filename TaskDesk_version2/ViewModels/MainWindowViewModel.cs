@@ -67,4 +67,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
         var addUserWindow = new Views.AddUserWindow();
         await addUserWindow.ShowDialog(desktop.MainWindow!);
     }
+    
+    public static async void OnAddGroupClick(object? sender, RoutedEventArgs e)
+    {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var addGroupWindow = new Views.AddGroupWindow();
+        await addGroupWindow.ShowDialog(desktop.MainWindow!);
+    }
 }

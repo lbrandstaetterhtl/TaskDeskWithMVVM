@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -15,9 +16,11 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
     private string _description = string.Empty;
     private DateTimeOffset? _dueDate = DateTimeOffset.Now;
     private string _state = string.Empty;
-    private List<User> _assignedUsers = new();
-    private List<Group> _assignedGroups = new();
+    private ObservableCollection<User> _assignedUsers = new();
+    private ObservableCollection<Group> _assignedGroups = new();
     private readonly Task _originalTask;
+    private ObservableCollection<User> _allUsers = MainData.Users;
+    private ObservableCollection<Group> _allGroups = MainData.Groups;
     
     public string Title
     {
@@ -28,6 +31,32 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             {
                 _title = value;
                 OnPropertyChanged(nameof(Title));
+            }
+        }
+    }
+    
+    public ObservableCollection<User> AllUsers
+    {
+        get => _allUsers;
+        set
+        {
+            if (_allUsers != value)
+            {
+                _allUsers = value;
+                OnPropertyChanged(nameof(AllUsers));
+            }
+        }
+    }
+    
+    public ObservableCollection<Group> AllGroups
+    {
+        get => _allGroups;
+        set
+        {
+            if (_allGroups != value)
+            {
+                _allGroups = value;
+                OnPropertyChanged(nameof(AllGroups));
             }
         }
     }
@@ -71,7 +100,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public List<User> AssignedUsers
+    public ObservableCollection<User> AssignedUsers
     {
         get => _assignedUsers;
         set
@@ -84,7 +113,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public List<Group> AssignedGroups
+    public ObservableCollection<Group> AssignedGroups
     {
         get => _assignedGroups;
         set
@@ -150,8 +179,8 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             return;
         }
         
-        var assignedUserIds = UsersOperator.GetIdsFromList(AssignedUsers, MainData.Users);
-        var assignedGroupIds = GroupsOperator.GetIdsFromList(AssignedGroups, MainData.Groups);
+        var assignedUserIds = UsersOperator.GetIdsFromList(AssignedUsers, AllUsers);
+        var assignedGroupIds = GroupsOperator.GetIdsFromList(AssignedGroups, AllGroups);
         
         var due = DateOnly.FromDateTime(DueDate?.DateTime ?? DateTime.Now);
 

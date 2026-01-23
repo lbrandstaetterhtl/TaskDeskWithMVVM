@@ -5,13 +5,14 @@ using System.Linq;
 
 namespace TaskDesk_version2.Models;
 
-public class Group(int id, string name, string description)
+public class Group(string name, string description, List<int> userIds)
 {
-    public int Id { get; set; } = id;
+    public int Id { get; set; } = GroupsOperator.GetNextGroupId();
     public string Name { get; set; } = name;
     public string Description { get; set; } = description;
-    public List<int> UsersIds { get; set; }
-    public List<int> TasksIds { get; set; }
+    public List<int> UsersIds { get; set; } = new List<int>();
+    public List<int> TasksIds { get; set; } = new List<int>();
+    
     
     public string GetUsersAsString(List<User> allUsers)
     {
@@ -123,9 +124,9 @@ public static class GroupsOperator
         return names;
     }
     
-    public static List<Group> GetListFromIds(List<int> groupIds, ObservableCollection<Group> allGroups)
+    public static ObservableCollection<Group> GetListFromIds(List<int> groupIds, ObservableCollection<Group> allGroups)
     {
-        List<Group> groups = new List<Group>();
+        ObservableCollection<Group> groups = new ObservableCollection<Group>();
         
         foreach (var id in groupIds)
         {
@@ -142,7 +143,7 @@ public static class GroupsOperator
         return groups;
     }
     
-    public static List<int> GetIdsFromList(List<Group> groups, ObservableCollection<Group> allGroups)
+    public static List<int> GetIdsFromList(ObservableCollection<Group> groups, ObservableCollection<Group> allGroups)
     {
         List<int> resultGroupIds = new List<int>();
         

@@ -127,9 +127,9 @@ public static class UsersOperator
         return ids;
     }
     
-    public static List<User> GetListFromIds(List<int> userIds, ObservableCollection<User> allUsers)
+    public static ObservableCollection<User> GetListFromIds(List<int> userIds, ObservableCollection<User> allUsers)
     {
-        List<User> users = new List<User>();
+        ObservableCollection<User> users = new ObservableCollection<User>();
         
         foreach (var id in userIds)
         {
@@ -146,7 +146,7 @@ public static class UsersOperator
         return users;
     }
     
-    public static List<int> GetIdsFromList(List<User> users, ObservableCollection<User> allUsers)
+    public static List<int> GetIdsFromList(ObservableCollection<User> users, ObservableCollection<User> allUsers)
     {
         List<int> ids = new List<int>();
         
