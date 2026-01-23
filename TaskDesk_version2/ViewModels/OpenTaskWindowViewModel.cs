@@ -196,6 +196,42 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
         
+        for (int i = 0; i < MainData.Users.Count; i++)
+        {
+            if (assignedUserIds.Contains(MainData.Users[i].Id))
+            {
+                if (!MainData.Users[i].TaskIds.Contains(_originalTask.Id))
+                {
+                    MainData.Users[i].TaskIds.Add(_originalTask.Id);
+                }
+            }
+            else
+            {
+                if (MainData.Users[i].TaskIds.Contains(_originalTask.Id))
+                {
+                    MainData.Users[i].TaskIds.Remove(_originalTask.Id);
+                }
+            }
+        }
+        
+        foreach (var group in MainData.Groups)
+        {
+            if (assignedGroupIds.Contains(group.Id))
+            {
+                if (!group.TaskIds.Contains(_originalTask.Id))
+                {
+                    group.TaskIds.Add(_originalTask.Id);
+                }
+            }
+            else
+            {
+                if (group.TaskIds.Contains(_originalTask.Id))
+                {
+                    group.TaskIds.Remove(_originalTask.Id);
+                }
+            }
+        }
+        
         RequestClose?.Invoke();
     }
 }

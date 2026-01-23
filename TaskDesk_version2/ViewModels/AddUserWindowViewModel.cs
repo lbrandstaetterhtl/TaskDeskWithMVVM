@@ -130,6 +130,15 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
         var newUser = new User(Fullname, Email, Password, role, groupIds);
         
         await Dispatcher.UIThread.InvokeAsync(() => MainData.Users.Add(newUser));
+
+        foreach (var groupId in groupIds)
+        {
+            var group = GroupsOperator.GetGroupById(groupId);
+            if (group != null)
+            {
+                group.UserIds.Add(newUser.Id);
+            }
+        }
         
         RequestClose?.Invoke();
     }

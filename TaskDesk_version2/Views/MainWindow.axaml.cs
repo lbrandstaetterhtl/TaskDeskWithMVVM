@@ -25,6 +25,8 @@ public partial class MainWindow : Window
         AddUserMenuItem.Click += MainWindowViewModel.OnAddUserClick;
         
         AddGroupMenuItem.Click += MainWindowViewModel.OnAddGroupClick;
+        
+        ManageUsersMenuItem.Click += MainWindowViewModel.OnManageUsersClick;
 
         Closing += OnClosing;
     }
@@ -67,6 +69,14 @@ public partial class MainWindow : Window
         if (sender is Border border)
         {
             border.Opacity = 1.0;
+        }
+    }
+    
+    private void OnDeleteTaskClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { DataContext: Task task })
+        {
+            MainWindowViewModel.OnDeleteTaskClick(task);
         }
     }
 }

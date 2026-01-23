@@ -147,4 +147,42 @@ public static class TasksOperator
 
         return MainData.Tasks.Max(t => t.Id) + 1;
     }
+    
+    public static ObservableCollection<Task> GetListFromIds(List<int> taskIds, ObservableCollection<Task> allTasks)
+    {
+        ObservableCollection<Task> tasks = new ObservableCollection<Task>();
+        
+        foreach (var id in taskIds)
+        {
+            foreach (var task in allTasks)
+            {
+                if (id == task.Id)
+                {
+                    tasks.Add(task);
+                    break;
+                }
+            }
+        }
+
+        return tasks;
+    }
+    
+    public static List<int> GetIdsFromList(ObservableCollection<Task> tasks, ObservableCollection<Task> allTasks)
+    {
+        List<int> ids = new List<int>();
+        
+        foreach (var task in tasks)
+        {
+            foreach (var t in allTasks)
+            {
+                if (t.Id == task.Id)
+                {
+                    ids.Add(t.Id);
+                    break;
+                }
+            }
+        }
+
+        return ids;
+    }
 }

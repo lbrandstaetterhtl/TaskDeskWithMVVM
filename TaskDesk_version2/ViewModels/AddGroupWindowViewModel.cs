@@ -89,6 +89,15 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
         
         await Dispatcher.UIThread.InvokeAsync(() => MainData.Groups.Add(newGroup));
         
+        foreach (var userId in userIds)
+        {
+            var user = UsersOperator.GetUserById(userId);
+            if (user != null)
+            {
+                user.GroupIds.Add(newGroup.Id);
+            }
+        }
+        
         RequestClose?.Invoke();
     }
 }

@@ -15,6 +15,18 @@ public class User
     public List<int> GroupIds { get; set; } = new List<int>();
     public List<int> TaskIds { get; set; } = new List<int>();
     
+    public string GroupsAsString
+    {
+        get => GetGroupsAsString(MainData.Groups);
+        set {  }
+    }
+    
+    public string TasksAsString
+    {
+        get => GetTasksAsString(MainData.Tasks);
+        set {  }
+    }
+    
     public User( string fullName, string email, string password, UserRole role, List<int> groupIds)
     {
         Id = UsersOperator.GetNextUserId();
@@ -24,6 +36,8 @@ public class User
         Role = role;
         GroupIds = groupIds;
     }
+    
+    public User() { }
     
     public string GetRoleAsString()
     {
@@ -77,6 +91,44 @@ public class User
         }
         
         return string.Empty;
+    }
+    
+    private string GetGroupsAsString(ObservableCollection<Group> allGroups)
+    {
+        List<string> groupNames = new List<string>();
+        
+        foreach (var id in GroupIds)
+        {
+            foreach (var group in allGroups)
+            {
+                if (id == group.Id)
+                {
+                    groupNames.Add(group.Name);
+                    break;
+                }
+            }
+        }
+        
+        return string.Join(", ", groupNames);
+    }
+    
+    private string GetTasksAsString(ObservableCollection<Task> allTasks)
+    {
+        List<string> taskTitles = new List<string>();
+        
+        foreach (var id in TaskIds)
+        {
+            foreach (var task in allTasks)
+            {
+                if (id == task.Id)
+                {
+                    taskTitles.Add(task.Title);
+                    break;
+                }
+            }
+        }
+        
+        return string.Join(", ", taskTitles);
     }
 }
 
@@ -170,5 +222,44 @@ public static class UsersOperator
             return 1;
 
         return MainData.Users.Max(t => t.Id) + 1;
+    }
+    
+    public static User GetUserById(int userId)
+    {
+        foreach (var user in MainData.Users)
+        {
+            if (user.Id == userId)
+            {
+                return user;
+            }
+        }
+
+        return null;
+    }
+    
+    public static User GetUserByEmail(string email)
+    {
+        foreach (var user in MainData.Users)
+        {
+            if (user.Email == email)
+            {
+                return user;
+            }
+        }
+
+        return null;
+    }
+    
+    public static User GetUserByFullname(string fullname)
+    {
+        foreach (var user in MainData.Users)
+        {
+            if (user.FullName == fullname)
+            {
+                return user;
+            }
+        }
+
+        return null;
     }
 }

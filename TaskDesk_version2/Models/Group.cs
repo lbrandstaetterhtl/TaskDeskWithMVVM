@@ -5,20 +5,28 @@ using System.Linq;
 
 namespace TaskDesk_version2.Models;
 
-public class Group(string name, string description, List<int> userIds)
+public class Group
 {
     public int Id { get; set; } = GroupsOperator.GetNextGroupId();
-    public string Name { get; set; } = name;
-    public string Description { get; set; } = description;
-    public List<int> UsersIds { get; set; } = new List<int>();
-    public List<int> TasksIds { get; set; } = new List<int>();
+    public string Name { get; set; } 
+    public string Description { get; set; }
+    public List<int> UserIds { get; set; } = new List<int>();
+    public List<int> TaskIds { get; set; } = new List<int>();
     
+    public Group() { }
+    
+    public Group(string name, string description, List<int> usersIds)
+    {
+        Name = name;
+        Description = description;
+        UserIds = usersIds;
+    }
     
     public string GetUsersAsString(List<User> allUsers)
     {
         List<string> userNames = new List<string>();
         
-        foreach (var id in UsersIds)
+        foreach (var id in UserIds)
         {
             var user = allUsers.Find(x => x.Id == id);
             
@@ -40,7 +48,7 @@ public class Group(string name, string description, List<int> userIds)
     {
         List<string> taskTitles = new List<string>();
         
-        foreach (var id in TasksIds)
+        foreach (var id in TaskIds)
         {
             var task = allTasks.Find(x => x.Id == id);
             
@@ -168,5 +176,18 @@ public static class GroupsOperator
             return 1;
 
         return MainData.Groups.Max(t => t.Id) + 1;
+    }
+    
+    public static Group GetGroupById(int groupId)
+    {
+        foreach (var group in MainData.Groups)
+        {
+            if (group.Id == groupId)
+            {
+                return group;
+            }
+        }
+
+        return null;
     }
 }

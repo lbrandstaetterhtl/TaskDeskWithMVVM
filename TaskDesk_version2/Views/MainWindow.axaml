@@ -33,6 +33,7 @@
             
             <MenuItem x:Name="UsersMenuItem" Header="Users">
                 <MenuItem x:Name="AddUserMenuItem" Header="Add User"/>
+                <MenuItem x:Name="ManageUsersMenuItem" Header="Manage Users"/>
             </MenuItem>
             
             <MenuItem x:Name="GroupsMenuItem" Header="Groups">
@@ -59,14 +60,14 @@
             </Border>
             
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ItemsControl Grid.Row="1" ItemsSource="{Binding Tasks}">
+            <ItemsControl ItemsSource="{Binding Tasks}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Padding="8" Margin="4" Background="Gray" DoubleTapped="TaskDoubleClick" PointerEntered="PointerEntered" PointerExited="PointerExited">
                             <Border.ContextFlyout>
                                 <MenuFlyout>
                                     <MenuItem Header="Open Task" Click="TaskOpenClick"/>
-                                    <MenuItem Header="Delete Task"/>
+                                    <MenuItem Header="Delete Task" Click="OnDeleteTaskClick"/>
                                 </MenuFlyout>
                             </Border.ContextFlyout>
                             <StackPanel Orientation="Horizontal" Spacing="10" Margin="10,0,10,10">

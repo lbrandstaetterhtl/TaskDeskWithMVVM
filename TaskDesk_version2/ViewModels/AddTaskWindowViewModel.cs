@@ -152,6 +152,24 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
         
         await Dispatcher.UIThread.InvokeAsync(() => MainData.Tasks.Add(newTask));
         
+        foreach (var userId in userIds)
+        {
+            var user = UsersOperator.GetUserById(userId);
+            if (user != null)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => user.TaskIds.Add(id));
+            }
+        }
+        
+        foreach (var groupId in groupIds)
+        {
+            var group = GroupsOperator.GetGroupById(groupId);
+            if (group != null)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => group.TaskIds.Add(id));
+            }
+        }
+        
         RequestClose?.Invoke();
     }
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -24,7 +24,6 @@ public partial class OpenTaskWindow : Window
         SetStateCombo();
         
         IdBox.Text = "ID: " + _task.Id;
-      
     }
     
     private void SetStateCombo()

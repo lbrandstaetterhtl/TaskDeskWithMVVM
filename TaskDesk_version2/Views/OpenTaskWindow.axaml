@@ -6,10 +6,7 @@
         CanResize="False"
         CanMaximize="False"
         Title="Task"
-        SizeToContent="Width"
-        Height="500"
-        MinWidth="700"
-        MinHeight="500"
+        SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
         
         <Grid Name="Root" Margin="10">
@@ -23,7 +20,7 @@
                 <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" MinWidth="200"/>
                         <ColumnDefinition Width="Auto" MinWidth="50"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto" MinWidth="200"/>
                         <ColumnDefinition Width="*" MinWidth="200"/>
                 </Grid.ColumnDefinitions>
                 
@@ -34,9 +31,15 @@
                 
                 <TextBox Name="IdBox" Grid.Row="0" Grid.Column="1" FontSize="18" Background="#1E1E1E" Margin="5" IsReadOnly="True" IsEnabled="False" Foreground="White"/>
                 
-                <DatePicker Grid.Row="0" Grid.Column="2" SelectedDate="{Binding DueDate}" Height="30" Margin="5" Background="#1E1E1E"/>
+                <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
+                        <TextBlock Text="Due Date:" FontSize="18" Background="#1E1E1E" Margin="5" VerticalAlignment="Center"/>
+                        <DatePicker SelectedDate="{Binding DueDate}" Height="30" Margin="5" Background="#1E1E1E"/>
+                </StackPanel>
                 
-                <ComboBox Grid.Row="0" Grid.Column="3" Name="StateCombo" SelectedItem="{Binding State}" Width="200" Margin="5" Background="#1E1E1E"/>
+                <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" MaxWidth="200">
+                        <TextBlock Text="State:" FontSize="18" Background="#1E1E1E" VerticalAlignment="Center" Margin="5"/>
+                        <ComboBox Name="StateCombo" SelectedItem="{Binding State}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Background="#1E1E1E"/>
+                </StackPanel>
                 
                 <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Margin="5" MaxWidth="700">
                         <TextBox Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" Background="#1E1E1E"/>

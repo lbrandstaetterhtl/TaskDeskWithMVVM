@@ -76,4 +76,38 @@ public class MainWindowViewModel : INotifyPropertyChanged
         var addGroupWindow = new Views.AddGroupWindow();
         await addGroupWindow.ShowDialog(desktop.MainWindow!);
     }
+    
+    public static void OnDeleteTaskClick(Task task)
+    {
+        MainData.Tasks.Remove(task);
+
+        foreach (var userId in task.UserIds)
+        {
+            var user = UsersOperator.GetUserById(userId);
+            if (user !=  null && user.TaskIds.Contains(task.Id))
+            {
+                user.TaskIds.Remove(task.Id);
+            }
+        }
+        
+        foreach (var groupId in task.GroupIds)
+        {
+            var group = GroupsOperator.GetGroupById(groupId);
+            if (group != null && group.TaskIds.Contains(task.Id))
+            {
+                group.TaskIds.Remove(task.Id);
+            }
+        }
+    }
+    
+    public static async void OnManageUsersClick(object? sender, RoutedEventArgs e)
+    {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var user = MainData.Users[0];
+        
+        var manageUsersWindow = new Views.ManageUsersWindow(user);
+        await manageUsersWindow.ShowDialog(desktop.MainWindow!);
+    }
 }
