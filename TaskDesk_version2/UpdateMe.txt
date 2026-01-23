@@ -1,2 +1,1 @@
 ﻿TODOs
-Bug in OpenTaskWindowViewModel.cs: when saving state,users,groups are not saved correctly.
