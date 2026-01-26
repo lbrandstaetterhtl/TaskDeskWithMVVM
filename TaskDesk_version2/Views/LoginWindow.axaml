@@ -1,0 +1,43 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TaskDesk_version2.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:TaskDesk_version2.Models"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TaskDesk_version2.Views.LoginWindow"
+        x:DataType="vm:LoginWindowViewModel"
+        Title="Login"
+        WindowState="Maximized">
+        
+        <Grid Name="Root" HorizontalAlignment="Center" VerticalAlignment="Center">
+                 
+                <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+        
+                <StackPanel Grid.Row="0" Name="LoginPanel" Width="300" Height="200" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
+                         
+                        <TextBlock Name="LoginLabel" Text="E-Mail:" FontSize="16" Margin="5"/>
+                        <TextBox Name="LoginTextBox" Margin="5" Text="{Binding Email}"/>
+                         
+                        <TextBlock Name="PasswordLabel" Text="Password:" FontSize="16" Margin="5"/>
+                         
+                        <StackPanel Name="PasswordCell" Orientation="Horizontal">
+                             
+                                <TextBox Name="PasswordBox" Margin="5" Text="{Binding Password}" PasswordChar="*" Width="235"/>
+                             
+                                <Button Name="PasswordVisibilityToggle" Margin="5" Command="{Binding PasswordVisibleCommand}"/>
+                        </StackPanel>
+                         
+                        <StackPanel Orientation="Horizontal">
+                                <Button Name="LoginButton" Content="Login" Margin="10" IsDefault="True" Command="{Binding LoginCommand}"/>
+                                <Button Name="CloseButton" Content="Close" Margin="10" IsCancel="True" Command="{Binding CloseCommand}"/>
+                        </StackPanel>
+                </StackPanel>
+                
+                <ComboBox Grid.Row="2" Name="SavedUserComboBox" Width="300" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10"/>
+        </Grid>
+</Window>

@@ -10,6 +10,7 @@ public class MainData
     public static ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
     public static ObservableCollection<Group> Groups { get; set; } = new ObservableCollection<Group>();
     public static string DataPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/TaskDeskData";
+    public static User CurrentUser { get; set; }
 
     public MainData()
     {

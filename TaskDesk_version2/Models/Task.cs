@@ -60,11 +60,6 @@ public class Task
     {
         return StateConverter.StateToString(State);
     }
-    
-    public TaskState GetTaskStateFromString(string state)
-    {
-        return StateConverter.StringToState(state);
-    }
 
     private string GetUsersAsString(ObservableCollection<User> allUsers)
     {

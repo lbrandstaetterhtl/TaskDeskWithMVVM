@@ -60,7 +60,7 @@
                 </StackPanel>
                 
                 <StackPanel Grid.Row="0" Grid.Column="4" Grid.RowSpan="5" Margin="5">
-                        <TextBox Name="SearchBar" Height="20" FontSize="14" Background="#1E1E1E" Margin="5" Watermark="Search..."/>
+                        <TextBox Name="SearchBar" Height="20" FontSize="14" Background="#1E1E1E" Margin="5" Text="{Binding SearchInput}" Watermark="Search User..."/>
                         
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Width="200">
                                 <ListBox Name="UserList" SelectionMode="Single" SelectedItem="{Binding SelectedUser}" ItemsSource="{Binding AllUsers}" Background="#1E1E1E">

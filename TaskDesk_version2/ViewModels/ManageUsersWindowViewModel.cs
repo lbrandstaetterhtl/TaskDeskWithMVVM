@@ -21,6 +21,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
     private ObservableCollection<Group> _allGroups = MainData.Groups;
     private ObservableCollection<User> _allUsers = MainData.Users;
     private User? _selectedUser;
+    private string _searchInput = string.Empty;
 
     public User? SelectedUser
     {
@@ -37,6 +38,19 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
                     OriginalUser = value;
                     UpdateData();
                 }
+            }
+        }
+    }
+    
+    public string SearchInput
+    {
+        get => _searchInput;
+        set
+        {
+            if (_searchInput != value)
+            {
+                _searchInput = value;
+                OnPropertyChanged(nameof(SearchInput));
             }
         }
     }
@@ -204,7 +218,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
 
     public void UpdateData()
     {
-        Fullname = SelectedUser.FullName;
+        Fullname = SelectedUser!.FullName;
         Email = SelectedUser.Email;
         Password = SelectedUser.Password;
         RoleString = RoleConverter.RoleToString(SelectedUser.Role);
@@ -281,5 +295,46 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
             
 
         RequestClose?.Invoke();
+    }
+    
+    public void SearchUpdate()
+    {
+        if (string.IsNullOrWhiteSpace(SearchInput))
+        {
+            AllUsers = MainData.Users;
+        }
+        else
+        {
+            var filteredUsers = new ObservableCollection<User>();
+            foreach (var user in MainData.Users)
+            {
+                if (user.FullName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase) ||
+                    user.Email.Contains(SearchInput, StringComparison.OrdinalIgnoreCase) || user.Id.ToString().Contains(SearchInput, StringComparison.OrdinalIgnoreCase))
+                {
+                    filteredUsers.Add(user);
+                }
+            }
+
+            if (filteredUsers.Count > 0)
+            {
+                AllUsers = filteredUsers;
+            }
+        }
+    }
+    
+    public void ClearData()
+    {
+        Fullname = string.Empty;
+        Email = string.Empty;
+        Password = string.Empty;
+        RoleString = string.Empty;
+        AssignedGroups.Clear();
+        AssignedTasks.Clear();
+    }
+    
+    public void ClearSearch()
+    {
+        SearchInput = string.Empty;
+        AllUsers = MainData.Users;
     }
 }

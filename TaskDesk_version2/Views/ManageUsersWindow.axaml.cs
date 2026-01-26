@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 using Avalonia.Controls;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
@@ -30,6 +31,26 @@ public partial class ManageUsersWindow : Window
                 vm.SelectedUser = selectedUser;
                 vm.UpdateData();
                 IdBox.Text = "ID: " + selectedUser.Id;
+            }
+        };
+        
+        SearchBar.TextChanged += (_, _) =>
+        {
+            vm.SearchInput = SearchBar.Text ?? string.Empty;
+            if (vm.SearchInput.Length > 0)
+            {
+                vm.SearchUpdate();
+                if (!vm.AllUsers.Contains(vm.SelectedUser!))
+                {
+                    vm.ClearData();
+                    UserList.SelectedItem = null;
+                    IdBox.Text = "ID: ";
+                }
+            }
+            else
+            {
+                vm.ClearData();
+                vm.ClearSearch();
             }
         };
     }
