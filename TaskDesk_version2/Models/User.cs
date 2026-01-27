@@ -141,7 +141,13 @@ public static class UsersOperator
         if (!File.Exists(filePath))
         {
             File.Create(filePath).Close();
-            return new ObservableCollection<User>();
+
+            var users = new ObservableCollection<User>
+            {
+                new User("TestU0", "TestU0", "TestU0", UserRole.User, new List<int>())
+            };
+            
+            return users;
         }
         
         string json = File.ReadAllText(filePath);

@@ -34,6 +34,8 @@ public partial class ManageUsersWindow : Window
             }
         };
         
+        UserList.SelectedItem = _originalUser;
+        
         SearchBar.TextChanged += (_, _) =>
         {
             vm.SearchInput = SearchBar.Text ?? string.Empty;

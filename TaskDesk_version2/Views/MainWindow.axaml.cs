@@ -27,6 +27,12 @@ public partial class MainWindow : Window
         AddGroupMenuItem.Click += MainWindowViewModel.OnAddGroupClick;
         
         ManageUsersMenuItem.Click += MainWindowViewModel.OnManageUsersClick;
+        
+        ClearAllTasksMenuItem.Click += MainWindowViewModel.OnClearAllTasksClick;
+        
+        ClearAllGroupsMenuItem.Click += MainWindowViewModel.OnClearAllGroupsClick;
+        
+        ClearAllUsersMenuItem.Click += MainWindowViewModel.OnClearAllUsersClick;
 
         Closing += OnClosing;
     }

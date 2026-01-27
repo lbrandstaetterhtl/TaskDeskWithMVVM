@@ -29,15 +29,19 @@
         <Menu x:Name="RootMenu" Grid.Row="0" Grid.Column="0">
             <MenuItem x:Name="TasksMenuItem" Header="Tasks">
                 <MenuItem x:Name="AddTaskMenuItem" Header="Add Task"/>
+                <MenuItem x:Name="ClearAllTasksMenuItem" Header="Clear All Tasks"/>
             </MenuItem>
             
             <MenuItem x:Name="UsersMenuItem" Header="Users">
                 <MenuItem x:Name="AddUserMenuItem" Header="Add User"/>
                 <MenuItem x:Name="ManageUsersMenuItem" Header="Manage Users"/>
+                <MenuItem x:Name="ClearAllUsersMenuItem" Header="Clear All Users"/>
             </MenuItem>
             
             <MenuItem x:Name="GroupsMenuItem" Header="Groups">
                 <MenuItem x:Name="AddGroupMenuItem" Header="Add Group"/>
+                <MenuItem x:Name="ManageGroupsMenuItem" Header="Manage Groups"/>
+                <MenuItem x:Name="ClearAllGroupsMenuItem" Header="Clear All Groups"/>
             </MenuItem>
         </Menu>
         

@@ -46,7 +46,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
             return;
         
         var addTaskWindow = new Views.AddTaskWindow();
-        await addTaskWindow.ShowDialog(desktop.MainWindow!);
+        await addTaskWindow.ShowDialog(desktop.Windows[0]);
     }
 
     public static async void OnOpenTaskClick(Task task)
@@ -65,7 +65,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
             return;
         
         var addUserWindow = new Views.AddUserWindow();
-        await addUserWindow.ShowDialog(desktop.MainWindow!);
+        await addUserWindow.ShowDialog(desktop.Windows[0]);
     }
     
     public static async void OnAddGroupClick(object? sender, RoutedEventArgs e)
@@ -74,11 +74,25 @@ public class MainWindowViewModel : INotifyPropertyChanged
             return;
         
         var addGroupWindow = new Views.AddGroupWindow();
-        await addGroupWindow.ShowDialog(desktop.MainWindow!);
+        await addGroupWindow.ShowDialog(desktop.Windows[0]);
     }
     
-    public static void OnDeleteTaskClick(Task task)
+    public static async void OnDeleteTaskClick(Task task)
     {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var confirmWindow = new Views.InfoWindow("Are you sure that you want to delete this task?", true);
+        var result = await confirmWindow.ShowDialogAsync(desktop.Windows[0]);
+
+        if (!result)
+        {
+            return;
+        }
+        
+        var infoWindow = new Views.InfoWindow("Task has been deleted.");
+        await infoWindow.ShowDialog(desktop.Windows[0]);
+        
         MainData.Tasks.Remove(task);
 
         foreach (var userId in task.UserIds)
@@ -108,6 +122,93 @@ public class MainWindowViewModel : INotifyPropertyChanged
         var user = MainData.Users[0];
         
         var manageUsersWindow = new Views.ManageUsersWindow(user);
-        await manageUsersWindow.ShowDialog(desktop.MainWindow!);
+        await manageUsersWindow.ShowDialog(desktop.Windows[0]);
+    }
+    
+    public static async void OnClearAllTasksClick(object? sender, RoutedEventArgs e)
+    {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var confirmWindow = new Views.InfoWindow("Are you sure you want to clear all tasks? This action cannot be undone.", true);
+        var result = await confirmWindow.ShowDialogAsync(desktop.Windows[0]);
+
+        if (!result)
+        {
+            return;
+        }
+        
+        var infoWindow = new Views.InfoWindow("All tasks have been cleared.");
+        await infoWindow.ShowDialog(desktop.Windows[0]);
+        
+        MainData.Tasks.Clear();
+        
+        foreach (var user in MainData.Users)
+        {
+            user.TaskIds.Clear();
+        }
+        
+        foreach (var group in MainData.Groups)
+        {
+            group.TaskIds.Clear();
+        }
+    }
+    
+    public static async void OnClearAllUsersClick(object? sender, RoutedEventArgs e)
+    {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var confirmWindow = new Views.InfoWindow("Are you sure you want to clear all users? This action cannot be undone.", true);
+        var result = await confirmWindow.ShowDialogAsync(desktop.Windows[0]);
+
+        if (!result)
+        {
+            return;
+        }
+        
+        var infoWindow = new Views.InfoWindow("All users have been cleared.");
+        await infoWindow.ShowDialog(desktop.Windows[0]);
+        
+        MainData.Users.Clear();
+        
+        foreach (var group in MainData.Groups)
+        {
+            group.UserIds.Clear();
+        }
+        
+        foreach (var task in MainData.Tasks)
+        {
+            task.UserIds.Clear();
+        }
+    }
+    
+    public static async void OnClearAllGroupsClick(object? sender, RoutedEventArgs e)
+    {
+        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            return;
+        
+        var confirmWindow = new Views.InfoWindow("Are you sure you want to clear all groups? This action cannot be undone.", true);
+        var result = await confirmWindow.ShowDialogAsync(desktop.Windows[0]);
+
+        if (!result)
+        {
+            return;
+        }
+        
+        var infoWindow = new Views.InfoWindow("All groups have been cleared.");
+        await infoWindow.ShowDialog(desktop.Windows[0]);
+        
+        MainData.Groups.Clear();
+        
+        foreach (var user in MainData.Users)
+        {
+            user.GroupIds.Clear();
+        }
+        
+        foreach (var task in MainData.Tasks)
+        {
+            task.GroupIds.Clear();
+        }
     }
 }

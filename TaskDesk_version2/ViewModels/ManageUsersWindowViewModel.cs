@@ -205,7 +205,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
         cancelCommand = new RelayCommand(() => RequestClose?.Invoke());
         saveCommand = new RelayCommand(SaveUser);
         
-        _originalUser = user;
+        OriginalUser = user;
         
         Fullname = user.FullName;
         Email = user.Email;
@@ -213,7 +213,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
         RoleString = RoleConverter.RoleToString(user.Role);
         AssignedGroups = GroupsOperator.GetListFromIds(user.GroupIds, AllGroups);
         AssignedTasks = TasksOperator.GetListFromIds(user.TaskIds, AllTasks);
-        SelectedUser = OriginalUser;
+        SelectedUser = user;
     }
 
     public void UpdateData()
