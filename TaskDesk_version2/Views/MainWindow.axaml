@@ -54,12 +54,12 @@
             
             <Border Grid.Row="0" Padding="8" Margin="4" Background="Gray">
             <StackPanel Name="Header" Orientation="Horizontal" Spacing="10">
-                <TextBlock Text="Title" FontWeight="Bold" Width="250" FontSize="22"/>
-                <TextBlock Text="Description" FontWeight="Bold" Width="250" FontSize="22"/>
-                <TextBlock Text="Due Date" FontWeight="Bold" Width="250" FontSize="22"/>
-                <TextBlock Text="Users" FontWeight="Bold" Width="250" FontSize="22"/>
-                <TextBlock Text="Groups" FontWeight="Bold" Width="250" FontSize="22"/>
-                <TextBlock Text="State" FontWeight="Bold" Width="250" FontSize="22"/>
+                <TextBlock Text="Title" FontWeight="Bold" Width="200" FontSize="22"/>
+                <TextBlock Text="Description" FontWeight="Bold" Width="200" FontSize="22"/>
+                <TextBlock Text="Due Date" FontWeight="Bold" Width="200" FontSize="22"/>
+                <TextBlock Text="Users" FontWeight="Bold" Width="200" FontSize="22"/>
+                <TextBlock Text="Groups" FontWeight="Bold" Width="200" FontSize="22"/>
+                <TextBlock Text="State" FontWeight="Bold" Width="200" FontSize="22"/>
             </StackPanel>
             </Border>
             
@@ -75,12 +75,12 @@
                                 </MenuFlyout>
                             </Border.ContextFlyout>
                             <StackPanel Orientation="Horizontal" Spacing="10" Margin="10,0,10,10">
-                                <TextBlock Text="{Binding Title}" Width="250" FontSize="22"/>
-                                <TextBlock Text="{Binding Description}" Width="250" FontSize="22"/>
-                                <TextBlock Text="{Binding DateAsString}" Width="250" FontSize="22"/>
-                                <TextBlock Text="{Binding UsersAsString}" Width="250" FontSize="22"/>
-                                <TextBlock Text="{Binding GroupsAsString}" Width="250" FontSize="22"/>
-                                <TextBlock Text="{Binding StateAsString}" Width="250" FontSize="22"/>
+                                <TextBlock Text="{Binding Title}" Width="200" FontSize="22"/>
+                                <TextBlock Text="{Binding Description}" Width="200" FontSize="22"/>
+                                <TextBlock Text="{Binding DateAsString}" Width="200" FontSize="22"/>
+                                <TextBlock Text="{Binding UsersAsString}" Width="200" FontSize="22"/>
+                                <TextBlock Text="{Binding GroupsAsString}" Width="200" FontSize="22"/>
+                                <TextBlock Text="{Binding StateAsString}" Width="200" FontSize="22"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

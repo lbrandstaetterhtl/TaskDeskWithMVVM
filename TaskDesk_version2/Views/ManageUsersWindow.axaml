@@ -35,6 +35,7 @@
                 
                 <StackPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Width="200" Margin="5">
                         <TextBlock Background="#1E1E1E" Text="Assigned Tasks:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
+                        
                         <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
                                 <ListBox Name="TasksList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedTasks}" ItemsSource="{Binding AllTasks}" Background="#1E1E1E">
                                         <ListBox.ItemTemplate>
@@ -48,15 +49,16 @@
                 
                 <StackPanel Grid.Row="3" Grid.Column="2" Width="200" Grid.RowSpan="2" Margin="5">
                         <TextBlock Background="#1E1E1E" Text="Assigned Groups:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
+                        
                         <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
                                 <ListBox Name="GroupsList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedGroups}" ItemsSource="{Binding AllGroups}" Background="#1E1E1E">
                                         <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                                <TextBlock Text="{Binding Name}"/>
-                                        </DataTemplate>
-                                </ListBox.ItemTemplate>
-                        </ListBox>
-                </ScrollViewer>
+                                                <DataTemplate>
+                                                        <TextBlock Text="{Binding Name}"/>
+                                                </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                </ListBox>
+                        </ScrollViewer>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="0" Grid.Column="4" Grid.RowSpan="5" Margin="5">
@@ -94,7 +96,7 @@
                 </StackPanel>
                 
                 <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Spacing="8" Orientation="Horizontal">
-                        <Button Name="SaveButton" Content="Save Changes" Margin="5" Command="{Binding saveCommand}"/>
+                        <Button Name="SaveButton" Content="Save Changes" Margin="5" Command="{Binding saveCommand}" IsDefault="True"/>
                         <Button Name="CancelButton" Content="Cancel" Margin="5" Command="{Binding cancelCommand}"/>
                 </StackPanel>
         </Grid>

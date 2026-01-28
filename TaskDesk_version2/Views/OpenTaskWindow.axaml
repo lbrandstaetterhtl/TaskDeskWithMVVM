@@ -74,7 +74,7 @@
                 </StackPanel>
                 
                 <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
-                        <Button Name="SaveButton" Content="Save" Width="80" HorizontalAlignment="Right" Margin="5" Command="{Binding SaveTaskCommand}"/>
+                        <Button Name="SaveButton" Content="Save" Width="80" HorizontalAlignment="Right" Margin="5" IsDefault="True"  Command="{Binding SaveTaskCommand}"/>
                         <Button Name="CloseButton" Content="Close" Width="80" HorizontalAlignment="Right" Margin="5" Command="{Binding CloseCommand}"/>
                 </StackPanel>
                 
