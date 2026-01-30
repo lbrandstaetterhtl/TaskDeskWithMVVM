@@ -7,7 +7,21 @@ namespace TaskDesk_version2.Models;
 
 public class Group
 {
-    public int Id { get; set; } = GroupsOperator.GetNextGroupId();
+    private int _id;
+    
+    public int Id 
+    { 
+        get
+        {
+            if (_id == 0)
+            {
+                _id = GroupsOperator.GetNextGroupId();
+            }
+            return _id;
+        }
+        set => _id = value;
+    }
+    
     public string Name { get; set; } 
     public string Description { get; set; }
     public List<int> UserIds { get; set; } = new List<int>();

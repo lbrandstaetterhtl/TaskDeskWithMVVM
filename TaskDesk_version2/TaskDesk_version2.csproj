@@ -29,4 +29,10 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
         <PackageReference Include="FluentAvaloniaUI" Version="2.4.1" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\ErrorWindow.axaml.cs">
+        <DependentUpon>ErrorWindow.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>
