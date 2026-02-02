@@ -224,18 +224,6 @@ DataContext = new MainWindowViewModel();
 - [ ] Benachrichtigungen für Fälligkeitstermine
 - [ ] Datenbankanbindung (SQLite/PostgreSQL)
 - [ ] Unit Tests hinzufügen
-
-## 👤 Autor
-
-**lbrandstaetterhtl**
-- GitHub: [@lbrandstaetterhtl](https://github.com/lbrandstaetterhtl)
-
-## 📄 Lizenz
-
-Dieses Projekt ist derzeit ohne Lizenz. Bitte kontaktiere den Autor für Nutzungsrechte.
-
-## 🤝 Contributing
-
 Contributions sind willkommen! Bitte erstelle einen Pull Request oder öffne ein Issue für Vorschläge.
 
 ---
