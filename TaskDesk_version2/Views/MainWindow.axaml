@@ -30,6 +30,9 @@
             <MenuItem x:Name="TasksMenuItem" Header="Tasks">
                 <MenuItem x:Name="AddTaskMenuItem" Header="Add Task"/>
                 <MenuItem x:Name="ClearAllTasksMenuItem" Header="Clear All Tasks"/>
+                <MenuItem x:Name="ClearCompletedTasksMenuItem" Header="Clear Completed Tasks"/>
+                <MenuItem x:Name="ClearCancelledTasksMenuItem" Header="Clear Cancelled Tasks"/>
+                <MenuItem x:Name="ClearOverdueTasksMenuItem" Header="Clear Overdue Tasks"/>
             </MenuItem>
             
             <MenuItem x:Name="UsersMenuItem" Header="Users">
@@ -75,12 +78,12 @@
                                 </MenuFlyout>
                             </Border.ContextFlyout>
                             <StackPanel Orientation="Horizontal" Spacing="10" Margin="10,0,10,10">
-                                <TextBlock Text="{Binding Title}" Width="200" FontSize="22"/>
-                                <TextBlock Text="{Binding Description}" Width="200" FontSize="22"/>
-                                <TextBlock Text="{Binding DateAsString}" Width="200" FontSize="22"/>
-                                <TextBlock Text="{Binding UsersAsString}" Width="200" FontSize="22"/>
-                                <TextBlock Text="{Binding GroupsAsString}" Width="200" FontSize="22"/>
-                                <TextBlock Text="{Binding StateAsString}" Width="200" FontSize="22"/>
+                                <TextBlock Text="{Binding Title}" Width="200" FontSize="18"/>
+                                <TextBlock Text="{Binding Description}" Width="200" FontSize="18"/>
+                                <TextBlock Text="{Binding DateAsString}" Width="200" FontSize="18"/>
+                                <TextBlock Text="{Binding UsersAsString}" Width="200" FontSize="18"/>
+                                <TextBlock Text="{Binding GroupsAsString}" Width="200" FontSize="18"/>
+                                <TextBlock Text="{Binding StateAsString}" Width="200" FontSize="18"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

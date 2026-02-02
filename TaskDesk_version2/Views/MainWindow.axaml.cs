@@ -15,7 +15,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-
+        
         var vm = new MainWindowViewModel();
 
         DataContext = vm;
@@ -33,6 +33,12 @@ public partial class MainWindow : Window
         ClearAllGroupsMenuItem.Click += MainWindowViewModel.OnClearAllGroupsClick;
         
         ClearAllUsersMenuItem.Click += MainWindowViewModel.OnClearAllUsersClick;
+        
+        ClearCompletedTasksMenuItem.Click += MainWindowViewModel.OnClearCompletedTasksClick;
+        
+        ClearCancelledTasksMenuItem.Click += MainWindowViewModel.OnClearCancelledTasksClick;
+        
+        ClearOverdueTasksMenuItem.Click += MainWindowViewModel.OnClearOverdueTasksClick;
 
         Closing += OnClosing;
     }
@@ -44,6 +50,8 @@ public partial class MainWindow : Window
         UsersOperator.SaveUsersToJson(MainData.Users);
 
         GroupsOperator.SaveGroupsToJson(MainData.Groups);
+        
+        AppLogger.Info("------------- Application Closed -------------");
     }
 
     private void TaskDoubleClick(object? sender, TappedEventArgs e)

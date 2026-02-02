@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace TaskDesk_version2.Models;
 
@@ -11,14 +13,7 @@ public class Group
     
     public int Id 
     { 
-        get
-        {
-            if (_id == 0)
-            {
-                _id = GroupsOperator.GetNextGroupId();
-            }
-            return _id;
-        }
+        get => _id;
         set => _id = value;
     }
     
@@ -31,6 +26,7 @@ public class Group
     
     public Group(string name, string description, List<int> usersIds)
     {
+        Id = GroupsOperator.GetNextGroupId();
         Name = name;
         Description = description;
         UserIds = usersIds;
@@ -85,29 +81,57 @@ public static class GroupsOperator
 {
     public static ObservableCollection<Group> LoadGroupsFromJson()
     {
-        string filePath = MainData.DataPath + "/groups.json";
-
-        if (!File.Exists(filePath))
+        try
         {
-            File.Create(filePath).Close();
+            string filePath = MainData.DataPath + @"\groups.json";
+
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+                return new ObservableCollection<Group>();
+            }
+
+            string json = File.ReadAllText(filePath);
+            
+            AppLogger.Info($"Groups loaded from {filePath}");
+
+            return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<Group>>(json) ??
+                   new ObservableCollection<Group>();
+        }
+        catch (Exception ex)
+        {
+            var errorWindow = new Views.ErrorWindow("Error loading groups: " + ex.Message);
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
+            
+            AppLogger.Error("Error loading groups: " + ex.Message);
+            
             return new ObservableCollection<Group>();
         }
-        
-        string json = File.ReadAllText(filePath);
-        
-        return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<Group>>(json) ?? new ObservableCollection<Group>();
     }
 
     public static void SaveGroupsToJson(ObservableCollection<Group> allGroups)
     {
-        string filePath = MainData.DataPath + "/groups.json";
-        
-        string json = System.Text.Json.JsonSerializer.Serialize(allGroups, new System.Text.Json.JsonSerializerOptions
+        try
         {
-            WriteIndented = true
-        });
-        
-        File.WriteAllText(filePath, json);
+            string filePath = MainData.DataPath + @"\groups.json";
+
+            string json = System.Text.Json.JsonSerializer.Serialize(allGroups,
+                new System.Text.Json.JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+
+            File.WriteAllText(filePath, json);
+            
+            AppLogger.Info($"Groups saved to {filePath}");
+        }
+        catch (Exception ex)
+        {
+            var errorWindow = new Views.ErrorWindow("Error saving groups: " + ex.Message);
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
+            
+            AppLogger.Error("Error saving groups: " + ex.Message);
+        }
     }
     
     public static List<int> GetIdsFromNames(List<string> groupNames, ObservableCollection<Group> allGroups)

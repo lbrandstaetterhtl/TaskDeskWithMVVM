@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace TaskDesk_version2.Models;
 
@@ -136,35 +138,65 @@ public static class UsersOperator
 {
     public static ObservableCollection<User> LoadUsersFromJson()
     {
-        string filePath = MainData.DataPath + "/users.json";
-        
-        if (!File.Exists(filePath))
+        try
         {
-            File.Create(filePath).Close();
+            string filePath = MainData.DataPath + @"\users.json";
 
-            var users = new ObservableCollection<User>
+            if (!File.Exists(filePath))
             {
-                new User("TestU0", "TestU0", "TestU0", UserRole.User, new List<int>())
-            };
+                File.Create(filePath).Close();
             
-            return users;
+                AppLogger.Warn($"No {filePath} found");
+                AppLogger.Info("Added Test User as no users.json found. E-Mail: TestU0, Password: TestU0");
+                
+                var users = new ObservableCollection<User>
+                {
+                    new User("TestU0", "TestU0", "TestU0", UserRole.User, new List<int>())
+                };
+
+                return users;
+            }
+
+            string json = File.ReadAllText(filePath);
+            
+            AppLogger.Info($"Users loaded from {filePath}");
+
+            return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<User>>(json) ??
+                   new ObservableCollection<User>();
         }
-        
-        string json = File.ReadAllText(filePath);
-        
-        return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<User>>(json) ?? new ObservableCollection<User>();
+        catch (Exception ex)
+        {
+            var errorWindow = new Views.ErrorWindow($"An error occurred while loading users: {ex.Message}");
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
+            
+            AppLogger.Error("Error loading users: " + ex.Message);
+            
+            return new ObservableCollection<User>();
+        }
     }
 
     public static void SaveUsersToJson(ObservableCollection<User> allUsers)
     {
-        string filePath = MainData.DataPath + "/users.json";
-        
-        string json = System.Text.Json.JsonSerializer.Serialize(allUsers, new System.Text.Json.JsonSerializerOptions
+        try
         {
-            WriteIndented = true
-        });
-        
-        File.WriteAllText(filePath, json);
+            string filePath = MainData.DataPath + @"\users.json";
+
+            string json = System.Text.Json.JsonSerializer.Serialize(allUsers, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            File.WriteAllText(filePath, json);
+            
+            AppLogger.Info("Users saved to " + filePath);
+        }
+        catch (Exception ex)
+        {
+            var errorWindow = new Views.ErrorWindow($"An error occurred while saving users: {ex.Message}");
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
+            
+            AppLogger.Error("Error saving users: " + ex.Message);
+        }
     }
     
     public static List<int> GetIdsFromNames(List<string> userNames, ObservableCollection<User> allUsers)

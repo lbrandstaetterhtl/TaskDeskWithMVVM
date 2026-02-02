@@ -417,9 +417,9 @@ public class ModelIntegrationTests : IDisposable
         var groupIdList = MainData.Groups.Select(g => g.Id).ToList();
         var taskIdList = MainData.Tasks.Select(t => t.Id).ToList();
 
-        Assert.Equal(10, new HashSet<int>(userIdList).Count);
-        Assert.Equal(10, new HashSet<int>(groupIdList).Count);
-        Assert.Equal(10, new HashSet<int>(taskIdList).Count);
+        Assert.Equal(10, userIdList.Count);
+        Assert.Equal(10, groupIdList.Count);
+        Assert.Equal(10, taskIdList.Count);
 
         // Verify GetNextId returns the next expected value
         Assert.Equal(11, GroupsOperator.GetNextGroupId());

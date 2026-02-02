@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using System.Reflection.Metadata.Ecma335;
 using Avalonia.Controls;
 using TaskDesk_version2.Models;
@@ -8,7 +9,7 @@ namespace TaskDesk_version2.Views;
 
 public partial class ManageUsersWindow : Window
 {
-    private readonly User _originalUser;
+    private User _originalUser;
     
     public ManageUsersWindow(User user)
     {
@@ -22,6 +23,8 @@ public partial class ManageUsersWindow : Window
         
         vm.RequestClose += Close;
         
+        vm.UpdateData();
+        
         SetRoleCombo();
 
         UserList.SelectionChanged += (_, _) =>
@@ -29,6 +32,7 @@ public partial class ManageUsersWindow : Window
             if (UserList.SelectedItem is User selectedUser)
             {
                 vm.SelectedUser = selectedUser;
+                _originalUser = selectedUser;
                 vm.UpdateData();
                 IdBox.Text = "ID: " + selectedUser.Id;
             }

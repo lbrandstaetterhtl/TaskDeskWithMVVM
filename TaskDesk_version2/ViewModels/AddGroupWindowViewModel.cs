@@ -73,31 +73,46 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
 
     private async void SaveGroup()
     {
-        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            return;
-        
-        if (Name == string.Empty && Description == string.Empty)
+        try
         {
-            var errorWindow = new Views.ErrorWindow("Group must have a name and description.");
-            await errorWindow.ShowDialog(desktop.MainWindow!);
-            return;
-        }
-        
-        var userIds = UsersOperator.GetIdsFromNames(UserNames, MainData.Users);
-        
-        var newGroup = new Group(Name, Description, userIds);
-        
-        await Dispatcher.UIThread.InvokeAsync(() => MainData.Groups.Add(newGroup));
-        
-        foreach (var userId in userIds)
-        {
-            var user = UsersOperator.GetUserById(userId);
-            if (user != null)
+            if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+
+            if (Name == string.Empty && Description == string.Empty)
             {
-                user.GroupIds.Add(newGroup.Id);
+                var errorWindow = new Views.ErrorWindow("Group must have a name and description.");
+                await errorWindow.ShowDialog(desktop.MainWindow!);
+                return;
             }
+
+            var userIds = UsersOperator.GetIdsFromNames(UserNames, MainData.Users);
+
+            var newGroup = new Group(Name, Description, userIds);
+
+            await Dispatcher.UIThread.InvokeAsync(() => MainData.Groups.Add(newGroup));
+
+            foreach (var userId in userIds)
+            {
+                var user = UsersOperator.GetUserById(userId);
+                if (user != null)
+                {
+                    user.GroupIds.Add(newGroup.Id);
+                }
+            }
+            
+            AppLogger.Info("New group added: ID: " + newGroup.Id);
+
+            RequestClose?.Invoke();
         }
-        
-        RequestClose?.Invoke();
+        catch (Exception ex)
+        {
+            if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            AppLogger.Error("Error while saving group: " + ex.Message);
+
+            var errorWindow = new Views.ErrorWindow($"An error occurred while saving the group: {ex.Message}");
+            await errorWindow.ShowDialog(desktop.MainWindow!);
+        }
     }
 }

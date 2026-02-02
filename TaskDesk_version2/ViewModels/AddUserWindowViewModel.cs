@@ -103,43 +103,58 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
     
     private async void SaveUser()
     {
-        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            return;
-        
-        var groupIds = GroupsOperator.GetIdsFromNames(GroupNames, MainData.Groups);
-        
-        if (Fullname == string.Empty || Email == string.Empty || Password == string.Empty)
-        {
-            var errorWindow = new Views.ErrorWindow("Please fill in all required fields.");
-            await errorWindow.ShowDialog(desktop.MainWindow);
-            return;
-        }
-        
-        UserRole role;
         try
         {
-            role = RoleConverter.StringToRole(RoleString);
-        }
-        catch (Exception)
-        {
-            var errorWindow = new Views.ErrorWindow("Invalid role selected.");
-            await errorWindow.ShowDialog(desktop.MainWindow);
-            return;
-        }
-        
-        var newUser = new User(Fullname, Email, Password, role, groupIds);
-        
-        await Dispatcher.UIThread.InvokeAsync(() => MainData.Users.Add(newUser));
+            if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
 
-        foreach (var groupId in groupIds)
-        {
-            var group = GroupsOperator.GetGroupById(groupId);
-            if (group != null)
+            var groupIds = GroupsOperator.GetIdsFromNames(GroupNames, MainData.Groups);
+
+            if (Fullname == string.Empty || Email == string.Empty || Password == string.Empty)
             {
-                group.UserIds.Add(newUser.Id);
+                var errorWindow = new Views.ErrorWindow("Please fill in all required fields.");
+                await errorWindow.ShowDialog(desktop.MainWindow);
+                return;
             }
+
+            UserRole role;
+            try
+            {
+                role = RoleConverter.StringToRole(RoleString);
+            }
+            catch (Exception)
+            {
+                var errorWindow = new Views.ErrorWindow("Invalid role selected.");
+                await errorWindow.ShowDialog(desktop.MainWindow);
+                return;
+            }
+
+            var newUser = new User(Fullname, Email, Password, role, groupIds);
+
+            await Dispatcher.UIThread.InvokeAsync(() => MainData.Users.Add(newUser));
+
+            foreach (var groupId in groupIds)
+            {
+                var group = GroupsOperator.GetGroupById(groupId);
+                if (group != null)
+                {
+                    group.UserIds.Add(newUser.Id);
+                }
+            }
+            
+            AppLogger.Info("New user added: ID: " + newUser.Id);
+
+            RequestClose?.Invoke();
         }
-        
-        RequestClose?.Invoke();
+        catch (Exception e)
+        {
+            if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            var errorWindow = new Views.ErrorWindow($"An error occurred while saving the user: {e.Message}");
+            await errorWindow.ShowDialog(desktop.Windows[0]);
+            
+            AppLogger.Error("Error while saving user: " + e.Message);
+        }
     }
 }

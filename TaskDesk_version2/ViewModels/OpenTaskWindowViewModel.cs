@@ -155,83 +155,98 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
 
     private async void SaveTask()
     {
-        if (App.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-        
-        if (Title == string.Empty || Description == string.Empty || DueDate == null || State == string.Empty)
-        {
-            var errorWindow = new ErrorWindow("All fields must be filled out.");
-            await errorWindow.ShowDialog(desktop.MainWindow!);
-            return;
-        }
-
-        TaskState taskState;
         try
         {
-            taskState = StateConverter.StringToState(State);
-        }
-        catch (Exception)
-        {
-            var errorWindow = new ErrorWindow("Invalid Task State provided.");
-            await errorWindow.ShowDialog(desktop.MainWindow!);
-            return;
-        }
-        
-        var assignedUserIds = UsersOperator.GetIdsFromList(AssignedUsers, AllUsers);
-        var assignedGroupIds = GroupsOperator.GetIdsFromList(AssignedGroups, AllGroups);
-        
-        var due = DateOnly.FromDateTime(DueDate?.DateTime ?? DateTime.Now);
+            if (App.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                return;
+            }
 
-        var updatedTask = new Task(_originalTask.Id, Title, Description, due, taskState, assignedGroupIds, assignedUserIds);
-        
-        for (int i = 0; i < MainData.Tasks.Count; i++)
-        {
-            if (MainData.Tasks[i].Id == _originalTask.Id)
+            if (Title == string.Empty || Description == string.Empty || DueDate == null || State == string.Empty)
             {
-                MainData.Tasks.RemoveAt(i);
-                MainData.Tasks.Insert(i, updatedTask);
-                break;
+                var errorWindow = new ErrorWindow("All fields must be filled out.");
+                await errorWindow.ShowDialog(desktop.MainWindow!);
+                return;
             }
+
+            TaskState taskState;
+            try
+            {
+                taskState = StateConverter.StringToState(State);
+            }
+            catch (Exception)
+            {
+                var errorWindow = new ErrorWindow("Invalid Task State provided.");
+                await errorWindow.ShowDialog(desktop.MainWindow!);
+                return;
+            }
+
+            var assignedUserIds = UsersOperator.GetIdsFromList(AssignedUsers, AllUsers);
+            var assignedGroupIds = GroupsOperator.GetIdsFromList(AssignedGroups, AllGroups);
+
+            var due = DateOnly.FromDateTime(DueDate?.DateTime ?? DateTime.Now);
+
+            var updatedTask = new Task(_originalTask.Id, Title, Description, due, taskState, assignedGroupIds, assignedUserIds);
+
+            for (int i = 0; i < MainData.Tasks.Count; i++)
+            {
+                if (MainData.Tasks[i].Id == _originalTask.Id)
+                {
+                    MainData.Tasks.RemoveAt(i);
+                    MainData.Tasks.Insert(i, updatedTask);
+                    break;
+                }
+            }
+
+            for (int i = 0; i < MainData.Users.Count; i++)
+            {
+                if (assignedUserIds.Contains(MainData.Users[i].Id))
+                {
+                    if (!MainData.Users[i].TaskIds.Contains(_originalTask.Id))
+                    {
+                        MainData.Users[i].TaskIds.Add(_originalTask.Id);
+                    }
+                }
+                else
+                {
+                    if (MainData.Users[i].TaskIds.Contains(_originalTask.Id))
+                    {
+                        MainData.Users[i].TaskIds.Remove(_originalTask.Id);
+                    }
+                }
+            }
+
+            foreach (var group in MainData.Groups)
+            {
+                if (assignedGroupIds.Contains(group.Id))
+                {
+                    if (!group.TaskIds.Contains(_originalTask.Id))
+                    {
+                        group.TaskIds.Add(_originalTask.Id);
+                    }
+                }
+                else
+                {
+                    if (group.TaskIds.Contains(_originalTask.Id))
+                    {
+                        group.TaskIds.Remove(_originalTask.Id);
+                    }
+                }
+            }
+            
+            AppLogger.Info("Task updated: ID: " + updatedTask.Id);
+
+            RequestClose?.Invoke();
         }
-        
-        for (int i = 0; i < MainData.Users.Count; i++)
+        catch (Exception ex)
         {
-            if (assignedUserIds.Contains(MainData.Users[i].Id))
-            {
-                if (!MainData.Users[i].TaskIds.Contains(_originalTask.Id))
-                {
-                    MainData.Users[i].TaskIds.Add(_originalTask.Id);
-                }
-            }
-            else
-            {
-                if (MainData.Users[i].TaskIds.Contains(_originalTask.Id))
-                {
-                    MainData.Users[i].TaskIds.Remove(_originalTask.Id);
-                }
-            }
+            if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            AppLogger.Error("Error saving user: " + ex.Message);
+
+            var errorWindow = new ErrorWindow($"An error occurred while saving the task: {ex.Message}");
+            await errorWindow.ShowDialog(desktop.Windows[0]);
         }
-        
-        foreach (var group in MainData.Groups)
-        {
-            if (assignedGroupIds.Contains(group.Id))
-            {
-                if (!group.TaskIds.Contains(_originalTask.Id))
-                {
-                    group.TaskIds.Add(_originalTask.Id);
-                }
-            }
-            else
-            {
-                if (group.TaskIds.Contains(_originalTask.Id))
-                {
-                    group.TaskIds.Remove(_originalTask.Id);
-                }
-            }
-        }
-        
-        RequestClose?.Invoke();
     }
 }

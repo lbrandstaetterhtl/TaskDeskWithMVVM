@@ -22,7 +22,7 @@ public static class StateConverter
             TaskState.Completed => "Completed!",
             TaskState.OnHold => "On Hold...",
             TaskState.Cancelled => "Cancelled!",
-            _ => "Unknown"
+            _ => throw new KeyNotFoundException($"State '{state}' not recognized.")
         };
     }
 

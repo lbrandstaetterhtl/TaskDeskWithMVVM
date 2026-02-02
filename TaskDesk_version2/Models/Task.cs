@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace TaskDesk_version2.Models;
 
@@ -109,30 +110,56 @@ public static class TasksOperator
 {
     public static ObservableCollection<Task> LoadTasksFromJson()
     {
-        string filePath = MainData.DataPath + "/tasks.json";
-        
-        if (!File.Exists(filePath))
+        try
         {
-            File.Create(filePath).Close();
+            string filePath = MainData.DataPath + @"\tasks.json";
+
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+
+                return new ObservableCollection<Task>();
+            }
+
+            string json = File.ReadAllText(filePath);
             
+            AppLogger.Info($"Tasks loaded from {filePath}");
+
+            return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<Task>>(json) ??
+                   new ObservableCollection<Task>();
+        }
+        catch (Exception ex)
+        {
+            var errorWindow = new Views.ErrorWindow("Error loading tasks from JSON:\n" + ex.Message);
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
+            
+            AppLogger.Error("Error loading tasks: " + ex.Message);
             return new ObservableCollection<Task>();
         }
-        
-        string json = File.ReadAllText(filePath);
-        
-        return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<Task>>(json) ?? new ObservableCollection<Task>();
     }
 
     public static void SaveTasksToJson(ObservableCollection<Task> tasks)
     {
-        string filePath = MainData.DataPath + "/tasks.json";
-        
-        string json = System.Text.Json.JsonSerializer.Serialize(tasks, new System.Text.Json.JsonSerializerOptions
+        try
         {
-            WriteIndented = true
-        });
-        
-        File.WriteAllText(filePath, json);
+            string filePath = MainData.DataPath + @"\tasks.json";
+
+            string json = System.Text.Json.JsonSerializer.Serialize(tasks, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            File.WriteAllText(filePath, json);
+            
+            AppLogger.Info($"Tasks saved to {filePath}");
+        }
+        catch (Exception ex)
+        {
+            var errorWindow = new Views.ErrorWindow("Error saving tasks to JSON:\n" + ex.Message);
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
+            
+            AppLogger.Error("Error saving tasks: " + ex.Message);
+        }
     }
     
     public static int GetNextTaskId()

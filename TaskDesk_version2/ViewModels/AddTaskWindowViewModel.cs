@@ -111,66 +111,81 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
     
     private async void SaveTask()
     {
-        if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            return;
-        
-        var groupIds = GroupsOperator.GetIdsFromNames(GroupNames, MainData.Groups);
-        
-        var userIds = UsersOperator.GetIdsFromNames(UserNames, MainData.Users);
-        
-        var due = DateOnly.FromDateTime(DateOn?.DateTime ?? DateTime.Now);
-
-        var taskState = TaskState.Pending;
         try
         {
-            taskState = StateConverter.StringToState(TaskStateString);
-        }
-        catch (Exception)
-        {
-            var errorWindow = new Views.ErrorWindow("Invalid Task State provided.");
-            await errorWindow.ShowDialog(desktop.MainWindow!);
-            return;
-        }
-        
-        var id = TasksOperator.GetNextTaskId();
-        
-        if (string.IsNullOrEmpty(TaskTitle) || string.IsNullOrEmpty(TaskDescription))
-        {
-            var errorWindow = new Views.ErrorWindow("Title and Description cannot be empty.");
-            await errorWindow.ShowDialog(desktop.MainWindow!);
-            return;
-        }
+            if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
 
-        if (id < 1)
+            var groupIds = GroupsOperator.GetIdsFromNames(GroupNames, MainData.Groups);
+
+            var userIds = UsersOperator.GetIdsFromNames(UserNames, MainData.Users);
+
+            var due = DateOnly.FromDateTime(DateOn?.DateTime ?? DateTime.Now);
+
+            var taskState = TaskState.Pending;
+            try
+            {
+                taskState = StateConverter.StringToState(TaskStateString);
+            }
+            catch (Exception)
+            {
+                var errorWindow = new Views.ErrorWindow("Invalid Task State provided.");
+                await errorWindow.ShowDialog(desktop.MainWindow!);
+                return;
+            }
+
+            var id = TasksOperator.GetNextTaskId();
+
+            if (string.IsNullOrEmpty(TaskTitle) || string.IsNullOrEmpty(TaskDescription))
+            {
+                var errorWindow = new Views.ErrorWindow("Title and Description cannot be empty.");
+                await errorWindow.ShowDialog(desktop.MainWindow!);
+                return;
+            }
+
+            if (id < 1)
+            {
+                var errorWindow = new Views.ErrorWindow("Failed to generate a valid Task ID.");
+                await errorWindow.ShowDialog(desktop.MainWindow!);
+                return;
+            }
+
+            var newTask = new Task(id, TaskTitle, TaskDescription, due, taskState, groupIds, userIds);
+
+            await Dispatcher.UIThread.InvokeAsync(() => MainData.Tasks.Add(newTask));
+
+            foreach (var userId in userIds)
+            {
+                var user = UsersOperator.GetUserById(userId);
+                if (user != null)
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => user.TaskIds.Add(id));
+                }
+            }
+
+            foreach (var groupId in groupIds)
+            {
+                var group = GroupsOperator.GetGroupById(groupId);
+                if (group != null)
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => group.TaskIds.Add(id));
+                }
+            }
+            
+            AppLogger.Info("New task added: ID: " + newTask.Id);
+
+            RequestClose?.Invoke();
+        }
+        catch (Exception ex)
         {
-            var errorWindow = new Views.ErrorWindow("Failed to generate a valid Task ID.");
+            if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            AppLogger.Error("Error adding new task: " + ex.Message);
+
+            var errorWindow = new Views.ErrorWindow($"An error occurred while saving the task: {ex.Message}");
             await errorWindow.ShowDialog(desktop.MainWindow!);
-            return;
         }
-        
-        var newTask = new Task(id, TaskTitle, TaskDescription, due, taskState, groupIds, userIds);
-        
-        await Dispatcher.UIThread.InvokeAsync(() => MainData.Tasks.Add(newTask));
-        
-        foreach (var userId in userIds)
-        {
-            var user = UsersOperator.GetUserById(userId);
-            if (user != null)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => user.TaskIds.Add(id));
-            }
-        }
-        
-        foreach (var groupId in groupIds)
-        {
-            var group = GroupsOperator.GetGroupById(groupId);
-            if (group != null)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => group.TaskIds.Add(id));
-            }
-        }
-        
-        RequestClose?.Invoke();
     }
     public event PropertyChangedEventHandler? PropertyChanged;
 

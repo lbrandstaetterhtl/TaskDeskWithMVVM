@@ -73,30 +73,39 @@ public class LoginWindowViewModel : INotifyPropertyChanged
 
     private async void Login()
     {
-        if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
+        try
         {
-            IsValid = false;
-            var errorWindow = new Views.ErrorWindow("Email and Password cannot be empty.");
-            await errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
-            return;
-        }
-        
-        foreach (var user in MainData.Users)
-        {
-            if (user.Email == Email && user.Password == Password)
+            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
             {
-                IsValid = true;
-                MainData.CurrentUser = user;
-                var mainWindow = new Views.MainWindow();
-                mainWindow.Show();
-                RequestClose?.Invoke();
+                IsValid = false;
+                var errorWindow = new Views.ErrorWindow("Email and Password cannot be empty.");
+                await errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
                 return;
             }
-        }
 
-        if (!IsValid)
+            foreach (var user in MainData.Users)
+            {
+                if (user.Email == Email && user.Password == Password)
+                {
+                    IsValid = true;
+                    MainData.CurrentUser = user;
+                    var mainWindow = new Views.MainWindow();
+                    mainWindow.Show();
+                    AppLogger.Info("New Login with user:" + Email + " Password:" + Password);
+                    RequestClose?.Invoke();
+                    return;
+                }
+            }
+
+            if (!IsValid)
+            {
+                var errorWindow = new Views.ErrorWindow("Invalid email or password.");
+                await errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
+            }
+        }
+        catch (Exception e)
         {
-            var errorWindow = new Views.ErrorWindow("Invalid email or password.");
+            var errorWindow = new Views.ErrorWindow($"An error occurred during login: {e.Message}");
             await errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
         }
     }

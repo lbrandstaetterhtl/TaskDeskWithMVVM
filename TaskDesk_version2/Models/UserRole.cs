@@ -18,7 +18,7 @@ public static class RoleConverter
             UserRole.Admin => "Admin",
             UserRole.User => "User",
             UserRole.ReadOnly => "Read-Only",
-            _ => "Unknown"
+            _ => throw new KeyNotFoundException($"Role '{role}' not recognized.")
         };
     }
     

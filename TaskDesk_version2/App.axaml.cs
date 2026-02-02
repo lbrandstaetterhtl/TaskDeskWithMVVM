@@ -19,8 +19,6 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        _ = new MainData();
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new LoginWindow();

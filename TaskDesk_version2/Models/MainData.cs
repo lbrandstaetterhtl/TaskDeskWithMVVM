@@ -9,30 +9,21 @@ public class MainData
     public static ObservableCollection<Task> Tasks { get; set; } = new ObservableCollection<Task>();
     public static ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
     public static ObservableCollection<Group> Groups { get; set; } = new ObservableCollection<Group>();
-    public static string DataPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/TaskDeskData";
+    public static string DataPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\TaskDeskData";
     public static User CurrentUser { get; set; }
 
     public MainData()
     {
         var loadedTasks = TasksOperator.LoadTasksFromJson();
-        Tasks.Clear();
-        foreach (var t in loadedTasks)
-            Tasks.Add(t);
         
-        TasksOperator.SaveTasksToJson(Tasks);
-
+        Tasks = loadedTasks;
+        
         var loadedUsers = UsersOperator.LoadUsersFromJson();
-        Users.Clear();
-        foreach (var u in loadedUsers)
-            Users.Add(u);
         
-        UsersOperator.SaveUsersToJson(Users);
-
+        Users = loadedUsers;
+        
         var loadedGroups = GroupsOperator.LoadGroupsFromJson();
-        Groups.Clear();
-        foreach (var g in loadedGroups)
-            Groups.Add(g);
+        Groups = loadedGroups;
         
-        GroupsOperator.SaveGroupsToJson(Groups);
     }
 }
