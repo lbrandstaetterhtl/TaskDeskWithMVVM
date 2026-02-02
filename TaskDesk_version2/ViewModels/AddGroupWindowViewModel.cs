@@ -80,8 +80,8 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
 
             if (Name == string.Empty && Description == string.Empty)
             {
-                var errorWindow = new Views.ErrorWindow("Group must have a name and description.");
-                await errorWindow.ShowDialog(desktop.MainWindow!);
+                var errorWindow = new Views.ErrorWindow("Group must have a name and description.", "User Error: Invalid Input");
+                await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
 
@@ -112,7 +112,7 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
             AppLogger.Error("Error while saving group: " + ex.Message);
 
             var errorWindow = new Views.ErrorWindow($"An error occurred while saving the group: {ex.Message}");
-            await errorWindow.ShowDialog(desktop.MainWindow!);
+            await errorWindow.ShowDialog(desktop.Windows[0]);
         }
     }
 }

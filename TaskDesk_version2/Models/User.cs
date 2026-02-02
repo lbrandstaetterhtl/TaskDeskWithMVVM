@@ -147,11 +147,12 @@ public static class UsersOperator
                 File.Create(filePath).Close();
             
                 AppLogger.Warn($"No {filePath} found");
+                AppLogger.Info($"{filePath} created");
                 AppLogger.Info("Added Test User as no users.json found. E-Mail: TestU0, Password: TestU0");
                 
                 var users = new ObservableCollection<User>
                 {
-                    new User("TestU0", "TestU0", "TestU0", UserRole.User, new List<int>())
+                    new("TestU0", "TestU0", "TestU0", UserRole.User, new List<int>())
                 };
 
                 return users;

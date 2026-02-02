@@ -20,6 +20,9 @@ public partial class AddTaskWindow : Window
         var vm = new AddTaskWindowViewModel();
         vm.RequestClose += Close;
         DataContext = vm;
+        
+        Opened += OnOpened;
+        Closing += OnClosing;
     }
     
     private void SetGroupList()
@@ -65,5 +68,15 @@ public partial class AddTaskWindow : Window
         }
         
         StateCombo.SelectedIndex = 0;
+    }
+    
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        AppLogger.Info("------------- Add Task Window Closed -------------");
+    }
+    
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        AppLogger.Info("------------- Add Task Window Opened -------------");
     }
 }

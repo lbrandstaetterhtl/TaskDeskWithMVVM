@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 
 namespace TaskDesk_version2.Views;
@@ -38,11 +39,24 @@ public partial class InfoWindow : Window
         {
             OkButton.Click += (_, _) => Close();
         }
+        
+        Closing += OnClosing;
+        Opened += OnOpened;
     }
 
     public Task<bool> ShowDialogAsync(Window owner)
     {
         ShowDialog(owner);
         return _taskCompletionSource!.Task;
+    }
+
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        AppLogger.Info("------------- Info Window Closed -------------");
+    }
+    
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        AppLogger.Info("------------- Info Window Opened -------------");
     }
 }

@@ -88,6 +88,10 @@ public static class GroupsOperator
             if (!File.Exists(filePath))
             {
                 File.Create(filePath).Close();
+                
+                AppLogger.Warn($"No {filePath} found");
+                AppLogger.Info($"{filePath} created");
+                
                 return new ObservableCollection<Group>();
             }
 

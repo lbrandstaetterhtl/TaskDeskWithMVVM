@@ -129,8 +129,9 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
             }
             catch (Exception)
             {
-                var errorWindow = new Views.ErrorWindow("Invalid Task State provided.");
-                await errorWindow.ShowDialog(desktop.MainWindow!);
+                var errorWindow = new Views.ErrorWindow("Invalid Task State provided.", "User Error: Invalid Input");
+                await errorWindow.ShowDialog(desktop.Windows[0]);
+                
                 return;
             }
 
@@ -138,15 +139,15 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
 
             if (string.IsNullOrEmpty(TaskTitle) || string.IsNullOrEmpty(TaskDescription))
             {
-                var errorWindow = new Views.ErrorWindow("Title and Description cannot be empty.");
-                await errorWindow.ShowDialog(desktop.MainWindow!);
+                var errorWindow = new Views.ErrorWindow("Title and Description cannot be empty.", "User Error: Invalid Input");
+                await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
 
             if (id < 1)
             {
-                var errorWindow = new Views.ErrorWindow("Failed to generate a valid Task ID.");
-                await errorWindow.ShowDialog(desktop.MainWindow!);
+                var errorWindow = new Views.ErrorWindow("Failed to generate a valid Task ID.", "Invalid ID generated");
+                await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
 
@@ -184,7 +185,7 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
             AppLogger.Error("Error adding new task: " + ex.Message);
 
             var errorWindow = new Views.ErrorWindow($"An error occurred while saving the task: {ex.Message}");
-            await errorWindow.ShowDialog(desktop.MainWindow!);
+            await errorWindow.ShowDialog(desktop.Windows[0]);
         }
     }
     public event PropertyChangedEventHandler? PropertyChanged;

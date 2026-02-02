@@ -11,7 +11,7 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        AppLogger.Info("------------- Application Started -------------");
+        AppLogger.Info("------------- Application Started ----------------------------------------");
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 

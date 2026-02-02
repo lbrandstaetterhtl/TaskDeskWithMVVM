@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
 
@@ -15,6 +16,9 @@ public partial class AddGroupWindow : Window
         DataContext = vm;
         
         SetUserList();
+        
+        Opened += OnOpened;
+        Closing += OnClosing;
     }
     
     private void SetUserList()
@@ -30,5 +34,15 @@ public partial class AddGroupWindow : Window
         {
             UsersList.Items.Add(user.FullName);
         }
+    }
+    
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        AppLogger.Info("------------- Add Group Window Closed -------------");
+    }
+    
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        AppLogger.Info("------------- Add Group Window Opened -------------");
     }
 }

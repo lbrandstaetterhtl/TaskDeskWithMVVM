@@ -24,6 +24,9 @@ public partial class OpenTaskWindow : Window
         SetStateCombo();
         
         IdBox.Text = "ID: " + _task.Id;
+        
+        Opened += OnOpened;
+        Closing += OnClosing;
     }
     
     private void SetStateCombo()
@@ -35,5 +38,15 @@ public partial class OpenTaskWindow : Window
         }
         
         StateCombo.SelectedItem = StateConverter.StateToString(_task.State);
+    }
+    
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        AppLogger.Info("------------- Task Window Closed -------------");
+    }
+    
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        AppLogger.Info("------------- Task Window Opened -------------");
     }
 }

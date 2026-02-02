@@ -41,9 +41,10 @@ public partial class MainWindow : Window
         ClearOverdueTasksMenuItem.Click += MainWindowViewModel.OnClearOverdueTasksClick;
 
         Closing += OnClosing;
+        Opened += OnOpened;
     }
 
-    private void OnClosing(object sender, WindowClosingEventArgs e)
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
         TasksOperator.SaveTasksToJson(MainData.Tasks);
 
@@ -51,7 +52,14 @@ public partial class MainWindow : Window
 
         GroupsOperator.SaveGroupsToJson(MainData.Groups);
         
-        AppLogger.Info("------------- Application Closed -------------");
+        AppLogger.Info("------------- Main Window Closed -------------");
+        
+        AppLogger.Info("------------- Application Closed ----------------------------------------");
+    }
+    
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        AppLogger.Info("------------- Main Window Opened -------------");
     }
 
     private void TaskDoubleClick(object? sender, TappedEventArgs e)

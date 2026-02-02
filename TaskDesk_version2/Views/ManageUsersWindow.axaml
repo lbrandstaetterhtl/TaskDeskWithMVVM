@@ -89,7 +89,7 @@
                 
                 <ComboBox HorizontalAlignment="Center" Name="RoleComboBox" Width="150" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" SelectedItem="{Binding RoleString}" Background="#1E1E1E" Margin="5"/>
                 
-                <StackPanel Name="ActionPanel" Grid.Row="4" Grid.Column="0" Margin="5" Grid.ColumnSpan="2">
+                <StackPanel Name="ActionPanel" Grid.Row="4" Grid.Column="0" Margin="5" Grid.ColumnSpan="2"> <!-- TODO: Button Commands -->
                         <Button Name="BanUserButton" Content="Ban User" HorizontalAlignment="Center" Margin="5"/>
                         <Button Name="DeleteUserButton" Content="Delete User" HorizontalAlignment="Center" Margin="5"/>
                         <Button Name="UnbanUserButton" Content="Unban User" HorizontalAlignment="Center" Margin="5"/>

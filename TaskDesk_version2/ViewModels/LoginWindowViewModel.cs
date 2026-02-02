@@ -78,7 +78,7 @@ public class LoginWindowViewModel : INotifyPropertyChanged
             if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
             {
                 IsValid = false;
-                var errorWindow = new Views.ErrorWindow("Email and Password cannot be empty.");
+                var errorWindow = new Views.ErrorWindow("Email and Password cannot be empty.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
                 return;
             }
@@ -91,7 +91,7 @@ public class LoginWindowViewModel : INotifyPropertyChanged
                     MainData.CurrentUser = user;
                     var mainWindow = new Views.MainWindow();
                     mainWindow.Show();
-                    AppLogger.Info("New Login with user:" + Email + " Password:" + Password);
+                    AppLogger.Info("New Login with user:" + Email);
                     RequestClose?.Invoke();
                     return;
                 }
@@ -99,7 +99,7 @@ public class LoginWindowViewModel : INotifyPropertyChanged
 
             if (!IsValid)
             {
-                var errorWindow = new Views.ErrorWindow("Invalid email or password.");
+                var errorWindow = new Views.ErrorWindow("Invalid email or password.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
             }
         }

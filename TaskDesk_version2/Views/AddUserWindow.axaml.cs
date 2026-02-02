@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Avalonia.Controls;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
@@ -42,5 +43,15 @@ public partial class AddUserWindow : Window
             UserRole value = (UserRole)enumValue;
             RoleComboBox.Items.Add(RoleConverter.RoleToString(value));
         }
+    }
+
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        AppLogger.Info("------------- Add User Window Closed -------------");
+    }
+    
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        AppLogger.Info("------------- Add User Window Opened -------------");
     }
 }

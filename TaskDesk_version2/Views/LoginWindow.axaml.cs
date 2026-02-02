@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.ComponentModel;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using TaskDesk_version2.Models;
 
@@ -16,6 +18,9 @@ public partial class LoginWindow : Window
         vm.RequestClose += Close;
         vm.PasswordVisibleCommand = new RelayCommand(PasswordVisibility);
         DataContext = vm;
+        
+        Closing += OnClosing;
+        Opened += OnOpened;
     }
 
     private void PasswordVisibility()
@@ -27,5 +32,23 @@ public partial class LoginWindow : Window
         }
         
         PasswordBox.PasswordChar = '*';
+    }
+    
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        if (LoginTextBox.Text == string.Empty || PasswordBox.Text == string.Empty)
+        {
+            AppLogger.Info("------------- Login Window Closed -------------");
+            AppLogger.Info("------------- Application Closed ----------------------------------------");
+            
+            return;
+        }
+        
+        AppLogger.Info("------------- Login Window Closed -------------");
+    }
+    
+    private void OnOpened(object? sender, EventArgs e)
+    {
+        AppLogger.Info("------------- Login Window Opened -------------");
     }
 }

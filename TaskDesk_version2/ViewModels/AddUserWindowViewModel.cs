@@ -112,8 +112,8 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
 
             if (Fullname == string.Empty || Email == string.Empty || Password == string.Empty)
             {
-                var errorWindow = new Views.ErrorWindow("Please fill in all required fields.");
-                await errorWindow.ShowDialog(desktop.MainWindow);
+                var errorWindow = new Views.ErrorWindow("Please fill in all required fields.", "User Error: Invalid Input");
+                await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
 
@@ -124,8 +124,8 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             }
             catch (Exception)
             {
-                var errorWindow = new Views.ErrorWindow("Invalid role selected.");
-                await errorWindow.ShowDialog(desktop.MainWindow);
+                var errorWindow = new Views.ErrorWindow("Invalid role selected.", "User Error: Invalid Input");
+                await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
 

@@ -59,6 +59,9 @@ public partial class ManageUsersWindow : Window
                 vm.ClearSearch();
             }
         };
+        
+        Closing += OnClosing;
+        Opened += OnOpened;
     }
     
     private void SetRoleCombo()
@@ -70,5 +73,15 @@ public partial class ManageUsersWindow : Window
         }
         
         RoleComboBox.SelectedItem = RoleConverter.RoleToString(_originalUser.Role);
+    }
+
+    private void OnClosing(object? s, WindowClosingEventArgs e)
+    {
+        AppLogger.Info("------------ Manage Users Window Closed -------------");
+    }
+    
+    private void OnOpened(object? s, EventArgs e)
+    {
+        AppLogger.Info("------------ Manage Users Window Opened -------------");
     }
 }

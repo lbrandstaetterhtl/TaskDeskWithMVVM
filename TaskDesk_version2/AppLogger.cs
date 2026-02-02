@@ -27,7 +27,7 @@ public static class AppLogger
         try
         {
             Directory.CreateDirectory(LogDirectory);
-            var timestamp = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff zzz");
+            var timestamp = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.ff");
             var line = exception == null
                 ? $"{timestamp} [{level}] {message}{Environment.NewLine}"
                 : $"{timestamp} [{level}] {message} | {exception.GetType().Name}: {exception.Message}{Environment.NewLine}";
