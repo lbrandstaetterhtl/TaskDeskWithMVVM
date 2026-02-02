@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TaskDesk_version2.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+569c043945ac23f7e8ffc699559d3e42b11294ce")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+240bf08c3b31a424bb00b70c660501ce8e5369b5")]
 [assembly: System.Reflection.AssemblyProductAttribute("TaskDesk_version2.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TaskDesk_version2.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

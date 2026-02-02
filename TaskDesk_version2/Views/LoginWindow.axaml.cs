@@ -39,7 +39,7 @@ public partial class LoginWindow : Window
         if (LoginTextBox.Text == string.Empty || PasswordBox.Text == string.Empty)
         {
             AppLogger.Info("------------- Login Window Closed -------------");
-            AppLogger.Info("------------- Application Closed ----------------------------------------");
+            AppLogger.Info("------------- Application Closed -----------------------------------------");
             
             return;
         }
