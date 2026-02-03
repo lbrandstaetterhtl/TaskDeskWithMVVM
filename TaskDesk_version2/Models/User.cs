@@ -178,6 +178,11 @@ public static class UsersOperator
 
     public static void SaveUsersToJson(ObservableCollection<User> allUsers)
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return;
+        }
+        
         try
         {
             string filePath = MainData.DataPath + @"\users.json";

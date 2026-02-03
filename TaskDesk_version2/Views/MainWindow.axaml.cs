@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -46,6 +47,11 @@ public partial class MainWindow : Window
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return;
+        }
+        
         TasksOperator.SaveTasksToJson(MainData.Tasks);
 
         UsersOperator.SaveUsersToJson(MainData.Users);
@@ -59,6 +65,11 @@ public partial class MainWindow : Window
     
     private void OnOpened(object? sender, EventArgs e)
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return;
+        }
+
         AppLogger.Info("------------- Main Window Opened -------------");
     }
 

@@ -68,9 +68,24 @@
             
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Tasks}">
+                
+                <ItemsControl.Styles>
+                    <Style Selector="Border.taskRow">
+                        <Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlMidBrush}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="CornerRadius" Value="8"/>
+                    </Style>
+                    
+                    <Style Selector="Border.taskRow:pointerover">
+                        <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlHighBrush}"/>
+                    </Style>
+                </ItemsControl.Styles>
+                
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="8" Margin="4" Background="Gray" DoubleTapped="TaskDoubleClick" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                        <Border Classes="taskRow" Padding="8" Margin="4" Background="Gray" DoubleTapped="TaskDoubleClick" PointerEntered="PointerEntered" PointerExited="PointerExited">
                             <Border.ContextFlyout>
                                 <MenuFlyout>
                                     <MenuItem Header="Open Task" Click="TaskOpenClick"/>

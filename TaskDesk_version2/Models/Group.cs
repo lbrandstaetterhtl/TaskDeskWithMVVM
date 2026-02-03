@@ -115,6 +115,11 @@ public static class GroupsOperator
 
     public static void SaveGroupsToJson(ObservableCollection<Group> allGroups)
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return;
+        }
+        
         try
         {
             string filePath = MainData.DataPath + @"\groups.json";

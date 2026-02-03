@@ -307,7 +307,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
 
             MainData.Tasks[0] = MainData.Tasks[0];
 
-            AppLogger.Info("Changed user: ID: " + updatedUser.Id);
+            if (updatedUser != SelectedUser) AppLogger.Info("Changed user: ID: " + updatedUser.Id);
 
             RequestClose?.Invoke();
         }

@@ -143,6 +143,11 @@ public static class TasksOperator
 
     public static void SaveTasksToJson(ObservableCollection<Task> tasks)
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return;
+        }
+        
         try
         {
             string filePath = MainData.DataPath + @"\tasks.json";

@@ -172,10 +172,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
-
-            var user = MainData.Users[0];
-
-            var manageUsersWindow = new Views.ManageUsersWindow(user);
+            
+            var manageUsersWindow = new Views.ManageUsersWindow(MainData.Users[0]);
             await manageUsersWindow.ShowDialog(desktop.Windows[0]);
         }
         catch (Exception ex)
