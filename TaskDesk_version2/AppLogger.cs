@@ -26,6 +26,11 @@ public static class AppLogger
 
     private static void Write(string level, string message, Exception? exception)
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return;
+        }
+        
         try
         {
             lock (Sync)

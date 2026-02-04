@@ -81,6 +81,11 @@ public static class GroupsOperator
 {
     public static ObservableCollection<Group> LoadGroupsFromJson()
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return null;
+        }
+        
         try
         {
             string filePath = MainData.DataPath + @"\groups.json";

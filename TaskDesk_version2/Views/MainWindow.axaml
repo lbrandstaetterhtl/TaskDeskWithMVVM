@@ -45,6 +45,12 @@
                 <MenuItem x:Name="ManageGroupsMenuItem" Header="Manage Groups"/>
                 <MenuItem x:Name="ClearAllGroupsMenuItem" Header="Clear All Groups"/>
             </MenuItem>
+            
+            <MenuItem x:Name="SettingsMenuItem" Header="Settings">
+                <MenuItem Name="ChangeThemeMenuItem" Header="Change Theme"/>
+                <MenuItem Name="SaveCurrentUserMenuItem" Header="Save Current User"/>
+                <MenuItem Name="ClearSavedUsersMenuItem" Header="Clear Saved Users"/>
+            </MenuItem>
         </Menu>
         
         <Grid Grid.Row="1" Grid.Column="0" x:Name="TasksPlusHeader">
@@ -54,7 +60,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <Border Grid.Row="0" Padding="8" Margin="4" Background="Gray">
+            <Border Grid.Row="0" Padding="8" Margin="4" Background="Gray" CornerRadius="8">
             <StackPanel Name="Header" Orientation="Horizontal" Spacing="10">
                 <TextBlock Text="Title" FontWeight="Bold" Width="200" FontSize="22"/>
                 <TextBlock Text="Description" FontWeight="Bold" Width="200" FontSize="22"/>
@@ -68,29 +74,22 @@
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Tasks}">
                 
-                <ItemsControl.Styles>
-                    <Style Selector="Border.taskRow">
-                        <Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}"/>
-                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlMidBrush}"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="CornerRadius" Value="8"/>
-                    </Style>
-                    
-                    <Style Selector="Border.taskRow:pointerover">
-                        <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}"/>
-                        <Setter Property="BorderBrush" Value="{DynamicResource ThemeControlHighBrush}"/>
-                    </Style>
-                </ItemsControl.Styles>
-                
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Classes="taskRow" Padding="8" Margin="4" Background="Gray" DoubleTapped="TaskDoubleClick" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                        <Border CornerRadius="8" Padding="8" Margin="4" Background="Gray" DoubleTapped="TaskDoubleClick" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                            <ToolTip.Tip>
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" MaxWidth="300" MaxHeight="300"/>
+                                </ScrollViewer>
+                            </ToolTip.Tip>
+                            
                             <Border.ContextFlyout>
                                 <MenuFlyout>
                                     <MenuItem Header="Open Task" Click="TaskOpenClick"/>
                                     <MenuItem Header="Delete Task" Click="OnDeleteTaskClick"/>
                                 </MenuFlyout>
                             </Border.ContextFlyout>
+                            
                             <StackPanel Orientation="Horizontal" Spacing="10" Margin="10,0,10,10">
                                 <TextBlock Text="{Binding Title}" Width="200" FontSize="18"/>
                                 <TextBlock Text="{Binding Description}" Width="200" FontSize="18"/>

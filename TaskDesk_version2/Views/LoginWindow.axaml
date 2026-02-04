@@ -20,7 +20,7 @@
                 <StackPanel Grid.Row="0" Name="LoginPanel" Width="300" Height="200" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
                          
                         <TextBlock Name="LoginLabel" Text="E-Mail:" FontSize="16" Margin="5"/>
-                        <TextBox Name="LoginTextBox" Margin="5" Text="{Binding Email}"/>
+                        <TextBox Name="LoginTextBox" Margin="5" Text="{Binding Email}" TextChanged="LoginTextBox_TextChanged"/>
                          
                         <TextBlock Name="PasswordLabel" Text="Password:" FontSize="16" Margin="5"/>
                          
@@ -37,6 +37,6 @@
                         </StackPanel>
                 </StackPanel>
                 
-                <ComboBox Grid.Row="2" Name="SavedUserComboBox" Width="300" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10"/>
+                <ComboBox Grid.Row="2" Name="SavedUserComboBox" Width="300" HorizontalAlignment="Center" VerticalAlignment="Top" SelectionChanged="SavedUserComboBox_SelectionChanged"/>
         </Grid>
 </Window>

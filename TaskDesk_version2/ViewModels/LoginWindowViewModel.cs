@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -12,6 +13,7 @@ public class LoginWindowViewModel : INotifyPropertyChanged
     private string _email = string.Empty;
     private string _password = string.Empty;
     private bool _isValid = false;
+    private List<User> _savedUsers = new List<User>();
     
     public string Email
     {
@@ -51,6 +53,19 @@ public class LoginWindowViewModel : INotifyPropertyChanged
             }
         }
     }
+
+    public List<User> SavedUsers
+    {
+        get => _savedUsers;
+        set
+        {
+            if (_savedUsers != value)
+            {
+                _savedUsers = value;
+                OnPropertyChanged(nameof(SavedUsers));
+            }
+        }
+    }
     
     public event PropertyChangedEventHandler? PropertyChanged;
     
@@ -63,6 +78,17 @@ public class LoginWindowViewModel : INotifyPropertyChanged
     {
         LoginCommand = new RelayCommand(Login);
         CloseCommand = new RelayCommand(() => RequestClose?.Invoke());
+
+        foreach (var userId in MainData.Settings.SavedUserIds)
+        {
+            foreach (var user in MainData.Users)
+            {
+                if (user.Id == userId)
+                {
+                    SavedUsers.Add(user);
+                }
+            }
+        }
     }
 
     public ICommand LoginCommand { get; set;  }
@@ -92,6 +118,8 @@ public class LoginWindowViewModel : INotifyPropertyChanged
                     var mainWindow = new Views.MainWindow();
                     mainWindow.Show();
                     AppLogger.Info("New Login with user:" + Email);
+                    if (MainData.Settings.LastLoggedInUserId != user.Id) AppLogger.Info("Set last logged in user id to: " + user.Id);
+                    MainData.Settings.LastLoggedInUserId = user.Id;
                     RequestClose?.Invoke();
                     return;
                 }

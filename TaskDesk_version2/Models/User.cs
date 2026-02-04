@@ -138,6 +138,11 @@ public static class UsersOperator
 {
     public static ObservableCollection<User> LoadUsersFromJson()
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return null;
+        }
+        
         try
         {
             string filePath = MainData.DataPath + @"\users.json";

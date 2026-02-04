@@ -501,4 +501,66 @@ public class MainWindowViewModel : INotifyPropertyChanged
             await errorWindow.ShowDialog(desktop.Windows[0]);
         }
     }
+
+    public static void OnChangeThemeClick(object? s, RoutedEventArgs e)
+    {
+        if (App.Current == null)
+            return;
+        
+        MainData.Settings.IsThemeDark = !MainData.Settings.IsThemeDark;
+        
+        (App.Current as App).SetTheme(MainData.Settings.IsThemeDark);
+    }
+
+    public static async void OnSaveCurrentUserClick(object? s, RoutedEventArgs e)
+    {
+        
+        try
+        {
+            if (App.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            if (!MainData.Settings.SavedUserIds.Contains(MainData.CurrentUser.Id))
+            {
+                MainData.Settings.SavedUserIds.Add(MainData.CurrentUser.Id);
+            
+                var infoWindow = new Views.InfoWindow("Current user has been saved.");
+                await infoWindow.ShowDialog(desktop.Windows[0]);
+                AppLogger.Info("Current user saved: " + MainData.CurrentUser.FullName);
+            }
+        }
+        catch (Exception ex)
+        {
+            if (App.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            var errorWindow = new Views.ErrorWindow("Error saving current user: " + ex.Message);
+            await errorWindow.ShowDialog(desktop.Windows[0]);
+            AppLogger.Error("Error saving current user: " + ex.Message);
+        }
+    }
+    
+    public static async void OnClearSavedUsersClick(object? s, RoutedEventArgs e)
+    {
+        try
+        {
+            if (App.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            MainData.Settings.SavedUserIds.Clear();
+            var infoWindow = new Views.InfoWindow("All saved users have been cleared.");
+            await infoWindow.ShowDialog(desktop.Windows[0]);
+            AppLogger.Info("All saved users cleared.");
+            
+        }
+        catch (Exception ex)
+        {
+            if (App.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            var errorWindow = new Views.ErrorWindow("Error clearing saved users: " + ex.Message);
+            await errorWindow.ShowDialog(desktop.Windows[0]);
+            AppLogger.Error("Error clearing saved users: " + ex.Message);
+        }
+    }
 }

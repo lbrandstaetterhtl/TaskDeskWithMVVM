@@ -10,7 +10,8 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <sty:FluentAvaloniaTheme />
+        <sty:FluentAvaloniaTheme PreferSystemTheme="False"/>
+        <StyleInclude Source="Design/Design.axaml"></StyleInclude>
     </Application.Styles>
     
     <Application.Resources>

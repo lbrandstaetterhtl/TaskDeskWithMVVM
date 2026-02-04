@@ -8,7 +8,7 @@
         <StackPanel x:Name="Root">
                 <TextBlock x:Name="ErrorMassageBlock" TextWrapping="Wrap" Padding="10" MaxWidth="500" Foreground="Red" FontSize="16"/>
                 
-                <Button x:Name="OkButton" Content="OK" Width="50" HorizontalAlignment="Center" Margin="10" IsDefault="True"/>
+                <Button x:Name="OkButton" Content="OK" Width="50" HorizontalAlignment="Center" IsDefault="True"/>
         </StackPanel>
         
 </Window>

@@ -96,8 +96,8 @@
                 </StackPanel>
                 
                 <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Spacing="8" Orientation="Horizontal">
-                        <Button Name="SaveButton" Content="Save Changes" Margin="5" Command="{Binding saveCommand}" IsDefault="True"/>
-                        <Button Name="CancelButton" Content="Cancel" Margin="5" Command="{Binding cancelCommand}"/>
+                        <Button Name="SaveButton" Content="Save Changes" Command="{Binding saveCommand}" IsDefault="True"/>
+                        <Button Name="CancelButton" Content="Cancel" Command="{Binding cancelCommand}"/>
                 </StackPanel>
         </Grid>
         

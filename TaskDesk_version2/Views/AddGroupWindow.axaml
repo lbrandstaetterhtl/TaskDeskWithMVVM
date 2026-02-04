@@ -43,8 +43,8 @@
                 
                 <StackPanel Name="ButtonPanel" Grid.Row="3" Orientation="Horizontal">
                         
-                        <Button Name="CancelButton" Content="Cancel" Command="{Binding CancelCommand}" Margin="5"/>
-                        <Button Name="OkButton" Content="OK" Command="{Binding SaveCommand}" Margin="5" IsDefault="True"/>
+                        <Button Name="CancelButton" Content="Cancel" Command="{Binding CancelCommand}"/>
+                        <Button Name="OkButton" Content="OK" Command="{Binding SaveCommand}" IsDefault="True"/>
                 </StackPanel>
                 
         </Grid>

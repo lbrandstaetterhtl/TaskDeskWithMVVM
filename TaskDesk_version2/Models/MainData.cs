@@ -11,9 +11,16 @@ public class MainData
     public static ObservableCollection<Group> Groups { get; set; } = new ObservableCollection<Group>();
     public static string DataPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\TaskDeskData";
     public static User CurrentUser { get; set; }
+    public static Settings Settings { get; set; } = new Settings();
 
     public MainData()
     {
+        var loadedSettings = SettingsOperator.LoadSettingsFromJson();
+        
+        Settings = loadedSettings;
+        
+        (App.Current as App).SetTheme(Settings.IsThemeDark);
+        
         var loadedTasks = TasksOperator.LoadTasksFromJson();
         
         Tasks = loadedTasks;
@@ -23,7 +30,7 @@ public class MainData
         Users = loadedUsers;
         
         var loadedGroups = GroupsOperator.LoadGroupsFromJson();
-        Groups = loadedGroups;
         
+        Groups = loadedGroups;
     }
 }

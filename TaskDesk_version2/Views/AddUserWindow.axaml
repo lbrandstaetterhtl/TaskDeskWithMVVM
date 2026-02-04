@@ -3,7 +3,7 @@
         xmlns:vm="clr-namespace:TaskDesk_version2.ViewModels"
         x:Class="TaskDesk_version2.Views.AddUserWindow"
         x:DataType="vm:AddUserWindowViewModel"
-        Title="Task"
+        Title="User"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
         

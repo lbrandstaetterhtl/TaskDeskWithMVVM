@@ -1,17 +1,19 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
-using TaskDesk_version2.Models;
-using TaskDesk_version2.ViewModels;
+using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Styling;
 using TaskDesk_version2.Views;
 
 namespace TaskDesk_version2;
 
 public partial class App : Application
 {
+    private StyleInclude? _userTheme;
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -39,5 +41,14 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
+    }
+    
+    public void SetTheme(bool dark)
+    {
+        Current!.RequestedThemeVariant = dark ? ThemeVariant.Dark : ThemeVariant.Light;
+        
+        string themeName = dark ? "Dark" : "Light";
+        
+        AppLogger.Info($"Set theme to ({themeName})");
     }
 }

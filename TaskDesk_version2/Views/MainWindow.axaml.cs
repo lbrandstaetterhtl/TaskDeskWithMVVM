@@ -40,6 +40,21 @@ public partial class MainWindow : Window
         ClearCancelledTasksMenuItem.Click += MainWindowViewModel.OnClearCancelledTasksClick;
         
         ClearOverdueTasksMenuItem.Click += MainWindowViewModel.OnClearOverdueTasksClick;
+        
+        ChangeThemeMenuItem.Click += MainWindowViewModel.OnChangeThemeClick;
+        
+        SaveCurrentUserMenuItem.Click += MainWindowViewModel.OnSaveCurrentUserClick;
+        
+        ClearSavedUsersMenuItem.Click += MainWindowViewModel.OnClearSavedUsersClick;
+
+        if (MainData.Settings.IsThemeDark)
+        {
+            ChangeThemeMenuItem.Header += " (Current: Dark)";
+        }
+        else
+        {
+            ChangeThemeMenuItem.Header += " (Current: Light)";
+        }
 
         Closing += OnClosing;
         Opened += OnOpened;
@@ -57,6 +72,8 @@ public partial class MainWindow : Window
         UsersOperator.SaveUsersToJson(MainData.Users);
 
         GroupsOperator.SaveGroupsToJson(MainData.Groups);
+        
+        SettingsOperator.SaveSettingsToJson(MainData.Settings);
         
         AppLogger.Info("------------- Main Window Closed -------------");
         

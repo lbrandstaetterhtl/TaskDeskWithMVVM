@@ -15,8 +15,8 @@
                 <TextBlock Grid.Row="0" Name="InfoMassageBlock" TextWrapping="Wrap" Padding="10" MaxWidth="600" FontSize="16"/>
                 
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
-                        <Button Name="OkButton" Content="OK" Width="50" HorizontalAlignment="Center" Margin="10" IsDefault="True"/>
-                        <Button Name="CancelButton" Content="Cancel" Width="50" IsVisible="False" HorizontalAlignment="Center" Margin="10"/>
+                        <Button Name="OkButton" Content="OK" Width="50" HorizontalAlignment="Center" IsDefault="True"/>
+                        <Button Name="CancelButton" Content="Cancel" Width="50" IsVisible="False" HorizontalAlignment="Center"/>
                 </StackPanel>
         </Grid>
         
