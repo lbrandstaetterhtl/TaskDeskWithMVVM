@@ -36,4 +36,13 @@
         <DependentUpon>ErrorWindow.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\AddGroupWindow.axaml.cs">
+        <DependentUpon>AddGroupWindow.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\LoginWindow.axaml.cs">
+        <DependentUpon>LoginWindow.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>

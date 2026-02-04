@@ -19,16 +19,18 @@
         
                 <StackPanel Grid.Row="0" Name="LoginPanel" Width="300" Height="200" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
                          
-                        <TextBlock Name="LoginLabel" Text="E-Mail:" FontSize="16" Margin="5"/>
-                        <TextBox Name="LoginTextBox" Margin="5" Text="{Binding Email}" TextChanged="LoginTextBox_TextChanged"/>
+                        <TextBlock Name="LoginLabel" Classes="primary" Text="E-Mail:" FontSize="16"/>
+                        <TextBox Name="LoginTextBox" Text="{Binding Email}" TextChanged="LoginTextBox_TextChanged"/>
                          
-                        <TextBlock Name="PasswordLabel" Text="Password:" FontSize="16" Margin="5"/>
+                        <TextBlock Name="PasswordLabel" Classes="primary" Text="Password:" FontSize="16"/>
                          
                         <StackPanel Name="PasswordCell" Orientation="Horizontal">
                              
-                                <TextBox Name="PasswordBox" Margin="5" Text="{Binding Password}" PasswordChar="*" Width="235"/>
+                                <TextBox Name="PasswordBox" LostFocus="PasswordBox_LostFocus" GotFocus="PasswordBox_GotFocus" Text="{Binding Password}" PasswordChar="*" Width="235"/>
                              
-                                <Button Name="PasswordVisibilityToggle" Margin="5" Command="{Binding PasswordVisibleCommand}"/>
+                                <Button Name="PasswordVisibilityToggle" Command="{Binding PasswordVisibleCommand}">
+                                        <Image x:Name="PasswordVisibilityToggleImage" Source="../Assets/NotVisible.png" Classes="PasswordVisibilityToggleImage"/>
+                                </Button>
                         </StackPanel>
                          
                         <StackPanel Orientation="Horizontal">

@@ -25,31 +25,31 @@
                 </Grid.ColumnDefinitions>
                 
                 <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" MaxWidth="200">
-                        <TextBlock Text="Title:" FontSize="18" Background="#1E1E1E" Margin="5" VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding Title}" FontSize="18" Background="#1E1E1E" Margin="5" HorizontalAlignment="Right" MaxWidth="140" Width="140"/>
+                        <TextBlock Text="Title:" FontSize="18" Margin="5" VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding Title}" FontSize="18" Margin="5" HorizontalAlignment="Right" MaxWidth="140" Width="140"/>
                 </StackPanel>
                 
-                <TextBox Name="IdBox" Grid.Row="0" Grid.Column="1" FontSize="18" Background="#1E1E1E" Margin="5" IsReadOnly="True" IsEnabled="False" Foreground="White"/>
+                <TextBlock Name="IdBlock" Grid.Row="0" Grid.Column="1" FontSize="18" Margin="5" VerticalAlignment="Center"/>
                 
                 <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
-                        <TextBlock Text="Due Date:" FontSize="18" Background="#1E1E1E" Margin="5" VerticalAlignment="Center"/>
-                        <DatePicker SelectedDate="{Binding DueDate}" Height="30" Margin="5" Background="#1E1E1E"/>
+                        <TextBlock Text="Due Date:" FontSize="18" Margin="5" VerticalAlignment="Center"/>
+                        <DatePicker SelectedDate="{Binding DueDate}" Margin="5"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal" MaxWidth="200">
-                        <TextBlock Text="State:" FontSize="18" Background="#1E1E1E" VerticalAlignment="Center" Margin="5"/>
-                        <ComboBox Name="StateCombo" SelectedItem="{Binding State}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5" Background="#1E1E1E"/>
+                        <TextBlock Text="State:" FontSize="18" VerticalAlignment="Center" Margin="5"/>
+                        <ComboBox Name="StateCombo" SelectedItem="{Binding State}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5"/>
                 </StackPanel>
                 
                 <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" Margin="5" MaxWidth="700">
-                        <TextBox Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" Background="#1E1E1E"/>
+                        <TextBox Classes="TaskDescriptionBox" Text="{Binding Description}"/>
                 </ScrollViewer>
                 
                 <StackPanel Grid.Row="1" Grid.Column="3" Width="200">
                         
-                        <TextBlock Background="#1E1E1E" Text="Assigned Users:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
+                        <TextBlock Text="Assigned Users:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
                         <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
-                                <ListBox Name="UsersList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedUsers}" ItemsSource="{Binding AllUsers}" Background="#1E1E1E">
+                                <ListBox Name="UsersList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedUsers}" ItemsSource="{Binding AllUsers}">
                                         <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                         <TextBlock Text="{Binding FullName}"/>
@@ -58,11 +58,11 @@
                                 </ListBox>
                         </ScrollViewer>
                         
-                        <Border BorderThickness="1" BorderBrush="#1E1E1E" Margin="0,10,0,10"/>
+                        <Border BorderThickness="1" Margin="0,10,0,10"/>
                         
-                        <TextBlock Background="#1E1E1E" Text="Assigned Groups:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
+                        <TextBlock Text="Assigned Groups:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
                         <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
-                                <ListBox Name="GroupsList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedGroups}" ItemsSource="{Binding AllGroups}" Background="#1E1E1E">
+                                <ListBox Name="GroupsList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedGroups}" ItemsSource="{Binding AllGroups}">
                                         <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                         <TextBlock Text="{Binding Name}"/>

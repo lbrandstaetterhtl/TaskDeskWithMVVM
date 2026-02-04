@@ -23,7 +23,7 @@ public partial class OpenTaskWindow : Window
         
         SetStateCombo();
         
-        IdBox.Text = "ID: " + _task.Id;
+        IdBlock.Text = "ID: " + _task.Id;
         
         Opened += OnOpened;
         Closing += OnClosing;
