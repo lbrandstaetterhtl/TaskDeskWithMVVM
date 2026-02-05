@@ -3,11 +3,11 @@
         xmlns:vm="clr-namespace:TaskDesk_version2.ViewModels"
         x:Class="TaskDesk_version2.Views.AddUserWindow"
         x:DataType="vm:AddUserWindowViewModel"
-        Title="User"
+        Title="Add User"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
         
-        <Grid Name="Root">
+        <Grid>
                 
                 <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -18,46 +18,46 @@
                         <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
-                <StackPanel Name="FullNameCell" Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="0">
                         
-                        <TextBlock Text="Full Name:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Full Name:" VerticalAlignment="Center"/>
                         
-                        <TextBox Name="FullNameTextBox" Width="200" Watermark="Enter the full name" Margin="5" Text="{Binding Fullname, Mode=TwoWay}"/>
+                        <TextBox Width="200" Watermark="Enter the full name" Text="{Binding Fullname, Mode=TwoWay}"/>
                 </StackPanel>
                 
-                <StackPanel Grid.Row="1" Name="EmailCell" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="1">
                         
-                        <TextBlock Text="Email:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Email:" VerticalAlignment="Center"/>
                         
-                        <TextBox Name="EmailTextBox" Width="200" Watermark="Enter the email address" Margin="5" Text="{Binding Email, Mode=TwoWay}"/>
+                        <TextBox Width="200" Watermark="Enter the email address" Text="{Binding Email, Mode=TwoWay}"/>
                 </StackPanel>
                 
-                <StackPanel Grid.Row="2" Name="PasswordCell" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="2">
                         
-                        <TextBlock Text="Password:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Password:" VerticalAlignment="Center"/>
                         
-                        <TextBox Name="PasswordTextBox" Width="200" Watermark="Enter the password" Margin="5" Text="{Binding Password, Mode=TwoWay}"/>
+                        <TextBox Width="200" Watermark="Enter the password" Text="{Binding Password, Mode=TwoWay}"/>
                 </StackPanel>
                 
-                <StackPanel Grid.Row="3" Name="RoleCell" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="3">
                         
-                        <TextBlock Text="Role:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Role:" VerticalAlignment="Center"/>
                         
                         <ComboBox Name="RoleComboBox" Width="200" PlaceholderText="Select a role" Margin="5" SelectedItem="{Binding RoleString}"/>
                 </StackPanel>
                 
-                <StackPanel Grid.Row="4" Name="GroupsCell" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="4">
                         
-                        <TextBlock Text="Groups:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Groups:" VerticalAlignment="Center"/>
                         
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ListBox Name="GroupList" Width="200" Height="100" SelectionMode="Multiple, Toggle" Margin="5" SelectedItems="{Binding GroupNames}"/>
+                                <ListBox Classes="UsersOrGroupsList" Name="GroupList" SelectedItems="{Binding GroupNames}"/>
                         </ScrollViewer>
                 </StackPanel>
                 
-                <StackPanel Name="ButtonCell" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-                        <Button Name="CancelButton" Content="Cancel" Command="{Binding CancelCommand}"/>
-                        <Button Name="OkButton" Content="OK" Command="{Binding SaveCommand}" IsDefault="True"/>
+                <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button Content="Cancel" Command="{Binding CancelCommand}"/>
+                        <Button Content="OK" Command="{Binding SaveCommand}" IsDefault="True"/>
                 </StackPanel>
         </Grid>
         

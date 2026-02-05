@@ -42,6 +42,7 @@
         <Style Selector="TextBlock.TaskProperty">
                 <Setter Property="Width" Value="200"/>
                 <Setter Property="FontSize" Value="18"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
         
         <Style Selector="Border.TaskRowBorder">
@@ -49,5 +50,32 @@
                 <Setter Property="Padding" Value="8"/>
                 <Setter Property="Margin" Value="4"/>
                 <Setter Property="Background" Value="Gray"/>
+        </Style>
+        
+        <Style Selector="StackPanel.CellInAddWindows">
+                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="Spacing" Value="8"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+        
+        <Style Selector="TextBox.DescriptionTextBoxInAddWindows">
+                <Setter Property="MaxHeight" Value="90"/>
+                <Setter Property="Height" Value="90"/>
+                <Setter Property="Width" Value="200"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Margin" Value="5"/>
+        </Style>
+        
+        <Style Selector="ListBox.UsersOrGroupsList">
+                <Setter Property="Width" Value="200"/>
+                <Setter Property="Height" Value="100"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="SelectionMode" Value="Multiple, Toggle"/>
+        </Style>
+        
+        <Style Selector="TextBlock.TaskListHeader">
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="Width" Value="200"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
 </Styles>

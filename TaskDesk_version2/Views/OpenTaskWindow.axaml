@@ -9,7 +9,7 @@
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
         
-        <Grid Name="Root" Margin="10">
+        <Grid Margin="10">
                 
                 <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -49,7 +49,7 @@
                         
                         <TextBlock Text="Assigned Users:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
                         <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
-                                <ListBox Name="UsersList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedUsers}" ItemsSource="{Binding AllUsers}">
+                                <ListBox SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedUsers}" ItemsSource="{Binding AllUsers}">
                                         <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                         <TextBlock Text="{Binding FullName}"/>
@@ -62,7 +62,7 @@
                         
                         <TextBlock Text="Assigned Groups:" FontWeight="Bold" Margin="0,0,0,5" Padding="5"/>
                         <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
-                                <ListBox Name="GroupsList" SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedGroups}" ItemsSource="{Binding AllGroups}">
+                                <ListBox SelectionMode="Multiple, Toggle" SelectedItems="{Binding AssignedGroups}" ItemsSource="{Binding AllGroups}">
                                         <ListBox.ItemTemplate>
                                                 <DataTemplate>
                                                         <TextBlock Text="{Binding Name}"/>
@@ -74,8 +74,8 @@
                 </StackPanel>
                 
                 <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
-                        <Button Name="SaveButton" Content="Save" Width="80" HorizontalAlignment="Right" IsDefault="True"  Command="{Binding SaveTaskCommand}"/>
-                        <Button Name="CloseButton" Content="Close" Width="80" HorizontalAlignment="Right" Command="{Binding CloseCommand}"/>
+                        <Button Content="Save" Width="80" HorizontalAlignment="Right" IsDefault="True"  Command="{Binding SaveTaskCommand}"/>
+                        <Button Content="Close" Width="80" HorizontalAlignment="Right" Command="{Binding CloseCommand}"/>
                 </StackPanel>
                 
         </Grid>

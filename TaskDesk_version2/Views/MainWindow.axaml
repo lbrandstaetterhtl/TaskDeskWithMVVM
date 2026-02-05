@@ -6,14 +6,14 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TaskDesk_version2.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="TaskDesk_version2"
+        Title="TaskDesk"
         WindowState="Maximized">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid x:Name="Root">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -25,8 +25,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <Menu x:Name="RootMenu" Grid.Row="0" Grid.Column="0">
-            <MenuItem x:Name="TasksMenuItem" Header="Tasks">
+        <Menu Grid.Row="0" Grid.Column="0">
+            <MenuItem Header="Tasks">
                 <MenuItem x:Name="AddTaskMenuItem" Header="Add Task"/>
                 <MenuItem x:Name="ClearAllTasksMenuItem" Header="Clear All Tasks"/>
                 <MenuItem x:Name="ClearCompletedTasksMenuItem" Header="Clear Completed Tasks"/>
@@ -34,26 +34,31 @@
                 <MenuItem x:Name="ClearOverdueTasksMenuItem" Header="Clear Overdue Tasks"/>
             </MenuItem>
             
-            <MenuItem x:Name="UsersMenuItem" Header="Users">
+            <MenuItem Header="Users">
                 <MenuItem x:Name="AddUserMenuItem" Header="Add User"/>
                 <MenuItem x:Name="ManageUsersMenuItem" Header="Manage Users"/>
                 <MenuItem x:Name="ClearAllUsersMenuItem" Header="Clear All Users"/>
             </MenuItem>
             
-            <MenuItem x:Name="GroupsMenuItem" Header="Groups">
+            <MenuItem Header="Groups">
                 <MenuItem x:Name="AddGroupMenuItem" Header="Add Group"/>
-                <MenuItem x:Name="ManageGroupsMenuItem" Header="Manage Groups"/>
+                <MenuItem Header="Manage Groups"/>
                 <MenuItem x:Name="ClearAllGroupsMenuItem" Header="Clear All Groups"/>
             </MenuItem>
             
-            <MenuItem x:Name="SettingsMenuItem" Header="Settings">
+            <MenuItem Header="Settings">
                 <MenuItem Name="ChangeThemeMenuItem" Header="Change Theme"/>
                 <MenuItem Name="SaveCurrentUserMenuItem" Header="Save Current User"/>
                 <MenuItem Name="ClearSavedUsersMenuItem" Header="Clear Saved Users"/>
             </MenuItem>
+            
+            <MenuItem Header="Account">
+                <MenuItem Header="Logout"/>
+                <MenuItem Header="Edit Your User"/>
+            </MenuItem>
         </Menu>
         
-        <Grid Grid.Row="1" Grid.Column="0" x:Name="TasksPlusHeader">
+        <Grid Grid.Row="1" Grid.Column="0">
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -61,13 +66,13 @@
             </Grid.RowDefinitions>
             
             <Border Classes="TaskRowBorder" Grid.Row="0">
-            <StackPanel Name="Header" Classes="Row">
-                <TextBlock Text="Title" FontWeight="Bold" Width="200" FontSize="22"/>
-                <TextBlock Text="Description" FontWeight="Bold" Width="200" FontSize="22"/>
-                <TextBlock Text="Due Date" FontWeight="Bold" Width="200" FontSize="22"/>
-                <TextBlock Text="Users" FontWeight="Bold" Width="200" FontSize="22"/>
-                <TextBlock Text="Groups" FontWeight="Bold" Width="200" FontSize="22"/>
-                <TextBlock Text="State" FontWeight="Bold" Width="200" FontSize="22"/>
+            <StackPanel Classes="Row">
+                <TextBlock Text="Title" Classes="TaskListHeader primary"/>
+                <TextBlock Text="Description" Classes="TaskListHeader primary"/>
+                <TextBlock Text="Due Date" Classes="TaskListHeader primary"/>
+                <TextBlock Text="Users" Classes="TaskListHeader primary"/>
+                <TextBlock Text="Groups" Classes="TaskListHeader primary"/>
+                <TextBlock Text="State" Classes="TaskListHeader primary"/>
             </StackPanel>
             </Border>
             
@@ -85,7 +90,7 @@
                             
                             <Border.ContextFlyout>
                                 <MenuFlyout>
-                                    <MenuItem Header="Open Task" Click="TaskOpenClick"/>
+                                    <MenuItem Header="Open Task" Click="OnTaskOpenClick"/>
                                     <MenuItem Header="Delete Task" Click="OnDeleteTaskClick"/>
                                 </MenuFlyout>
                             </Border.ContextFlyout>

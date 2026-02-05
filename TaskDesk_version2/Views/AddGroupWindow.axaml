@@ -3,11 +3,11 @@
         xmlns:vm="clr-namespace:TaskDesk_version2.ViewModels"
         x:Class="TaskDesk_version2.Views.AddGroupWindow"
         x:DataType="vm:AddGroupWindowViewModel"
-        Title="Add Task"
+        Title="Add Group"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
     
-        <Grid Name="Root">
+        <Grid>
                 
                 <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -16,35 +16,37 @@
                         <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 
-                <StackPanel Name="GroupNameCell" Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="0">
                         
-                        <TextBlock Text="Group Name:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Group Name:" VerticalAlignment="Center"/>
                         
-                        <TextBox Name="GroupNameTextBox" Width="200" Watermark="Enter the group name" Margin="5" Text="{Binding Name, Mode=TwoWay}"/>
+                        <TextBox Width="200" Watermark="Enter the group name" Text="{Binding Name, Mode=TwoWay}"/>
+                        
                 </StackPanel>
                 
-                <StackPanel Name="DescriptionCell" Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="1" >
                         
-                        <TextBlock Text="Description:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Description:" VerticalAlignment="Center"/>
                         
                         <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
-                                <TextBox Name="DescriptionTextBox" MaxHeight="100" Width="200" TextWrapping="Wrap" Watermark="Enter a description for the group" Margin="5" Text="{Binding Description, Mode=TwoWay}"/>
+                                <TextBox Classes="DescriptionTextBoxInAddWindows" Watermark="Enter a description for the group" Text="{Binding Description, Mode=TwoWay}"/>
                         </ScrollViewer>
+                        
                 </StackPanel>
                 
-                <StackPanel Name="UsersCell" Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8" Spacing="8">
+                <StackPanel Classes="CellInAddWindows" Grid.Row="2">
                         
-                        <TextBlock Text="Select Users:" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Classes="primary" Text="Select Users:" VerticalAlignment="Center"/>
                         
                         <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
-                                <ListBox Name="UsersList" Width="200" Height="100" SelectionMode="Multiple, Toggle" Margin="5" SelectedItems="{Binding UserNames}"/>
+                                <ListBox Classes="UsersOrGroupsList" Name="UsersList" SelectedItems="{Binding UserNames}"/>
                         </ScrollViewer>
+                        
                 </StackPanel>
                 
-                <StackPanel Name="ButtonPanel" Grid.Row="3" Orientation="Horizontal">
-                        
-                        <Button Name="CancelButton" Content="Cancel" Command="{Binding CancelCommand}"/>
-                        <Button Name="OkButton" Content="OK" Command="{Binding SaveCommand}" IsDefault="True"/>
+                <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <Button Content="Cancel" Command="{Binding CancelCommand}"/>
+                        <Button Content="OK" Command="{Binding SaveCommand}" IsDefault="True"/>
                 </StackPanel>
                 
         </Grid>

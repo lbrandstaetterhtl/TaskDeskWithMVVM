@@ -110,6 +110,11 @@ public static class TasksOperator
 {
     public static ObservableCollection<Task> LoadTasksFromJson()
     {
+        if (Avalonia.Controls.Design.IsDesignMode)
+        {
+            return null;
+        }
+        
         try
         {
             string filePath = MainData.DataPath + @"\tasks.json";

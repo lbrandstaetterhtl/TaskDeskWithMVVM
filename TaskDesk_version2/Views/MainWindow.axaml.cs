@@ -41,7 +41,7 @@ public partial class MainWindow : Window
         
         ClearOverdueTasksMenuItem.Click += MainWindowViewModel.OnClearOverdueTasksClick;
         
-        ChangeThemeMenuItem.Click += MainWindowViewModel.OnChangeThemeClick;
+        ChangeThemeMenuItem.Click += OnChangeThemeClick;
         
         SaveCurrentUserMenuItem.Click += MainWindowViewModel.OnSaveCurrentUserClick;
         
@@ -98,7 +98,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void TaskOpenClick(object? sender, RoutedEventArgs e)
+    private void OnTaskOpenClick(object? sender, RoutedEventArgs e)
     {
         if (sender is MenuItem { DataContext: Task task })
         {
@@ -106,7 +106,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void PointerEntered(object? sender, PointerEventArgs e)
+    private new void PointerEntered(object? sender, PointerEventArgs e)
     {
         if (sender is Border border)
         {
@@ -114,7 +114,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private void PointerExited(object? sender, PointerEventArgs e)
+    private new void PointerExited(object? sender, PointerEventArgs e)
     {
         if (sender is Border border)
         {
@@ -127,6 +127,20 @@ public partial class MainWindow : Window
         if (sender is MenuItem { DataContext: Task task })
         {
             MainWindowViewModel.OnDeleteTaskClick(task);
+        }
+    }
+    
+    private void OnChangeThemeClick(object? sender, RoutedEventArgs e)
+    {
+        MainWindowViewModel.OnChangeThemeClick(sender, e);
+        
+        if (MainData.Settings.IsThemeDark)
+        {
+            ChangeThemeMenuItem.Header = "Change Theme (Current: Dark)";
+        }
+        else
+        {
+            ChangeThemeMenuItem.Header = "Change Theme (Current: Light)";
         }
     }
 }
