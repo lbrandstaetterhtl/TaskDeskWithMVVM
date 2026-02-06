@@ -55,7 +55,7 @@
             </MenuItem>
             
             <MenuItem Header="Account">
-                <MenuItem Name="LogoutMenuItem" Header="Logout"/>
+                <MenuItem Header="Logout" Command="{Binding OnLogoutClick}"/>
                 <MenuItem Header="Edit Your User"/>
             </MenuItem>
         </Menu>

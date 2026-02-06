@@ -1,4 +1,4 @@
-﻿using TaskDesk_version2.Models;
+﻿﻿using TaskDesk_version2.Models;
 using Xunit;
 using System;
 using System.Collections.Generic;
@@ -494,6 +494,296 @@ public class ModelIntegrationTests : IDisposable
         Assert.Contains(task1, groupTasks);
         Assert.Contains(task2, groupTasks);
         Assert.DoesNotContain(task3, groupTasks);
+    }
+
+    #endregion
+
+    #region Task State Workflow Tests
+
+    [Fact]
+    public void TaskWorkflow_PendingToCompleted_UpdatesCorrectly()
+    {
+        // Arrange
+        MainData.Tasks.Clear();
+        var task = new Task
+        {
+            Id = 1,
+            Title = "Workflow Task",
+            State = TaskState.Pending
+        };
+        MainData.Tasks.Add(task);
+
+        // Act & Assert - Simulate task progression
+        Assert.Equal(TaskState.Pending, task.State);
+
+        task.State = TaskState.InProgress;
+        Assert.Equal(TaskState.InProgress, task.State);
+
+        task.State = TaskState.Completed;
+        Assert.Equal(TaskState.Completed, task.State);
+    }
+
+    [Fact]
+    public void TaskWorkflow_CanBeCancelled_FromAnyState()
+    {
+        // Arrange
+        MainData.Tasks.Clear();
+        
+        // Test from each state
+        foreach (TaskState state in Enum.GetValues(typeof(TaskState)))
+        {
+            if (state == TaskState.Cancelled) continue;
+
+            var task = new Task { Id = 1, Title = "Test", State = state };
+            
+            // Act
+            task.State = TaskState.Cancelled;
+            
+            // Assert
+            Assert.Equal(TaskState.Cancelled, task.State);
+        }
+    }
+
+    [Fact]
+    public void TaskWorkflow_OnHold_CanBeResumed()
+    {
+        // Arrange
+        var task = new Task
+        {
+            Id = 1,
+            Title = "Pausable Task",
+            State = TaskState.InProgress
+        };
+
+        // Act
+        task.State = TaskState.OnHold;
+        Assert.Equal(TaskState.OnHold, task.State);
+
+        task.State = TaskState.InProgress;
+        
+        // Assert
+        Assert.Equal(TaskState.InProgress, task.State);
+    }
+
+    #endregion
+
+    #region User Role Permission Tests
+
+    [Fact]
+    public void UserRoles_DifferentRoles_CanCoexist()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        var admin = new User { Id = 1, FullName = "Admin", Role = UserRole.Admin };
+        var user = new User { Id = 2, FullName = "User", Role = UserRole.User };
+        var readOnly = new User { Id = 3, FullName = "ReadOnly", Role = UserRole.ReadOnly };
+
+        // Act
+        MainData.Users.Add(admin);
+        MainData.Users.Add(user);
+        MainData.Users.Add(readOnly);
+
+        // Assert
+        Assert.Equal(3, MainData.Users.Count);
+        Assert.Equal(UserRole.Admin, MainData.Users[0].Role);
+        Assert.Equal(UserRole.User, MainData.Users[1].Role);
+        Assert.Equal(UserRole.ReadOnly, MainData.Users[2].Role);
+    }
+
+    #endregion
+
+    #region Bulk Operations Tests
+
+    [Fact]
+    public void BulkOperation_AddMultipleTasks_MaintainsData()
+    {
+        // Arrange
+        MainData.Tasks.Clear();
+        var tasks = new List<Task>();
+
+        // Act
+        for (int i = 1; i <= 50; i++)
+        {
+            var task = new Task
+            {
+                Id = i,
+                Title = $"Bulk Task {i}",
+                State = i % 2 == 0 ? TaskState.Completed : TaskState.Pending
+            };
+            tasks.Add(task);
+            MainData.Tasks.Add(task);
+        }
+
+        // Assert
+        Assert.Equal(50, MainData.Tasks.Count);
+        
+        var completedCount = MainData.Tasks.Count(t => t.State == TaskState.Completed);
+        var pendingCount = MainData.Tasks.Count(t => t.State == TaskState.Pending);
+        
+        Assert.Equal(25, completedCount);
+        Assert.Equal(25, pendingCount);
+    }
+
+    [Fact]
+    public void BulkOperation_RemoveMultipleUsers_UpdatesGroups()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        MainData.Groups.Clear();
+
+        var group = new Group { Id = 1, Name = "Test Group", UserIds = new List<int> { 1, 2, 3, 4, 5 } };
+        MainData.Groups.Add(group);
+
+        for (int i = 1; i <= 5; i++)
+        {
+            MainData.Users.Add(new User { Id = i, FullName = $"User {i}", GroupIds = new List<int> { 1 } });
+        }
+
+        // Act - Remove users 2, 3, 4
+        var usersToRemove = new[] { 2, 3, 4 };
+        foreach (var userId in usersToRemove)
+        {
+            group.UserIds.Remove(userId);
+        }
+
+        // Assert
+        Assert.Equal(2, group.UserIds.Count);
+        Assert.Contains(1, group.UserIds);
+        Assert.Contains(5, group.UserIds);
+        Assert.DoesNotContain(2, group.UserIds);
+    }
+
+    #endregion
+
+    #region Circular Reference Prevention Tests
+
+    [Fact]
+    public void CircularReferences_UserGroupRelationship_IsConsistent()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        MainData.Groups.Clear();
+
+        var user = new User { Id = 1, FullName = "User", GroupIds = new List<int> { 1 } };
+        var group = new Group { Id = 1, Name = "Group", UserIds = new List<int> { 1 } };
+
+        MainData.Users.Add(user);
+        MainData.Groups.Add(group);
+
+        // Assert - Verify bidirectional relationship
+        Assert.Contains(1, user.GroupIds);
+        Assert.Contains(1, group.UserIds);
+
+        // Remove from one side
+        user.GroupIds.Remove(1);
+        
+        // Group still has reference (needs manual cleanup in real scenario)
+        Assert.Contains(1, group.UserIds);
+        Assert.DoesNotContain(1, user.GroupIds);
+    }
+
+    #endregion
+
+    #region Date-Based Tests
+
+    [Fact]
+    public void Tasks_WithDifferentDueDates_CanBeQueried()
+    {
+        // Arrange
+        MainData.Tasks.Clear();
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        var yesterday = today.AddDays(-1);
+        var tomorrow = today.AddDays(1);
+
+        MainData.Tasks.Add(new Task { Id = 1, Title = "Past", DueDate = yesterday });
+        MainData.Tasks.Add(new Task { Id = 2, Title = "Today", DueDate = today });
+        MainData.Tasks.Add(new Task { Id = 3, Title = "Future", DueDate = tomorrow });
+
+        // Act
+        var overdueTasks = MainData.Tasks.Where(t => t.DueDate < today).ToList();
+        var todayTasks = MainData.Tasks.Where(t => t.DueDate == today).ToList();
+        var futureTasks = MainData.Tasks.Where(t => t.DueDate > today).ToList();
+
+        // Assert
+        Assert.Single(overdueTasks);
+        Assert.Single(todayTasks);
+        Assert.Single(futureTasks);
+    }
+
+    [Fact]
+    public void Tasks_OverdueButCompleted_ShouldNotBeOverdue()
+    {
+        // Arrange
+        MainData.Tasks.Clear();
+        var pastDate = DateOnly.FromDateTime(DateTime.Now.AddDays(-10));
+
+        var overdueTask = new Task
+        {
+            Id = 1,
+            Title = "Overdue Task",
+            DueDate = pastDate,
+            State = TaskState.Pending
+        };
+
+        var completedTask = new Task
+        {
+            Id = 2,
+            Title = "Completed Task",
+            DueDate = pastDate,
+            State = TaskState.Completed
+        };
+
+        MainData.Tasks.Add(overdueTask);
+        MainData.Tasks.Add(completedTask);
+
+        // Act
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        var actuallyOverdue = MainData.Tasks.Where(t => 
+            t.DueDate < today && 
+            t.State != TaskState.Completed && 
+            t.State != TaskState.Cancelled
+        ).ToList();
+
+        // Assert
+        Assert.Single(actuallyOverdue);
+        Assert.Equal(1, actuallyOverdue[0].Id);
+    }
+
+    #endregion
+
+    #region Null Safety Tests
+
+    [Fact]
+    public void User_WithNullGroupIds_InitializesToEmptyList()
+    {
+        // Act
+        var user = new User();
+
+        // Assert
+        Assert.NotNull(user.GroupIds);
+        Assert.Empty(user.GroupIds);
+    }
+
+    [Fact]
+    public void Task_WithNullUserIds_InitializesToEmptyList()
+    {
+        // Act
+        var task = new Task();
+
+        // Assert
+        Assert.NotNull(task.UserIds);
+        Assert.Empty(task.UserIds);
+    }
+
+    [Fact]
+    public void Group_WithNullTaskIds_InitializesToEmptyList()
+    {
+        // Act
+        var group = new Group();
+
+        // Assert
+        Assert.NotNull(group.TaskIds);
+        Assert.Empty(group.TaskIds);
     }
 
     #endregion

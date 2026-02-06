@@ -40,7 +40,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public static async void OnAddTaskClick()
+    public async void OnAddTaskClick()
     {
         try
         {
@@ -72,7 +72,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         taskWindow.ShowInTaskbar = true;
     }
 
-    public static async void OnAddUserClick()
+    public async void OnAddUserClick()
     {
         try
         {
@@ -94,7 +94,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnAddGroupClick()
+    public async void OnAddGroupClick()
     {
         try
         {
@@ -166,7 +166,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnManageUsersClick()
+    public async void OnManageUsersClick()
     {
         try
         {
@@ -188,7 +188,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearAllTasksClick()
+    public async void OnClearAllTasksClick()
     {
         try
         {
@@ -232,7 +232,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearAllUsersClick()
+    public async void OnClearAllUsersClick()
     {
         try
         {
@@ -276,7 +276,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearAllGroupsClick()
+    public async void OnClearAllGroupsClick()
     {
         try
         {
@@ -320,7 +320,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearCompletedTasksClick()
+    public async void OnClearCompletedTasksClick()
     {
         try
         {
@@ -380,7 +380,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearCancelledTasksClick()
+    public async void OnClearCancelledTasksClick()
     {
         try
         {
@@ -440,7 +440,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearOverdueTasksClick()
+    public async void OnClearOverdueTasksClick()
     {
         try
         {
@@ -512,7 +512,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         (App.Current as App).SetTheme(MainData.Settings.IsThemeDark);
     }
 
-    public static async void OnSaveCurrentUserClick()
+    public async void OnSaveCurrentUserClick()
     {
         
         try
@@ -540,7 +540,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public static async void OnClearSavedUsersClick()
+    public async void OnClearSavedUsersClick()
     {
         try
         {

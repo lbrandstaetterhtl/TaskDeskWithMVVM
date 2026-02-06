@@ -1,4 +1,4 @@
-﻿using TaskDesk_version2.ViewModels;
+﻿﻿using TaskDesk_version2.ViewModels;
 using TaskDesk_version2.Models;
 using Xunit;
 using System;
@@ -269,6 +269,97 @@ public class LoginWindowViewModelTests : IDisposable
 
         viewModel.IsValid = true;
         Assert.True(viewModel.IsValid);
+    }
+
+    #endregion
+
+    #region SavedUsers Property Tests
+
+    [Fact]
+    public void SavedUsers_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var viewModel = new LoginWindowViewModel();
+        bool propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.SavedUsers))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.SavedUsers = new List<User> { new User { Id = 1, FullName = "Test" } };
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+    }
+
+    [Fact]
+    public void SavedUsers_DefaultIsEmptyList()
+    {
+        // Act
+        var viewModel = new LoginWindowViewModel();
+
+        // Assert
+        Assert.NotNull(viewModel.SavedUsers);
+        Assert.Empty(viewModel.SavedUsers);
+    }
+
+    [Fact]
+    public void Constructor_LoadsSavedUsersFromSettings()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        var user1 = new User { Id = 1, FullName = "Saved User 1", Email = "user1@test.com" };
+        var user2 = new User { Id = 2, FullName = "Saved User 2", Email = "user2@test.com" };
+        MainData.Users.Add(user1);
+        MainData.Users.Add(user2);
+        
+        MainData.Settings.SavedUserIds.Clear();
+        MainData.Settings.SavedUserIds.Add(1);
+        MainData.Settings.SavedUserIds.Add(2);
+
+        // Act
+        var viewModel = new LoginWindowViewModel();
+
+        // Assert
+        Assert.Equal(2, viewModel.SavedUsers.Count);
+        Assert.Contains(viewModel.SavedUsers, u => u.Id == 1);
+        Assert.Contains(viewModel.SavedUsers, u => u.Id == 2);
+    }
+
+    [Fact]
+    public void Constructor_WithNoSavedUsers_SavedUsersIsEmpty()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        MainData.Settings.SavedUserIds.Clear();
+
+        // Act
+        var viewModel = new LoginWindowViewModel();
+
+        // Assert
+        Assert.Empty(viewModel.SavedUsers);
+    }
+
+    [Fact]
+    public void Constructor_WithInvalidSavedUserIds_SkipsInvalidUsers()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        var user1 = new User { Id = 1, FullName = "Valid User", Email = "valid@test.com" };
+        MainData.Users.Add(user1);
+        
+        MainData.Settings.SavedUserIds.Clear();
+        MainData.Settings.SavedUserIds.Add(1);
+        MainData.Settings.SavedUserIds.Add(999); // Invalid ID
+
+        // Act
+        var viewModel = new LoginWindowViewModel();
+
+        // Assert
+        Assert.Single(viewModel.SavedUsers);
+        Assert.Equal(1, viewModel.SavedUsers[0].Id);
     }
 
     #endregion

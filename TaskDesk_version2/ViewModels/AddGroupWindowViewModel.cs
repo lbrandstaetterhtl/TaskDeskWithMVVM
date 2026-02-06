@@ -78,7 +78,7 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
             if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
 
-            if (Name == string.Empty && Description == string.Empty)
+            if (Name == string.Empty || Description == string.Empty)
             {
                 var errorWindow = new Views.ErrorWindow("Group must have a name and description.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);

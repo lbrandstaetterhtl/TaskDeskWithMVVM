@@ -36,7 +36,7 @@ public partial class MainWindow : Window
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
-        if (Avalonia.Controls.Design.IsDesignMode)
+        if (Design.IsDesignMode)
         {
             return;
         }
@@ -56,7 +56,7 @@ public partial class MainWindow : Window
     
     private void OnOpened(object? sender, EventArgs e)
     {
-        if (Avalonia.Controls.Design.IsDesignMode)
+        if (Design.IsDesignMode)
         {
             return;
         }
@@ -116,10 +116,5 @@ public partial class MainWindow : Window
         {
             ChangeThemeMenuItem.Header = "Change Theme (Current: Light)";
         }
-    }
-
-    private void OnLogoutClick(object? s, RoutedEventArgs e)
-    {
-        
     }
 }

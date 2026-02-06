@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.ObjectModel;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
@@ -264,4 +264,292 @@ public class ManageUsersWindowViewModelTests : IDisposable
         // Assert
         Assert.Equal(string.Empty, viewModel.SearchInput);
     }
+
+    #region Property Tests
+
+    [Fact]
+    public void Fullname_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        bool propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.Fullname))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.Fullname = "New Name";
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+        Assert.Equal("New Name", viewModel.Fullname);
+    }
+
+    [Fact]
+    public void Email_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        bool propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.Email))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.Email = "new@test.com";
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+        Assert.Equal("new@test.com", viewModel.Email);
+    }
+
+    [Fact]
+    public void Password_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        bool propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.Password))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.Password = "newpass";
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+        Assert.Equal("newpass", viewModel.Password);
+    }
+
+    [Fact]
+    public void RoleString_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com", Role = UserRole.User };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        bool propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.RoleString))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.RoleString = "Admin";
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+        Assert.Equal("Admin", viewModel.RoleString);
+    }
+
+    [Fact]
+    public void SearchInput_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        bool propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.SearchInput))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.SearchInput = "search";
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+        Assert.Equal("search", viewModel.SearchInput);
+    }
+
+    #endregion
+
+    #region UpdateData Tests
+
+    [Fact]
+    public void UpdateData_UpdatesAllProperties()
+    {
+        // Arrange
+        var user1 = new User { Id = 1, FullName = "User One", Email = "user1@test.com", Password = "pass1", Role = UserRole.User };
+        var user2 = new User { Id = 2, FullName = "User Two", Email = "user2@test.com", Password = "pass2", Role = UserRole.Admin };
+        MainData.Users.Add(user1);
+        MainData.Users.Add(user2);
+        var viewModel = new ManageUsersWindowViewModel(user1);
+
+        // Act
+        viewModel.SelectedUser = user2;
+        viewModel.UpdateData();
+
+        // Assert
+        Assert.Equal("User Two", viewModel.Fullname);
+        Assert.Equal("user2@test.com", viewModel.Email);
+        Assert.Equal("pass2", viewModel.Password);
+        Assert.Equal("Admin", viewModel.RoleString);
+    }
+
+    #endregion
+
+    #region SearchUpdate Edge Cases
+
+    [Fact]
+    public void SearchUpdate_CaseInsensitive_FindsMatches()
+    {
+        // Arrange
+        var user1 = new User { Id = 1, FullName = "User ONE", Email = "user1@test.com" };
+        var user2 = new User { Id = 2, FullName = "User Two", Email = "USER2@TEST.COM" };
+        MainData.Users.Add(user1);
+        MainData.Users.Add(user2);
+        var viewModel = new ManageUsersWindowViewModel(user1);
+        viewModel.SearchInput = "user";
+
+        // Act
+        viewModel.SearchUpdate();
+
+        // Assert
+        Assert.Equal(2, viewModel.AllUsers.Count);
+    }
+
+    [Fact]
+    public void SearchUpdate_PartialMatch_FindsUsers()
+    {
+        // Arrange
+        var user1 = new User { Id = 1, FullName = "Developer One", Email = "dev1@test.com" };
+        var user2 = new User { Id = 2, FullName = "Developer Two", Email = "dev2@test.com" };
+        var user3 = new User { Id = 3, FullName = "Manager", Email = "mgr@test.com" };
+        MainData.Users.Add(user1);
+        MainData.Users.Add(user2);
+        MainData.Users.Add(user3);
+        var viewModel = new ManageUsersWindowViewModel(user1);
+        viewModel.SearchInput = "Dev";
+
+        // Act
+        viewModel.SearchUpdate();
+
+        // Assert
+        Assert.Equal(2, viewModel.AllUsers.Count);
+        Assert.All(viewModel.AllUsers, u => Assert.Contains("Developer", u.FullName));
+    }
+
+    [Fact]
+    public void SearchUpdate_ById_FindsUser()
+    {
+        // Arrange
+        var user1 = new User { Id = 123, FullName = "User 123", Email = "user123@test.com" };
+        var user2 = new User { Id = 456, FullName = "User 456", Email = "user456@test.com" };
+        MainData.Users.Add(user1);
+        MainData.Users.Add(user2);
+        var viewModel = new ManageUsersWindowViewModel(user1);
+        viewModel.SearchInput = "123";
+
+        // Act
+        viewModel.SearchUpdate();
+
+        // Assert
+        Assert.Single(viewModel.AllUsers);
+        Assert.Equal(123, viewModel.AllUsers[0].Id);
+    }
+
+    [Fact]
+    public void SearchUpdate_WithWhitespace_TreatsAsEmpty()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        viewModel.SearchInput = "   ";
+
+        // Act
+        viewModel.SearchUpdate();
+
+        // Assert
+        Assert.Same(MainData.Users, viewModel.AllUsers);
+    }
+
+    #endregion
+
+    #region Commands Tests
+
+    [Fact]
+    public void CancelCommand_InvokesRequestClose()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        bool closeInvoked = false;
+        viewModel.RequestClose += () => closeInvoked = true;
+
+        // Act
+        viewModel.CancelCommand.Execute(null);
+
+        // Assert
+        Assert.True(closeInvoked);
+    }
+
+    [Fact]
+    public void Commands_AreNotNull()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
+        MainData.Users.Add(user);
+
+        // Act
+        var viewModel = new ManageUsersWindowViewModel(user);
+
+        // Assert
+        Assert.NotNull(viewModel.SaveCommand);
+        Assert.NotNull(viewModel.CancelCommand);
+    }
+
+    #endregion
+
+    #region Edge Cases
+
+    [Fact]
+    public void Constructor_WithUserNotInMainData_HandlesGracefully()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        var user = new User { Id = 999, FullName = "Orphan User", Email = "orphan@test.com", Password = "pass", Role = UserRole.User };
+
+        // Act
+        var viewModel = new ManageUsersWindowViewModel(user);
+
+        // Assert
+        Assert.Equal("Orphan User", viewModel.Fullname);
+        Assert.Equal("orphan@test.com", viewModel.Email);
+    }
+
+    [Fact]
+    public void SelectedUser_SetToNull_DoesNotUpdateData()
+    {
+        // Arrange
+        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com", Password = "pass", Role = UserRole.User };
+        MainData.Users.Add(user);
+        var viewModel = new ManageUsersWindowViewModel(user);
+        var originalFullname = viewModel.Fullname;
+
+        // Act
+        viewModel.SelectedUser = null;
+
+        // Assert
+        Assert.Equal(originalFullname, viewModel.Fullname); // Sollte unverändert bleiben
+    }
+
+    #endregion
 }
