@@ -2,6 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="TaskDesk_version2.Views.ErrorWindow"
         Title="ERROR"
+        CanResize="False"
+        CanMaximize="False"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
         

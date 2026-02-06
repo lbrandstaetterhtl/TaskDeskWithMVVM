@@ -79,7 +79,7 @@ public partial class LoginWindow : Window
     {
         if (isFirstLoad)
         {
-            if (_lastLoggedInUserFound)
+            if (!_lastLoggedInUserFound)
             {
                 LoginTextBox.Text = _vm.SavedUsers[0].Email;
             }
@@ -126,10 +126,7 @@ public partial class LoginWindow : Window
         {
             PasswordBox.Watermark = "Enter password";
             SavedUserComboBox.SelectedItem = "";
-            return;
         }
-        
-        
     }
     
     private void PasswordBox_GotFocus(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

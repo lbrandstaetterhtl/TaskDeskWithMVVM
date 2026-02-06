@@ -4,6 +4,8 @@
         x:Class="TaskDesk_version2.Views.AddTaskWindow"
         x:DataType="vm:AddTaskWindowViewModel"
         Title="Add Task"
+        CanResize="False"
+        CanMaximize="False"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
 

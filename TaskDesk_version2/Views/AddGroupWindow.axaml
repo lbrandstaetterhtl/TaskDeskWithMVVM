@@ -4,6 +4,8 @@
         x:Class="TaskDesk_version2.Views.AddGroupWindow"
         x:DataType="vm:AddGroupWindowViewModel"
         Title="Add Group"
+        CanResize="False"
+        CanMaximize="False"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
     

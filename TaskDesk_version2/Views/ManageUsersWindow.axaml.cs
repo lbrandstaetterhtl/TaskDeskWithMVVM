@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.Reflection.Metadata.Ecma335;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
 
@@ -9,44 +10,39 @@ namespace TaskDesk_version2.Views;
 
 public partial class ManageUsersWindow : Window
 {
-    private User _originalUser;
+    private bool _init;
     
     public ManageUsersWindow(User user)
     {
         InitializeComponent();
-        
+
+        _init = true;
+
         var vm = new ManageUsersWindowViewModel(user);
+        SetRoleCombo(vm.OriginalUser.Role);
         DataContext = vm;
-        _originalUser = user;
-        
-        IdBox.Text = "ID: " + user.Id;
-        
+
+        IdBox.Text = "ID: " + vm.OriginalUser.Id;
+
         vm.RequestClose += Close;
-        
-        vm.UpdateData();
-        
-        SetRoleCombo();
+        UserList.SelectedItem = vm.SelectedUser;
 
         UserList.SelectionChanged += (_, _) =>
         {
-            if (UserList.SelectedItem is User selectedUser)
-            {
-                vm.SelectedUser = selectedUser;
-                _originalUser = selectedUser;
-                vm.UpdateData();
-                IdBox.Text = "ID: " + selectedUser.Id;
-            }
+            IdBox.Text = "ID: " + vm.SelectedUser?.Id;
         };
-        
-        UserList.SelectedItem = _originalUser;
-        
+
         SearchBar.TextChanged += (_, _) =>
         {
+            if (_init) return;
+
             vm.SearchInput = SearchBar.Text ?? string.Empty;
+
             if (vm.SearchInput.Length > 0)
             {
                 vm.SearchUpdate();
-                if (!vm.AllUsers.Contains(vm.SelectedUser!))
+
+                if (vm.SelectedUser != null && !vm.AllUsers.Contains(vm.SelectedUser))
                 {
                     vm.ClearData();
                     UserList.SelectedItem = null;
@@ -55,16 +51,19 @@ public partial class ManageUsersWindow : Window
             }
             else
             {
-                vm.ClearData();
-                vm.ClearSearch();
+                vm.SearchUpdate();
+                if (vm.SelectedUser != null)
+                    vm.UpdateData();
             }
         };
         
         Closing += OnClosing;
         Opened += OnOpened;
+        
+        _init = false;
     }
     
-    private void SetRoleCombo()
+    private void SetRoleCombo(UserRole role)
     {
         foreach (var enumValue in Enum.GetValues(typeof(UserRole)))
         {
@@ -72,7 +71,7 @@ public partial class ManageUsersWindow : Window
             RoleComboBox.Items.Add(RoleConverter.RoleToString(value));
         }
         
-        RoleComboBox.SelectedItem = RoleConverter.RoleToString(_originalUser.Role);
+        RoleComboBox.SelectedItem = RoleConverter.RoleToString(role);
     }
 
     private void OnClosing(object? s, WindowClosingEventArgs e)

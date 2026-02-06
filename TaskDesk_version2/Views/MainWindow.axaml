@@ -7,6 +7,8 @@
         x:Class="TaskDesk_version2.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="TaskDesk"
+        MinHeight="600"
+        MinWidth="1355"
         WindowState="Maximized">
 
     <Design.DataContext>
@@ -53,7 +55,7 @@
             </MenuItem>
             
             <MenuItem Header="Account">
-                <MenuItem Header="Logout"/>
+                <MenuItem Name="LogoutMenuItem" Header="Logout"/>
                 <MenuItem Header="Edit Your User"/>
             </MenuItem>
         </Menu>

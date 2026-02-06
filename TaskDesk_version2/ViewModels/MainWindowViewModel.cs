@@ -563,4 +563,36 @@ public class MainWindowViewModel : INotifyPropertyChanged
             AppLogger.Error("Error clearing saved users: " + ex.Message);
         }
     }
+    
+    public static async void OnLogoutClick(object? s, RoutedEventArgs e)
+    {
+        try
+        {
+            if (App.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            var confirmWindow = new Views.InfoWindow("Are you sure you want to logout?", true);
+            var result = await confirmWindow.ShowDialogAsync(desktop.Windows[0]);
+
+            if (!result)
+            {
+                return;
+            }
+            
+            var loginWindow = new Views.LoginWindow();
+            loginWindow.Show();
+            AppLogger.Info("User logged out: " + MainData.CurrentUser.FullName);
+            MainData.CurrentUser = null;
+            desktop.Windows[0].Close();
+        }
+        catch (Exception ex)
+        {
+            if (App.Current!.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+            
+            var errorWindow = new Views.ErrorWindow("Error during logout: " + ex.Message);
+            await errorWindow.ShowDialog(desktop.Windows[0]);
+            AppLogger.Error("Error during logout: " + ex.Message);
+        }
+    }
 }

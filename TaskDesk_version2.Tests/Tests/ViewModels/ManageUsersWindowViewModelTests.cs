@@ -146,7 +146,7 @@ public class ManageUsersWindowViewModelTests : IDisposable
         viewModel.RequestClose += () => closeInvoked = true;
 
         // Act
-        viewModel.saveCommand.Execute(null);
+        viewModel.SaveCommand.Execute(null);
 
         // Assert
         var updatedUser = MainData.Users[0];

@@ -7,6 +7,7 @@
         x:Class="TaskDesk_version2.Views.LoginWindow"
         x:DataType="vm:LoginWindowViewModel"
         Title="Login"
+        CanResize="False"
         WindowState="Maximized">
         
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">

@@ -46,6 +46,8 @@ public partial class MainWindow : Window
         SaveCurrentUserMenuItem.Click += MainWindowViewModel.OnSaveCurrentUserClick;
         
         ClearSavedUsersMenuItem.Click += MainWindowViewModel.OnClearSavedUsersClick;
+        
+        LogoutMenuItem.Click += MainWindowViewModel.OnLogoutClick;
 
         if (MainData.Settings.IsThemeDark)
         {
@@ -143,4 +145,6 @@ public partial class MainWindow : Window
             ChangeThemeMenuItem.Header = "Change Theme (Current: Light)";
         }
     }
+    
+    
 }

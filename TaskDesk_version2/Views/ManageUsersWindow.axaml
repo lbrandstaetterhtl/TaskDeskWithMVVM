@@ -4,6 +4,8 @@
         x:Class="TaskDesk_version2.Views.ManageUsersWindow"
         x:DataType="vm:ManageUsersWindowViewModel"
         Title="Manage Users"
+        CanResize="False"
+        CanMaximize="False"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
         
@@ -30,7 +32,7 @@
                 
                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                         <TextBlock Text="Full Name:" FontSize="16" Classes="primary" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <TextBox FontSize="14" Height="20" TextAlignment="Center" Margin="5" Text="{Binding Fullname}" HorizontalAlignment="Right" Width="100"/>
+                        <TextBox FontSize="14" Text="{Binding Fullname, Mode=TwoWay}" HorizontalAlignment="Right" Width="100"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Width="200" Margin="5">
@@ -79,12 +81,12 @@
                 
                 <StackPanel Grid.Row="1" Grid.Column="0" MaxWidth="200" Grid.ColumnSpan="2" Margin="5">
                         <TextBlock FontSize="16" Classes="primary" VerticalAlignment="Center" Text="Email:"/>
-                        <TextBox FontSize="14" Height="20" Margin="5" Text="{Binding Email}"/>
+                        <TextBox FontSize="14" Margin="5" Text="{Binding Email, Mode=TwoWay}"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" MaxWidth="200" Margin="5">
                         <TextBlock FontSize="16" Classes="primary" VerticalAlignment="Center" Text="Password:"/>
-                        <TextBox FontSize="14" Height="20" Margin="5" Text="{Binding Password}"/>
+                        <TextBox FontSize="14" Margin="5" Text="{Binding Password, Mode=TwoWay}"/>
                 </StackPanel>
                 
                 <ComboBox HorizontalAlignment="Center" Name="RoleComboBox" Width="150" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" SelectedItem="{Binding RoleString}" Background="#1E1E1E" Margin="5"/>
@@ -96,8 +98,8 @@
                 </StackPanel>
                 
                 <StackPanel Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Spacing="8" Orientation="Horizontal">
-                        <Button Content="Save Changes" Command="{Binding saveCommand}" IsDefault="True"/>
-                        <Button Content="Cancel" Command="{Binding cancelCommand}"/>
+                        <Button Content="Save Changes" Command="{Binding SaveCommand}" IsDefault="True"/>
+                        <Button Content="Cancel" Command="{Binding CancelCommand}"/>
                 </StackPanel>
         </Grid>
         

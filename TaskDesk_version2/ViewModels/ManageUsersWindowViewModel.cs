@@ -193,29 +193,38 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public ICommand saveCommand { get; }
-    public ICommand cancelCommand { get; }
+    public ICommand SaveCommand { get; }
+    public ICommand CancelCommand { get; }
     public Action? RequestClose;
 
     public ManageUsersWindowViewModel(User user)
-    {
-        if (user == null)
+    {   
+        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
+        SaveCommand = new RelayCommand(SaveUser);
+
+        User? matchingUser = null;
+        foreach (var u in _allUsers)
         {
-            return;
+            if (u.Id == user.Id)
+            {
+                matchingUser = u;
+                break;
+            }
         }
 
-        cancelCommand = new RelayCommand(() => RequestClose?.Invoke());
-        saveCommand = new RelayCommand(SaveUser);
-
-        OriginalUser = user;
-
-        Fullname = user.FullName;
-        Email = user.Email;
-        Password = user.Password;
-        RoleString = RoleConverter.RoleToString(user.Role);
-        AssignedGroups = GroupsOperator.GetListFromIds(user.GroupIds, AllGroups);
-        AssignedTasks = TasksOperator.GetListFromIds(user.TaskIds, AllTasks);
-        SelectedUser = user;
+        var actualUser = matchingUser ?? user;
+    
+        OriginalUser = actualUser;
+        SelectedUser = actualUser;
+    
+        Fullname = actualUser.FullName;
+        Email = actualUser.Email;
+        Password = actualUser.Password;
+        RoleString = RoleConverter.RoleToString(actualUser.Role);
+        AssignedGroups = GroupsOperator.GetListFromIds(actualUser.GroupIds, AllGroups);
+        AssignedTasks = TasksOperator.GetListFromIds(actualUser.TaskIds, AllTasks);
+        
+        AppLogger.Warn($"{Fullname}, {Email}, {Password}, {RoleString}");
     }
 
     public void UpdateData()
