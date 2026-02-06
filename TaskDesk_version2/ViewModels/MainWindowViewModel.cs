@@ -40,7 +40,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public static async void OnAddTaskClick(object? sender, RoutedEventArgs e)
+    public static async void OnAddTaskClick()
     {
         try
         {
@@ -72,7 +72,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         taskWindow.ShowInTaskbar = true;
     }
 
-    public static async void OnAddUserClick(object? sender, RoutedEventArgs e)
+    public static async void OnAddUserClick()
     {
         try
         {
@@ -94,7 +94,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnAddGroupClick(object? sender, RoutedEventArgs e)
+    public static async void OnAddGroupClick()
     {
         try
         {
@@ -166,7 +166,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnManageUsersClick(object? sender, RoutedEventArgs e)
+    public static async void OnManageUsersClick()
     {
         try
         {
@@ -188,7 +188,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearAllTasksClick(object? sender, RoutedEventArgs e)
+    public static async void OnClearAllTasksClick()
     {
         try
         {
@@ -232,7 +232,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearAllUsersClick(object? sender, RoutedEventArgs e)
+    public static async void OnClearAllUsersClick()
     {
         try
         {
@@ -276,7 +276,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearAllGroupsClick(object? sender, RoutedEventArgs e)
+    public static async void OnClearAllGroupsClick()
     {
         try
         {
@@ -320,7 +320,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearCompletedTasksClick(object? sender, RoutedEventArgs e)
+    public static async void OnClearCompletedTasksClick()
     {
         try
         {
@@ -380,7 +380,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearCancelledTasksClick(object? sender, RoutedEventArgs e)
+    public static async void OnClearCancelledTasksClick()
     {
         try
         {
@@ -440,7 +440,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnClearOverdueTasksClick(object? sender, RoutedEventArgs e)
+    public static async void OnClearOverdueTasksClick()
     {
         try
         {
@@ -502,7 +502,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static void OnChangeThemeClick(object? s, RoutedEventArgs e)
+    public static void OnChangeThemeClick()
     {
         if (App.Current == null)
             return;
@@ -512,7 +512,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         (App.Current as App).SetTheme(MainData.Settings.IsThemeDark);
     }
 
-    public static async void OnSaveCurrentUserClick(object? s, RoutedEventArgs e)
+    public static async void OnSaveCurrentUserClick()
     {
         
         try
@@ -540,7 +540,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public static async void OnClearSavedUsersClick(object? s, RoutedEventArgs e)
+    public static async void OnClearSavedUsersClick()
     {
         try
         {
@@ -564,7 +564,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    public static async void OnLogoutClick(object? s, RoutedEventArgs e)
+    public static async void OnLogoutClick()
     {
         try
         {

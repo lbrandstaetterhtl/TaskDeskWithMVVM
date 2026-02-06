@@ -20,35 +20,7 @@ public partial class MainWindow : Window
         var vm = new MainWindowViewModel();
 
         DataContext = vm;
-
-        AddTaskMenuItem.Click += MainWindowViewModel.OnAddTaskClick;
-
-        AddUserMenuItem.Click += MainWindowViewModel.OnAddUserClick;
         
-        AddGroupMenuItem.Click += MainWindowViewModel.OnAddGroupClick;
-        
-        ManageUsersMenuItem.Click += MainWindowViewModel.OnManageUsersClick;
-        
-        ClearAllTasksMenuItem.Click += MainWindowViewModel.OnClearAllTasksClick;
-        
-        ClearAllGroupsMenuItem.Click += MainWindowViewModel.OnClearAllGroupsClick;
-        
-        ClearAllUsersMenuItem.Click += MainWindowViewModel.OnClearAllUsersClick;
-        
-        ClearCompletedTasksMenuItem.Click += MainWindowViewModel.OnClearCompletedTasksClick;
-        
-        ClearCancelledTasksMenuItem.Click += MainWindowViewModel.OnClearCancelledTasksClick;
-        
-        ClearOverdueTasksMenuItem.Click += MainWindowViewModel.OnClearOverdueTasksClick;
-        
-        ChangeThemeMenuItem.Click += OnChangeThemeClick;
-        
-        SaveCurrentUserMenuItem.Click += MainWindowViewModel.OnSaveCurrentUserClick;
-        
-        ClearSavedUsersMenuItem.Click += MainWindowViewModel.OnClearSavedUsersClick;
-        
-        LogoutMenuItem.Click += MainWindowViewModel.OnLogoutClick;
-
         if (MainData.Settings.IsThemeDark)
         {
             ChangeThemeMenuItem.Header += " (Current: Dark)";
@@ -132,9 +104,9 @@ public partial class MainWindow : Window
         }
     }
     
-    private void OnChangeThemeClick(object? sender, RoutedEventArgs e)
+    private void OnChangeThemeClick(object? s, RoutedEventArgs e)
     {
-        MainWindowViewModel.OnChangeThemeClick(sender, e);
+        MainWindowViewModel.OnChangeThemeClick();
         
         if (MainData.Settings.IsThemeDark)
         {
@@ -145,6 +117,9 @@ public partial class MainWindow : Window
             ChangeThemeMenuItem.Header = "Change Theme (Current: Light)";
         }
     }
-    
-    
+
+    private void OnLogoutClick(object? s, RoutedEventArgs e)
+    {
+        
+    }
 }

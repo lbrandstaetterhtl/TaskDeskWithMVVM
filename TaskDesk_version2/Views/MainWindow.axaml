@@ -29,29 +29,29 @@
         
         <Menu Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Tasks">
-                <MenuItem x:Name="AddTaskMenuItem" Header="Add Task"/>
-                <MenuItem x:Name="ClearAllTasksMenuItem" Header="Clear All Tasks"/>
-                <MenuItem x:Name="ClearCompletedTasksMenuItem" Header="Clear Completed Tasks"/>
-                <MenuItem x:Name="ClearCancelledTasksMenuItem" Header="Clear Cancelled Tasks"/>
-                <MenuItem x:Name="ClearOverdueTasksMenuItem" Header="Clear Overdue Tasks"/>
+                <MenuItem Header="Add Task" Command="{Binding OnAddTaskClick}"/>
+                <MenuItem Header="Clear All Tasks" Command="{Binding OnClearAllTasksClick}"/>
+                <MenuItem Header="Clear Completed Tasks" Command="{Binding OnClearCompletedTasksClick}"/>
+                <MenuItem Header="Clear Cancelled Tasks" Command="{Binding OnClearCancelledTasksClick}"/>
+                <MenuItem Header="Clear Overdue Tasks" Command="{Binding OnClearOverdueTasksClick}"/>
             </MenuItem>
             
             <MenuItem Header="Users">
-                <MenuItem x:Name="AddUserMenuItem" Header="Add User"/>
-                <MenuItem x:Name="ManageUsersMenuItem" Header="Manage Users"/>
-                <MenuItem x:Name="ClearAllUsersMenuItem" Header="Clear All Users"/>
+                <MenuItem Header="Add User" Command="{Binding OnAddUserClick}"/>
+                <MenuItem Header="Manage Users" Command="{Binding OnManageUsersClick}"/>
+                <MenuItem Header="Clear All Users" Command="{Binding OnClearAllUsersClick}"/>
             </MenuItem>
             
             <MenuItem Header="Groups">
-                <MenuItem x:Name="AddGroupMenuItem" Header="Add Group"/>
+                <MenuItem Header="Add Group" Command="{Binding OnAddGroupClick}"/>
                 <MenuItem Header="Manage Groups"/>
-                <MenuItem x:Name="ClearAllGroupsMenuItem" Header="Clear All Groups"/>
+                <MenuItem Header="Clear All Groups" Command="{Binding OnClearAllGroupsClick}"/>
             </MenuItem>
             
             <MenuItem Header="Settings">
-                <MenuItem Name="ChangeThemeMenuItem" Header="Change Theme"/>
-                <MenuItem Name="SaveCurrentUserMenuItem" Header="Save Current User"/>
-                <MenuItem Name="ClearSavedUsersMenuItem" Header="Clear Saved Users"/>
+                <MenuItem Name="ChangeThemeMenuItem" Header="Change Theme" Click="OnChangeThemeClick"/>
+                <MenuItem Header="Save Current User" Command="{Binding OnSaveCurrentUserClick}"/>
+                <MenuItem Header="Clear Saved Users" Command="{Binding OnClearSavedUsersClick}"/>
             </MenuItem>
             
             <MenuItem Header="Account">
