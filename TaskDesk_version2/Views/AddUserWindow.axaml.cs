@@ -19,6 +19,9 @@ public partial class AddUserWindow : Window
         var vm = new AddUserWindowViewModel();
         vm.RequestClose += Close;
         DataContext = vm;
+        
+        Opened += OnOpened;
+        Closing += OnClosing;
     }
     
     private void SetGroupList()

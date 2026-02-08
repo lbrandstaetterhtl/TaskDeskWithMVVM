@@ -372,4 +372,44 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
     {
         SearchInput = string.Empty;
     }
+    
+    public void UpdateToFirstUser()
+    {
+        if (MainData.Users.Count > 0)
+        {
+            SelectedUser = MainData.Users[0];
+        }
+    }
+    
+    public void DeleteUser()
+    {
+        if (SelectedUser == null)
+        {
+            return;
+        }
+        
+        var deletedUserId = SelectedUser.Id;
+
+        MainData.Users.Remove(SelectedUser);
+
+        foreach (var group in MainData.Groups)
+        {
+            if (group.UserIds.Contains(deletedUserId))
+            {
+                group.UserIds.Remove(deletedUserId);
+            }
+        }
+
+        foreach (var task in MainData.Tasks)
+        {
+            if (task.UserIds.Contains(deletedUserId))
+            {
+                task.UserIds.Remove(deletedUserId);
+            }
+        }
+
+        AppLogger.Info("Deleted user: ID: " + deletedUserId);
+
+        UpdateToFirstUser();
+    }
 }
