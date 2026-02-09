@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Threading;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
 
@@ -40,7 +44,12 @@ public partial class MainWindow : Window
         {
             return;
         }
-        
+
+        if (DataContext is MainWindowViewModel vm)
+        {
+            vm.Tasks.CollectionChanged -= Tasks_CollectionChanged;
+        }
+
         TasksOperator.SaveTasksToJson(MainData.Tasks);
 
         UsersOperator.SaveUsersToJson(MainData.Users);
@@ -60,6 +69,13 @@ public partial class MainWindow : Window
         {
             return;
         }
+        
+        if (DataContext is MainWindowViewModel vm)
+        {
+            vm.Tasks.CollectionChanged += Tasks_CollectionChanged;
+        }
+        
+        Dispatcher.UIThread.Post(SetBackgroundColorOfBorder, DispatcherPriority.Loaded);
 
         AppLogger.Info("------------- Main Window Opened -------------");
     }
@@ -115,6 +131,44 @@ public partial class MainWindow : Window
         else
         {
             ChangeThemeMenuItem.Header = "Change Theme (Current: Light)";
+        }
+    }
+    
+    private void Tasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        Dispatcher.UIThread.Post(SetBackgroundColorOfBorder, DispatcherPriority.Loaded);
+    }
+    
+    private void OnStateBorderDataContextChanged(object? sender, EventArgs e)
+    {
+        if (sender is not Border border)
+            return;
+
+        if (border.DataContext is Task task)
+        {
+            border.Classes.Clear();
+            border.Classes.Add(task.State.ToString());
+        }
+    }
+
+    private void SetBackgroundColorOfBorder()
+    {
+        var itemsControl = this.FindControl<ItemsControl>("TasksGrid");
+        if (itemsControl?.Presenter?.Panel == null) 
+            return;
+
+        int index = 0;
+        foreach (var child in itemsControl.Presenter.Panel.Children)
+        {
+            if (child is ContentPresenter contentPresenter && 
+                contentPresenter.Child is Border border && 
+                border.Classes.Contains("TaskRowBorder"))
+            {
+                border.Background = index % 2 == 0 
+                    ? Brushes.DimGray 
+                    : Brushes.DarkGray;
+                index++;
+            }
         }
     }
 }

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TaskDesk_version2.Views.MainWindow"
+        xmlns:local="using:TaskDesk_version2.Models"
         x:DataType="vm:MainWindowViewModel"
         Title="TaskDesk"
         MinHeight="600"
@@ -27,9 +28,10 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <Menu Grid.Row="0" Grid.Column="0">
+        <Menu Classes="RootMenu" Grid.ColumnSpan="2" Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Tasks">
                 <MenuItem Header="Add Task" Command="{Binding OnAddTaskClick}"/>
+                <Separator/>
                 <MenuItem Header="Clear All Tasks" Command="{Binding OnClearAllTasksClick}"/>
                 <MenuItem Header="Clear Completed Tasks" Command="{Binding OnClearCompletedTasksClick}"/>
                 <MenuItem Header="Clear Cancelled Tasks" Command="{Binding OnClearCancelledTasksClick}"/>
@@ -39,12 +41,14 @@
             <MenuItem Header="Users">
                 <MenuItem Header="Add User" Command="{Binding OnAddUserClick}"/>
                 <MenuItem Header="Manage Users" Command="{Binding OnManageUsersClick}"/>
+                <Separator/>
                 <MenuItem Header="Clear All Users" Command="{Binding OnClearAllUsersClick}"/>
             </MenuItem>
             
             <MenuItem Header="Groups">
                 <MenuItem Header="Add Group" Command="{Binding OnAddGroupClick}"/>
                 <MenuItem Header="Manage Groups"/>
+                <Separator/>
                 <MenuItem Header="Clear All Groups" Command="{Binding OnClearAllGroupsClick}"/>
             </MenuItem>
             
@@ -55,7 +59,7 @@
             </MenuItem>
             
             <MenuItem Header="Account">
-                <MenuItem Header="Logout" Command="{Binding OnLogoutClick}"/>
+                <MenuItem Header="Logout" Command="{Binding LogoutCommand}"/>
                 <MenuItem Header="Edit Your User"/>
             </MenuItem>
         </Menu>
@@ -67,29 +71,39 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <Border Classes="TaskRowBorder" Grid.Row="0">
-            <StackPanel Classes="Row">
-                <TextBlock Text="Title" Classes="TaskListHeader primary"/>
-                <TextBlock Text="Description" Classes="TaskListHeader primary"/>
-                <TextBlock Text="Due Date" Classes="TaskListHeader primary"/>
-                <TextBlock Text="Users" Classes="TaskListHeader primary"/>
-                <TextBlock Text="Groups" Classes="TaskListHeader primary"/>
-                <TextBlock Text="State" Classes="TaskListHeader primary"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="c1"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border Classes="TaskRowBorder" Grid.Row="0" Background="DarkGray">
+            <StackPanel Grid.IsSharedSizeScope="True" Classes="Row">
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Title" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Description" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Due Date" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Users" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                <TextBlock Text="Groups" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                <TextBlock Text="State" Classes="TaskListHeader"/>
+                </Border>
             </StackPanel>
             </Border>
             
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Tasks}">
+            <ScrollViewer Grid.IsSharedSizeScope="True" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="TasksGrid" ItemsSource="{Binding Tasks}">
                 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Classes="TaskRowBorder" DoubleTapped="TaskDoubleClick" PointerEntered="PointerEntered" PointerExited="PointerExited">
-                            <ToolTip.Tip>
-                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" MaxWidth="300" MaxHeight="300"/>
-                                </ScrollViewer>
-                            </ToolTip.Tip>
-                            
                             <Border.ContextFlyout>
                                 <MenuFlyout>
                                     <MenuItem Header="Open Task" Click="OnTaskOpenClick"/>
@@ -97,13 +111,25 @@
                                 </MenuFlyout>
                             </Border.ContextFlyout>
                             
-                            <StackPanel Classes="Task Row">
-                                <TextBlock Classes="TaskProperty primary" Text="{Binding Title}"/>
-                                <TextBlock Classes="TaskProperty primary" Text="{Binding Description}"/>
-                                <TextBlock Classes="TaskProperty primary" Text="{Binding DateAsString}"/>
-                                <TextBlock Classes="TaskProperty primary" Text="{Binding UsersAsString}"/>
-                                <TextBlock Classes="TaskProperty primary" Text="{Binding GroupsAsString}"/>
-                                <TextBlock Classes="TaskProperty primary" Text="{Binding StateAsString}"/>
+                            <StackPanel Classes="Row">
+                                <Border ToolTip.Tip="{Binding Title}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding Title}"/>
+                                </Border>
+                                <Border ToolTip.Tip="{Binding Description}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding Description}"/>
+                                </Border>
+                                <Border Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding DateAsString}"/>
+                                </Border>
+                                <Border ToolTip.Tip="{Binding UsersAsString}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding UsersAsString}"/>
+                                </Border>
+                                <Border ToolTip.Tip="{Binding GroupsAsString}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding GroupsAsString}"/>
+                                </Border>
+                                <Border DataContextChanged="OnStateBorderDataContextChanged" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding StateAsString}"/>
+                                </Border>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

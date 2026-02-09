@@ -3,10 +3,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Dynamic;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.Input;
+using ReactiveUI;
 using TaskDesk_version2.Models;
 
 namespace TaskDesk_version2.ViewModels;
@@ -32,12 +35,15 @@ public class MainWindowViewModel : INotifyPropertyChanged
     {
         Tasks = MainData.Tasks;
     }
+    
+    public ICommand LogoutCommand { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     
     private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        LogoutCommand = new RelayCommand(OnLogoutClick);
     }
 
     public async void OnAddTaskClick()
