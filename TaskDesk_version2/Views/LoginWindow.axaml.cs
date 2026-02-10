@@ -1,6 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using TaskDesk_version2.Models;
@@ -10,9 +10,9 @@ namespace TaskDesk_version2.Views;
 
 public partial class LoginWindow : Window
 {
+    private readonly bool _lastLoggedInUserFound;
     private readonly LoginWindowViewModel _vm;
-    private readonly bool _lastLoggedInUserFound = false;
-    
+
     public LoginWindow()
     {
         InitializeComponent();
@@ -20,11 +20,11 @@ public partial class LoginWindow : Window
         new MainData();
 
         _vm = new LoginWindowViewModel();
-        
+
         _vm.RequestClose += Close;
         _vm.PasswordVisibleCommand = new RelayCommand(PasswordVisibility);
         DataContext = _vm;
-        
+
         foreach (var user in _vm.SavedUsers)
         {
             SavedUserComboBox.Items.Add(user.FullName);
@@ -35,9 +35,9 @@ public partial class LoginWindow : Window
                 _lastLoggedInUserFound = true;
             }
         }
-        
+
         SetPasswordWaterMark(true);
-        
+
         Closing += OnClosing;
         Opened += OnOpened;
     }
@@ -50,14 +50,13 @@ public partial class LoginWindow : Window
             PasswordVisibilityToggleImage.Source = new Bitmap("../../../Assets/Visible.png");
             return;
         }
-        
+
         PasswordBox.PasswordChar = '*';
         PasswordVisibilityToggleImage.Source = new Bitmap("../../../Assets/NotVisible.png");
     }
 
     private void SetPasswordWaterMark(bool isFirstLoad = false)
     {
-        
         if (!_lastLoggedInUserFound && _vm.SavedUsers.Count > 0)
         {
             SavedUserComboBox.SelectedItem = SavedUserComboBox.Items[0];
@@ -66,7 +65,8 @@ public partial class LoginWindow : Window
         }
         else if (_lastLoggedInUserFound && _vm.SavedUsers.Count > 0)
         {
-            var user = _vm.SavedUsers.Find(u => u.Id == MainData.Settings.LastLoggedInUserId);;
+            var user = _vm.SavedUsers.Find(u => u.Id == MainData.Settings.LastLoggedInUserId);
+            ;
             if (user != null)
             {
                 SetLoginBoxText(isFirstLoad, user.Email);
@@ -80,46 +80,39 @@ public partial class LoginWindow : Window
         if (isFirstLoad)
         {
             if (!_lastLoggedInUserFound)
-            {
                 LoginTextBox.Text = _vm.SavedUsers[0].Email;
-            }
             else
-            {
                 LoginTextBox.Text = email;
-            }
         }
     }
-    
+
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
         if (LoginTextBox.Text == string.Empty || PasswordBox.Text == string.Empty)
         {
             AppLogger.Info("------------- Login Window Closed -------------");
             AppLogger.Info("------------- Application Closed -----------------------------------------");
-            
+
             return;
         }
-        
+
         AppLogger.Info("------------- Login Window Closed -------------");
     }
-    
+
     private void OnOpened(object? sender, EventArgs e)
     {
         AppLogger.Info("------------- Login Window Opened -------------");
     }
-    
+
     private void SavedUserComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (SavedUserComboBox.SelectedIndex < 0 || SavedUserComboBox.SelectedIndex >= _vm.SavedUsers.Count)
-        {
-            return;
-        }
+        if (SavedUserComboBox.SelectedIndex < 0 || SavedUserComboBox.SelectedIndex >= _vm.SavedUsers.Count) return;
 
         var selectedUser = _vm.SavedUsers[SavedUserComboBox.SelectedIndex];
         LoginTextBox.Text = selectedUser.Email;
         PasswordBox.Watermark = "Enter password for " + selectedUser.FullName;
     }
-    
+
     private void LoginTextBox_TextChanged(object? sender, TextChangedEventArgs e)
     {
         if (LoginTextBox.Text == "")
@@ -128,13 +121,13 @@ public partial class LoginWindow : Window
             SavedUserComboBox.SelectedItem = "";
         }
     }
-    
-    private void PasswordBox_GotFocus(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+
+    private void PasswordBox_GotFocus(object? sender, RoutedEventArgs e)
     {
         PasswordBox.Watermark = "";
     }
 
-    private void PasswordBox_LostFocus(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void PasswordBox_LostFocus(object? sender, RoutedEventArgs e)
     {
         SetPasswordWaterMark();
     }

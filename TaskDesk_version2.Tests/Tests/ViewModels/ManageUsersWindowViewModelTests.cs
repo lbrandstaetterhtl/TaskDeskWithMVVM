@@ -1,14 +1,12 @@
-﻿﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
-using Xunit;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.ViewModels;
 
 /// <summary>
-/// Unit-Tests fuer ManageUsersWindowViewModel
+///     Unit-Tests fuer ManageUsersWindowViewModel
 /// </summary>
 public class ManageUsersWindowViewModelTests : IDisposable
 {
@@ -39,8 +37,8 @@ public class ManageUsersWindowViewModelTests : IDisposable
             Email = "user1@test.com",
             Password = "pass",
             Role = UserRole.Admin,
-            GroupIds = new() { 1 },
-            TaskIds = new() { 1 }
+            GroupIds = new List<int> { 1 },
+            TaskIds = new List<int> { 1 }
         };
         MainData.Groups.Add(group);
         MainData.Tasks.Add(task);
@@ -74,8 +72,8 @@ public class ManageUsersWindowViewModelTests : IDisposable
             Email = "user1@test.com",
             Password = "pass1",
             Role = UserRole.User,
-            GroupIds = new() { 1 },
-            TaskIds = new() { 1 }
+            GroupIds = new List<int> { 1 },
+            TaskIds = new List<int> { 1 }
         };
         var user2 = new User
         {
@@ -84,8 +82,8 @@ public class ManageUsersWindowViewModelTests : IDisposable
             Email = "user2@test.com",
             Password = "pass2",
             Role = UserRole.ReadOnly,
-            GroupIds = new() { 2 },
-            TaskIds = new() { 2 }
+            GroupIds = new List<int> { 2 },
+            TaskIds = new List<int> { 2 }
         };
         MainData.Groups.Add(group1);
         MainData.Groups.Add(group2);
@@ -114,10 +112,10 @@ public class ManageUsersWindowViewModelTests : IDisposable
     public void SaveCommand_UpdatesUserAndRelations()
     {
         // Arrange
-        var group1 = new Group { Id = 1, Name = "Group A", UserIds = new() { 1 } };
-        var group2 = new Group { Id = 2, Name = "Group B", UserIds = new() };
-        var task1 = new Task { Id = 1, Title = "Task A", UserIds = new() { 1 } };
-        var task2 = new Task { Id = 2, Title = "Task B", UserIds = new() };
+        var group1 = new Group { Id = 1, Name = "Group A", UserIds = new List<int> { 1 } };
+        var group2 = new Group { Id = 2, Name = "Group B", UserIds = new List<int>() };
+        var task1 = new Task { Id = 1, Title = "Task A", UserIds = new List<int> { 1 } };
+        var task2 = new Task { Id = 2, Title = "Task B", UserIds = new List<int>() };
         var user = new User
         {
             Id = 1,
@@ -125,8 +123,8 @@ public class ManageUsersWindowViewModelTests : IDisposable
             Email = "user1@test.com",
             Password = "pass1",
             Role = UserRole.User,
-            GroupIds = new() { 1 },
-            TaskIds = new() { 1 }
+            GroupIds = new List<int> { 1 },
+            TaskIds = new List<int> { 1 }
         };
         MainData.Groups.Add(group1);
         MainData.Groups.Add(group2);
@@ -265,6 +263,33 @@ public class ManageUsersWindowViewModelTests : IDisposable
         Assert.Equal(string.Empty, viewModel.SearchInput);
     }
 
+    #region UpdateData Tests
+
+    [Fact]
+    public void UpdateData_UpdatesAllProperties()
+    {
+        // Arrange
+        var user1 = new User
+            { Id = 1, FullName = "User One", Email = "user1@test.com", Password = "pass1", Role = UserRole.User };
+        var user2 = new User
+            { Id = 2, FullName = "User Two", Email = "user2@test.com", Password = "pass2", Role = UserRole.Admin };
+        MainData.Users.Add(user1);
+        MainData.Users.Add(user2);
+        var viewModel = new ManageUsersWindowViewModel(user1);
+
+        // Act
+        viewModel.SelectedUser = user2;
+        viewModel.UpdateData();
+
+        // Assert
+        Assert.Equal("User Two", viewModel.Fullname);
+        Assert.Equal("user2@test.com", viewModel.Email);
+        Assert.Equal("pass2", viewModel.Password);
+        Assert.Equal("Admin", viewModel.RoleString);
+    }
+
+    #endregion
+
     #region Property Tests
 
     [Fact]
@@ -274,7 +299,7 @@ public class ManageUsersWindowViewModelTests : IDisposable
         var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
         MainData.Users.Add(user);
         var viewModel = new ManageUsersWindowViewModel(user);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Fullname))
@@ -296,7 +321,7 @@ public class ManageUsersWindowViewModelTests : IDisposable
         var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
         MainData.Users.Add(user);
         var viewModel = new ManageUsersWindowViewModel(user);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Email))
@@ -318,7 +343,7 @@ public class ManageUsersWindowViewModelTests : IDisposable
         var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
         MainData.Users.Add(user);
         var viewModel = new ManageUsersWindowViewModel(user);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Password))
@@ -340,7 +365,7 @@ public class ManageUsersWindowViewModelTests : IDisposable
         var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com", Role = UserRole.User };
         MainData.Users.Add(user);
         var viewModel = new ManageUsersWindowViewModel(user);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.RoleString))
@@ -362,7 +387,7 @@ public class ManageUsersWindowViewModelTests : IDisposable
         var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
         MainData.Users.Add(user);
         var viewModel = new ManageUsersWindowViewModel(user);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.SearchInput))
@@ -375,31 +400,6 @@ public class ManageUsersWindowViewModelTests : IDisposable
         // Assert
         Assert.True(propertyChangedRaised);
         Assert.Equal("search", viewModel.SearchInput);
-    }
-
-    #endregion
-
-    #region UpdateData Tests
-
-    [Fact]
-    public void UpdateData_UpdatesAllProperties()
-    {
-        // Arrange
-        var user1 = new User { Id = 1, FullName = "User One", Email = "user1@test.com", Password = "pass1", Role = UserRole.User };
-        var user2 = new User { Id = 2, FullName = "User Two", Email = "user2@test.com", Password = "pass2", Role = UserRole.Admin };
-        MainData.Users.Add(user1);
-        MainData.Users.Add(user2);
-        var viewModel = new ManageUsersWindowViewModel(user1);
-
-        // Act
-        viewModel.SelectedUser = user2;
-        viewModel.UpdateData();
-
-        // Assert
-        Assert.Equal("User Two", viewModel.Fullname);
-        Assert.Equal("user2@test.com", viewModel.Email);
-        Assert.Equal("pass2", viewModel.Password);
-        Assert.Equal("Admin", viewModel.RoleString);
     }
 
     #endregion
@@ -491,7 +491,7 @@ public class ManageUsersWindowViewModelTests : IDisposable
         var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com" };
         MainData.Users.Add(user);
         var viewModel = new ManageUsersWindowViewModel(user);
-        bool closeInvoked = false;
+        var closeInvoked = false;
         viewModel.RequestClose += () => closeInvoked = true;
 
         // Act
@@ -525,7 +525,8 @@ public class ManageUsersWindowViewModelTests : IDisposable
     {
         // Arrange
         MainData.Users.Clear();
-        var user = new User { Id = 999, FullName = "Orphan User", Email = "orphan@test.com", Password = "pass", Role = UserRole.User };
+        var user = new User
+            { Id = 999, FullName = "Orphan User", Email = "orphan@test.com", Password = "pass", Role = UserRole.User };
 
         // Act
         var viewModel = new ManageUsersWindowViewModel(user);
@@ -539,7 +540,8 @@ public class ManageUsersWindowViewModelTests : IDisposable
     public void SelectedUser_SetToNull_DoesNotUpdateData()
     {
         // Arrange
-        var user = new User { Id = 1, FullName = "User One", Email = "user1@test.com", Password = "pass", Role = UserRole.User };
+        var user = new User
+            { Id = 1, FullName = "User One", Email = "user1@test.com", Password = "pass", Role = UserRole.User };
         MainData.Users.Add(user);
         var viewModel = new ManageUsersWindowViewModel(user);
         var originalFullname = viewModel.Fullname;

@@ -1,12 +1,9 @@
 ﻿using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
 
 namespace TaskDesk_version2.Tests.Tests.Models;
 
 /// <summary>
-/// Unit-Tests für die Settings-Klasse
+///     Unit-Tests für die Settings-Klasse
 /// </summary>
 public class SettingsTests : IDisposable
 {
@@ -77,10 +74,10 @@ public class SettingsTests : IDisposable
 
         // Act & Assert
         Assert.False(settings.IsThemeDark);
-        
+
         settings.IsThemeDark = true;
         Assert.True(settings.IsThemeDark);
-        
+
         settings.IsThemeDark = false;
         Assert.False(settings.IsThemeDark);
     }

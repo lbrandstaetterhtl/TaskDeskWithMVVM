@@ -1,13 +1,10 @@
-﻿﻿using TaskDesk_version2.ViewModels;
-using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
+﻿using TaskDesk_version2.Models;
+using TaskDesk_version2.ViewModels;
 
 namespace TaskDesk_version2.Tests.Tests.ViewModels;
 
 /// <summary>
-/// Unit-Tests für LoginWindowViewModel
+///     Unit-Tests für LoginWindowViewModel
 /// </summary>
 public class LoginWindowViewModelTests : IDisposable
 {
@@ -27,6 +24,25 @@ public class LoginWindowViewModelTests : IDisposable
         MainData.Tasks.Clear();
         MainData.CurrentUser = null!;
     }
+
+    #region RequestClose Event Tests
+
+    [Fact]
+    public void CloseCommand_InvokesRequestClose()
+    {
+        // Arrange
+        var viewModel = new LoginWindowViewModel();
+        var requestCloseInvoked = false;
+        viewModel.RequestClose += () => requestCloseInvoked = true;
+
+        // Act
+        viewModel.CloseCommand.Execute(null);
+
+        // Assert
+        Assert.True(requestCloseInvoked);
+    }
+
+    #endregion
 
     #region Constructor Tests
 
@@ -62,7 +78,7 @@ public class LoginWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new LoginWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Email))
@@ -83,7 +99,7 @@ public class LoginWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new LoginWindowViewModel();
         viewModel.Email = "test@example.com";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Email))
@@ -137,7 +153,7 @@ public class LoginWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new LoginWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Password))
@@ -158,7 +174,7 @@ public class LoginWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new LoginWindowViewModel();
         viewModel.Password = "Password123";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Password))
@@ -209,7 +225,7 @@ public class LoginWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new LoginWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.IsValid))
@@ -230,7 +246,7 @@ public class LoginWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new LoginWindowViewModel();
         viewModel.IsValid = true;
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.IsValid))
@@ -280,7 +296,7 @@ public class LoginWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new LoginWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.SavedUsers))
@@ -288,7 +304,7 @@ public class LoginWindowViewModelTests : IDisposable
         };
 
         // Act
-        viewModel.SavedUsers = new List<User> { new User { Id = 1, FullName = "Test" } };
+        viewModel.SavedUsers = new List<User> { new() { Id = 1, FullName = "Test" } };
 
         // Assert
         Assert.True(propertyChangedRaised);
@@ -314,7 +330,7 @@ public class LoginWindowViewModelTests : IDisposable
         var user2 = new User { Id = 2, FullName = "Saved User 2", Email = "user2@test.com" };
         MainData.Users.Add(user1);
         MainData.Users.Add(user2);
-        
+
         MainData.Settings.SavedUserIds.Clear();
         MainData.Settings.SavedUserIds.Add(1);
         MainData.Settings.SavedUserIds.Add(2);
@@ -349,7 +365,7 @@ public class LoginWindowViewModelTests : IDisposable
         MainData.Users.Clear();
         var user1 = new User { Id = 1, FullName = "Valid User", Email = "valid@test.com" };
         MainData.Users.Add(user1);
-        
+
         MainData.Settings.SavedUserIds.Clear();
         MainData.Settings.SavedUserIds.Add(1);
         MainData.Settings.SavedUserIds.Add(999); // Invalid ID
@@ -360,25 +376,6 @@ public class LoginWindowViewModelTests : IDisposable
         // Assert
         Assert.Single(viewModel.SavedUsers);
         Assert.Equal(1, viewModel.SavedUsers[0].Id);
-    }
-
-    #endregion
-
-    #region RequestClose Event Tests
-
-    [Fact]
-    public void CloseCommand_InvokesRequestClose()
-    {
-        // Arrange
-        var viewModel = new LoginWindowViewModel();
-        bool requestCloseInvoked = false;
-        viewModel.RequestClose += () => requestCloseInvoked = true;
-
-        // Act
-        viewModel.CloseCommand.Execute(null);
-
-        // Assert
-        Assert.True(requestCloseInvoked);
     }
 
     #endregion
@@ -408,10 +405,7 @@ public class LoginWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new LoginWindowViewModel();
         var changedProperties = new List<string>();
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            changedProperties.Add(args.PropertyName!);
-        };
+        viewModel.PropertyChanged += (sender, args) => { changedProperties.Add(args.PropertyName!); };
 
         // Act
         viewModel.Email = "email@test.com";

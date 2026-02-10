@@ -1,14 +1,11 @@
-﻿using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.Models;
 
 /// <summary>
-/// Unit-Tests für die Task-Klasse und TasksOperator
+///     Unit-Tests für die Task-Klasse und TasksOperator
 /// </summary>
 public class TaskTests : IDisposable
 {
@@ -27,6 +24,23 @@ public class TaskTests : IDisposable
         MainData.Users.Clear();
         MainData.Groups.Clear();
     }
+
+    #region StateAsString Property Tests
+
+    [Fact]
+    public void StateAsString_Property_ReturnsCorrectString()
+    {
+        // Arrange
+        var task = new Task { State = TaskState.InProgress };
+
+        // Act
+        var result = task.StateAsString;
+
+        // Assert
+        Assert.Equal("In Progress...", result);
+    }
+
+    #endregion
 
     #region Task Constructor Tests
 
@@ -59,7 +73,8 @@ public class TaskTests : IDisposable
     public void TaskConstructor_WithPendingState_CreatesTaskWithPendingState()
     {
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Assert
         Assert.Equal(TaskState.Pending, task.State);
@@ -69,7 +84,8 @@ public class TaskTests : IDisposable
     public void TaskConstructor_WithInProgressState_CreatesTaskWithInProgressState()
     {
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.InProgress, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.InProgress,
+            new List<int>(), new List<int>());
 
         // Assert
         Assert.Equal(TaskState.InProgress, task.State);
@@ -79,7 +95,8 @@ public class TaskTests : IDisposable
     public void TaskConstructor_WithCompletedState_CreatesTaskWithCompletedState()
     {
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Completed, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Completed,
+            new List<int>(), new List<int>());
 
         // Assert
         Assert.Equal(TaskState.Completed, task.State);
@@ -89,7 +106,8 @@ public class TaskTests : IDisposable
     public void TaskConstructor_WithOnHoldState_CreatesTaskWithOnHoldState()
     {
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.OnHold, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.OnHold, new List<int>(),
+            new List<int>());
 
         // Assert
         Assert.Equal(TaskState.OnHold, task.State);
@@ -99,7 +117,8 @@ public class TaskTests : IDisposable
     public void TaskConstructor_WithCancelledState_CreatesTaskWithCancelledState()
     {
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Cancelled, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Cancelled,
+            new List<int>(), new List<int>());
 
         // Assert
         Assert.Equal(TaskState.Cancelled, task.State);
@@ -122,7 +141,8 @@ public class TaskTests : IDisposable
     public void TaskConstructor_WithEmptyLists_CreatesTaskSuccessfully()
     {
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Assert
         Assert.Empty(task.GroupIds);
@@ -214,23 +234,6 @@ public class TaskTests : IDisposable
 
         // Assert
         Assert.Equal(expected, result);
-    }
-
-    #endregion
-
-    #region StateAsString Property Tests
-
-    [Fact]
-    public void StateAsString_Property_ReturnsCorrectString()
-    {
-        // Arrange
-        var task = new Task { State = TaskState.InProgress };
-
-        // Act
-        var result = task.StateAsString;
-
-        // Assert
-        Assert.Equal("In Progress...", result);
     }
 
     #endregion
@@ -334,9 +337,9 @@ public class TaskTests : IDisposable
         // Arrange
         var allTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" },
-            new Task { Id = 2, Title = "Task 2" },
-            new Task { Id = 3, Title = "Task 3" }
+            new() { Id = 1, Title = "Task 1" },
+            new() { Id = 2, Title = "Task 2" },
+            new() { Id = 3, Title = "Task 3" }
         };
         var ids = new List<int> { 1, 3 };
 
@@ -355,7 +358,7 @@ public class TaskTests : IDisposable
         // Arrange
         var allTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" }
+            new() { Id = 1, Title = "Task 1" }
         };
         var ids = new List<int> { 99, 100 };
 
@@ -372,7 +375,7 @@ public class TaskTests : IDisposable
         // Arrange
         var allTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" }
+            new() { Id = 1, Title = "Task 1" }
         };
         var ids = new List<int>();
 
@@ -403,9 +406,9 @@ public class TaskTests : IDisposable
         // Arrange
         var allTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" },
-            new Task { Id = 2, Title = "Task 2" },
-            new Task { Id = 3, Title = "Task 3" }
+            new() { Id = 1, Title = "Task 1" },
+            new() { Id = 2, Title = "Task 2" },
+            new() { Id = 3, Title = "Task 3" }
         };
         var ids = new List<int> { 3, 1, 2 };
 
@@ -429,13 +432,13 @@ public class TaskTests : IDisposable
         // Arrange
         var allTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" },
-            new Task { Id = 2, Title = "Task 2" }
+            new() { Id = 1, Title = "Task 1" },
+            new() { Id = 2, Title = "Task 2" }
         };
         var selectedTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" },
-            new Task { Id = 2, Title = "Task 2" }
+            new() { Id = 1, Title = "Task 1" },
+            new() { Id = 2, Title = "Task 2" }
         };
 
         // Act
@@ -453,11 +456,11 @@ public class TaskTests : IDisposable
         // Arrange
         var allTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" }
+            new() { Id = 1, Title = "Task 1" }
         };
         var selectedTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 99, Title = "Non-matching Task" }
+            new() { Id = 99, Title = "Non-matching Task" }
         };
 
         // Act
@@ -473,7 +476,7 @@ public class TaskTests : IDisposable
         // Arrange
         var allTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 1, Title = "Task 1" }
+            new() { Id = 1, Title = "Task 1" }
         };
         var selectedTasks = new ObservableCollection<Task>();
 
@@ -535,7 +538,8 @@ public class TaskTests : IDisposable
     public void Task_WithSpecialCharactersInTitle_HandlesCorrectly()
     {
         // Arrange & Act
-        var task = new Task(1, "Task: <Test> & \"Quotes\"", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), new List<int>());
+        var task = new Task(1, "Task: <Test> & \"Quotes\"", "Desc", DateOnly.FromDateTime(DateTime.Now),
+            TaskState.Pending, new List<int>(), new List<int>());
 
         // Assert
         Assert.Equal("Task: <Test> & \"Quotes\"", task.Title);
@@ -545,7 +549,8 @@ public class TaskTests : IDisposable
     public void Task_WithEmptyTitle_AllowsCreation()
     {
         // Arrange & Act
-        var task = new Task(1, "", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), new List<int>());
+        var task = new Task(1, "", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Assert
         Assert.Equal("", task.Title);
@@ -558,7 +563,8 @@ public class TaskTests : IDisposable
         var longDescription = new string('A', 10000);
 
         // Act
-        var task = new Task(1, "Task", longDescription, DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", longDescription, DateOnly.FromDateTime(DateTime.Now), TaskState.Pending,
+            new List<int>(), new List<int>());
 
         // Assert
         Assert.Equal(longDescription, task.Description);
@@ -568,7 +574,8 @@ public class TaskTests : IDisposable
     public void Task_WithNullDescription_AllowsCreation()
     {
         // Arrange & Act
-        var task = new Task(1, "Task", null!, DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), new List<int>());
+        var task = new Task(1, "Task", null!, DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Assert
         Assert.Null(task.Description);
@@ -578,7 +585,8 @@ public class TaskTests : IDisposable
     public void Task_WithLargeId_HandlesCorrectly()
     {
         // Arrange & Act
-        var task = new Task(int.MaxValue, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), new List<int>());
+        var task = new Task(int.MaxValue, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending,
+            new List<int>(), new List<int>());
 
         // Assert
         Assert.Equal(int.MaxValue, task.Id);
@@ -589,13 +597,11 @@ public class TaskTests : IDisposable
     {
         // Arrange
         var manyGroupIds = new List<int>();
-        for (int i = 1; i <= 1000; i++)
-        {
-            manyGroupIds.Add(i);
-        }
+        for (var i = 1; i <= 1000; i++) manyGroupIds.Add(i);
 
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, manyGroupIds, new List<int>());
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, manyGroupIds,
+            new List<int>());
 
         // Assert
         Assert.Equal(1000, task.GroupIds.Count);
@@ -606,13 +612,11 @@ public class TaskTests : IDisposable
     {
         // Arrange
         var manyUserIds = new List<int>();
-        for (int i = 1; i <= 1000; i++)
-        {
-            manyUserIds.Add(i);
-        }
+        for (var i = 1; i <= 1000; i++) manyUserIds.Add(i);
 
         // Act
-        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(), manyUserIds);
+        var task = new Task(1, "Task", "Desc", DateOnly.FromDateTime(DateTime.Now), TaskState.Pending, new List<int>(),
+            manyUserIds);
 
         // Assert
         Assert.Equal(1000, task.UserIds.Count);

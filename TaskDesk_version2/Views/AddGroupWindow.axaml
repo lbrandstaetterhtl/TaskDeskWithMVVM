@@ -8,49 +8,51 @@
         CanMaximize="False"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner">
-    
-        <Grid>
-                
-                <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                
-                <StackPanel Classes="CellInAddWindows" Grid.Row="0">
-                        
-                        <TextBlock Classes="primary" Text="Group Name:" VerticalAlignment="Center"/>
-                        
-                        <TextBox Width="200" Watermark="Enter the group name" Text="{Binding Name, Mode=TwoWay}"/>
-                        
-                </StackPanel>
-                
-                <StackPanel Classes="CellInAddWindows" Grid.Row="1" >
-                        
-                        <TextBlock Classes="primary" Text="Description:" VerticalAlignment="Center"/>
-                        
-                        <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
-                                <TextBox Classes="DescriptionTextBoxInAddWindows" Watermark="Enter a description for the group" Text="{Binding Description, Mode=TwoWay}"/>
-                        </ScrollViewer>
-                        
-                </StackPanel>
-                
-                <StackPanel Classes="CellInAddWindows" Grid.Row="2">
-                        
-                        <TextBlock Classes="primary" Text="Select Users:" VerticalAlignment="Center"/>
-                        
-                        <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
-                                <ListBox Classes="UsersOrGroupsList" Name="UsersList" SelectedItems="{Binding UserNames}"/>
-                        </ScrollViewer>
-                        
-                </StackPanel>
-                
-                <StackPanel Grid.Row="3" Orientation="Horizontal">
-                        <Button Content="Cancel" Command="{Binding CancelCommand}"/>
-                        <Button Content="OK" Command="{Binding SaveCommand}" IsDefault="True"/>
-                </StackPanel>
-                
-        </Grid>
-        
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="0">
+
+            <TextBlock Classes="primary" Text="Group Name:" VerticalAlignment="Center" />
+
+            <TextBox Width="200" Watermark="Enter the group name" Text="{Binding Name, Mode=TwoWay}" />
+
+        </StackPanel>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="1">
+
+            <TextBlock Classes="primary" Text="Description:" VerticalAlignment="Center" />
+
+            <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
+                <TextBox Classes="DescriptionTextBoxInAddWindows" Watermark="Enter a description for the group"
+                         Text="{Binding Description, Mode=TwoWay}" />
+            </ScrollViewer>
+
+        </StackPanel>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="2">
+
+            <TextBlock Classes="primary" Text="Select Users:" VerticalAlignment="Center" />
+
+            <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
+                <ListBox Classes="UsersOrGroupsList" ItemsSource="{Binding AllUserFullNames, Mode=OneWay}"
+                         Name="UsersList" SelectedItems="{Binding UserNames}" />
+            </ScrollViewer>
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button Content="Cancel" Command="{Binding CancelCommand}" />
+            <Button Content="OK" Command="{Binding SaveCommand}" IsDefault="True" />
+        </StackPanel>
+
+    </Grid>
+
 </Window>

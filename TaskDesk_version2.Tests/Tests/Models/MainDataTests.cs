@@ -1,13 +1,11 @@
-﻿using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.Models;
 
 /// <summary>
-/// Unit-Tests für die MainData-Klasse (statische Properties)
+///     Unit-Tests für die MainData-Klasse (statische Properties)
 /// </summary>
 public class MainDataTests : IDisposable
 {
@@ -327,7 +325,7 @@ public class MainDataTests : IDisposable
     public void Collections_CanHandleLargeNumberOfItems()
     {
         // Act
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
         {
             MainData.Tasks.Add(new Task { Id = i, Title = $"Task {i}" });
             MainData.Users.Add(new User { Id = i, FullName = $"User {i}" });

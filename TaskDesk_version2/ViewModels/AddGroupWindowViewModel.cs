@@ -5,17 +5,26 @@ using System.Windows.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls.Primitives;
 using TaskDesk_version2.Models;
+using TaskDesk_version2.Views;
 
 namespace TaskDesk_version2.ViewModels;
 
 public class AddGroupWindowViewModel : INotifyPropertyChanged
 {
-    private string _name = string.Empty;
     private string _description = string.Empty;
+    private string _name = string.Empty;
     private List<string> _userNames = new();
-    
+    public Action? RequestClose;
+
+    public AddGroupWindowViewModel()
+    {
+        SaveCommand = new RelayCommand(SaveGroup);
+        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
+    }
+
+    public List<string> AllUserFullNames => UsersOperator.GetAllUserFullNames();
+
     public string Name
     {
         get => _name;
@@ -28,7 +37,7 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public string Description
     {
         get => _description;
@@ -41,7 +50,7 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public List<string> UserNames
     {
         get => _userNames;
@@ -54,21 +63,15 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
-    public Action? RequestClose;
-    
+
     public event PropertyChangedEventHandler? PropertyChanged;
+
     private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-    
-    public AddGroupWindowViewModel()
-    {
-        SaveCommand = new RelayCommand(SaveGroup);
-        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
     }
 
     private async void SaveGroup()
@@ -80,7 +83,8 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
 
             if (Name == string.Empty || Description == string.Empty)
             {
-                var errorWindow = new Views.ErrorWindow("Group must have a name and description.", "User Error: Invalid Input");
+                var errorWindow =
+                    new ErrorWindow("Group must have a name and description.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
@@ -94,12 +98,9 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
             foreach (var userId in userIds)
             {
                 var user = UsersOperator.GetUserById(userId);
-                if (user != null)
-                {
-                    user.GroupIds.Add(newGroup.Id);
-                }
+                if (user != null) user.GroupIds.Add(newGroup.Id);
             }
-            
+
             AppLogger.Info("New group added: ID: " + newGroup.Id);
 
             RequestClose?.Invoke();
@@ -108,10 +109,10 @@ public class AddGroupWindowViewModel : INotifyPropertyChanged
         {
             if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
-            
+
             AppLogger.Error("Error while saving group: " + ex.Message);
 
-            var errorWindow = new Views.ErrorWindow($"An error occurred while saving the group: {ex.Message}");
+            var errorWindow = new ErrorWindow($"An error occurred while saving the group: {ex.Message}");
             await errorWindow.ShowDialog(desktop.Windows[0]);
         }
     }

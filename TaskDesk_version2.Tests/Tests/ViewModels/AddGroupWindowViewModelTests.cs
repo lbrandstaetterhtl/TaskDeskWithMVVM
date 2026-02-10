@@ -1,13 +1,10 @@
-﻿using TaskDesk_version2.ViewModels;
-using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
+﻿using TaskDesk_version2.Models;
+using TaskDesk_version2.ViewModels;
 
 namespace TaskDesk_version2.Tests.Tests.ViewModels;
 
 /// <summary>
-/// Unit-Tests für AddGroupWindowViewModel
+///     Unit-Tests für AddGroupWindowViewModel
 /// </summary>
 public class AddGroupWindowViewModelTests : IDisposable
 {
@@ -62,7 +59,7 @@ public class AddGroupWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Name))
@@ -83,7 +80,7 @@ public class AddGroupWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
         viewModel.Name = "Development Team";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Name))
@@ -148,7 +145,7 @@ public class AddGroupWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Description))
@@ -169,7 +166,7 @@ public class AddGroupWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
         viewModel.Description = "Same Description";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Description))
@@ -248,7 +245,7 @@ public class AddGroupWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.UserNames))
@@ -270,7 +267,7 @@ public class AddGroupWindowViewModelTests : IDisposable
         var viewModel = new AddGroupWindowViewModel();
         var users = new List<string> { "User 1" };
         viewModel.UserNames = users;
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.UserNames))
@@ -304,10 +301,7 @@ public class AddGroupWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
         var users = new List<string>();
-        for (int i = 1; i <= 100; i++)
-        {
-            users.Add($"User {i}");
-        }
+        for (var i = 1; i <= 100; i++) users.Add($"User {i}");
 
         // Act
         viewModel.UserNames = users;
@@ -339,7 +333,7 @@ public class AddGroupWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
-        bool requestCloseInvoked = false;
+        var requestCloseInvoked = false;
         viewModel.RequestClose += () => requestCloseInvoked = true;
 
         // Act
@@ -354,7 +348,7 @@ public class AddGroupWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
-        int handlerCallCount = 0;
+        var handlerCallCount = 0;
         viewModel.RequestClose += () => handlerCallCount++;
         viewModel.RequestClose += () => handlerCallCount++;
         viewModel.RequestClose += () => handlerCallCount++;
@@ -393,10 +387,7 @@ public class AddGroupWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
         var changedProperties = new List<string>();
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            changedProperties.Add(args.PropertyName!);
-        };
+        viewModel.PropertyChanged += (sender, args) => { changedProperties.Add(args.PropertyName!); };
 
         // Act
         viewModel.Name = "Group Name";
@@ -417,12 +408,9 @@ public class AddGroupWindowViewModelTests : IDisposable
         var viewModel = new AddGroupWindowViewModel();
         viewModel.Name = "Initial Name";
         viewModel.Description = "Initial Description";
-        
+
         var changedProperties = new List<string>();
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            changedProperties.Add(args.PropertyName!);
-        };
+        viewModel.PropertyChanged += (sender, args) => { changedProperties.Add(args.PropertyName!); };
 
         // Act - Set same values
         viewModel.Name = "Initial Name";
@@ -441,14 +429,11 @@ public class AddGroupWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddGroupWindowViewModel();
-        int changeCount = 0;
+        var changeCount = 0;
         viewModel.PropertyChanged += (sender, args) => changeCount++;
 
         // Act
-        for (int i = 0; i < 1000; i++)
-        {
-            viewModel.Name = $"Name {i}";
-        }
+        for (var i = 0; i < 1000; i++) viewModel.Name = $"Name {i}";
 
         // Assert
         Assert.Equal(1000, changeCount);

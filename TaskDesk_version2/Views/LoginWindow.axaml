@@ -9,37 +9,41 @@
         Title="Login"
         CanResize="False"
         WindowState="Maximized">
-        
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                 
-                <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-        
-                <StackPanel Grid.Row="0" Width="300" Height="200" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
-                         
-                        <TextBlock Classes="primary" Text="E-Mail:" FontSize="16"/>
-                        <TextBox Name="LoginTextBox" Text="{Binding Email}" TextChanged="LoginTextBox_TextChanged"/>
-                         
-                        <TextBlock Classes="primary" Text="Password:" FontSize="16"/>
-                         
-                        <StackPanel Orientation="Horizontal">
-                             
-                                <TextBox Name="PasswordBox" LostFocus="PasswordBox_LostFocus" GotFocus="PasswordBox_GotFocus" Text="{Binding Password}" PasswordChar="*" Width="235"/>
-                             
-                                <Button Command="{Binding PasswordVisibleCommand}">
-                                        <Image x:Name="PasswordVisibilityToggleImage" Source="../Assets/NotVisible.png" Classes="PasswordVisibilityToggleImage"/>
-                                </Button>
-                        </StackPanel>
-                         
-                        <StackPanel Orientation="Horizontal">
-                                <Button Content="Login" Margin="10" IsDefault="True" Command="{Binding LoginCommand}"/>
-                                <Button Content="Close" Margin="10" IsCancel="True" Command="{Binding CloseCommand}"/>
-                        </StackPanel>
-                </StackPanel>
-                
-                <ComboBox Grid.Row="2" Name="SavedUserComboBox" Width="300" HorizontalAlignment="Center" VerticalAlignment="Top" SelectionChanged="SavedUserComboBox_SelectionChanged"/>
-        </Grid>
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Width="300" Height="200" Margin="10" VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+
+            <TextBlock Classes="primary" Text="E-Mail:" FontSize="16" />
+            <TextBox Name="LoginTextBox" Text="{Binding Email}" TextChanged="LoginTextBox_TextChanged" />
+
+            <TextBlock Classes="primary" Text="Password:" FontSize="16" />
+
+            <StackPanel Orientation="Horizontal">
+
+                <TextBox Name="PasswordBox" LostFocus="PasswordBox_LostFocus" GotFocus="PasswordBox_GotFocus"
+                         Text="{Binding Password}" PasswordChar="*" Width="235" />
+
+                <Button Command="{Binding PasswordVisibleCommand}">
+                    <Image x:Name="PasswordVisibilityToggleImage" Source="../Assets/NotVisible.png"
+                           Classes="PasswordVisibilityToggleImage" />
+                </Button>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Login" Margin="10" IsDefault="True" Command="{Binding LoginCommand}" />
+                <Button Content="Close" Margin="10" IsCancel="True" Command="{Binding CloseCommand}" />
+            </StackPanel>
+        </StackPanel>
+
+        <ComboBox Grid.Row="2" Name="SavedUserComboBox" Width="300" HorizontalAlignment="Center"
+                  VerticalAlignment="Top" SelectionChanged="SavedUserComboBox_SelectionChanged" />
+    </Grid>
 </Window>

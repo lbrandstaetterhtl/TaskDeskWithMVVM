@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -20,19 +16,15 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        
+
         var vm = new MainWindowViewModel();
 
         DataContext = vm;
-        
+
         if (MainData.Settings.IsThemeDark)
-        {
             ChangeThemeMenuItem.Header += " (Current: Dark)";
-        }
         else
-        {
             ChangeThemeMenuItem.Header += " (Current: Light)";
-        }
 
         Closing += OnClosing;
         Opened += OnOpened;
@@ -40,41 +32,29 @@ public partial class MainWindow : Window
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
-        if (Design.IsDesignMode)
-        {
-            return;
-        }
+        if (Design.IsDesignMode) return;
 
-        if (DataContext is MainWindowViewModel vm)
-        {
-            vm.Tasks.CollectionChanged -= Tasks_CollectionChanged;
-        }
+        if (DataContext is MainWindowViewModel vm) vm.Tasks.CollectionChanged -= Tasks_CollectionChanged;
 
         TasksOperator.SaveTasksToJson(MainData.Tasks);
 
         UsersOperator.SaveUsersToJson(MainData.Users);
 
         GroupsOperator.SaveGroupsToJson(MainData.Groups);
-        
+
         SettingsOperator.SaveSettingsToJson(MainData.Settings);
-        
+
         AppLogger.Info("------------- Main Window Closed -------------");
-        
+
         AppLogger.Info("------------- Application Closed ----------------------------------------");
     }
-    
+
     private void OnOpened(object? sender, EventArgs e)
     {
-        if (Design.IsDesignMode)
-        {
-            return;
-        }
-        
-        if (DataContext is MainWindowViewModel vm)
-        {
-            vm.Tasks.CollectionChanged += Tasks_CollectionChanged;
-        }
-        
+        if (Design.IsDesignMode) return;
+
+        if (DataContext is MainWindowViewModel vm) vm.Tasks.CollectionChanged += Tasks_CollectionChanged;
+
         Dispatcher.UIThread.Post(SetBackgroundColorOfBorder, DispatcherPriority.Loaded);
 
         AppLogger.Info("------------- Main Window Opened -------------");
@@ -82,63 +62,44 @@ public partial class MainWindow : Window
 
     private void TaskDoubleClick(object? sender, TappedEventArgs e)
     {
-        if (sender is Border { DataContext: Task task })
-        {
-            MainWindowViewModel.OnOpenTaskClick(task);
-        }
+        if (sender is Border { DataContext: Task task }) MainWindowViewModel.OnOpenTaskClick(task);
     }
 
     private void OnTaskOpenClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is MenuItem { DataContext: Task task })
-        {
-            MainWindowViewModel.OnOpenTaskClick(task);
-        }
+        if (sender is MenuItem { DataContext: Task task }) MainWindowViewModel.OnOpenTaskClick(task);
     }
 
     private new void PointerEntered(object? sender, PointerEventArgs e)
     {
-        if (sender is Border border)
-        {
-            border.Opacity = 0.8;
-        }
+        if (sender is Border border) border.Opacity = 0.8;
     }
 
     private new void PointerExited(object? sender, PointerEventArgs e)
     {
-        if (sender is Border border)
-        {
-            border.Opacity = 1.0;
-        }
+        if (sender is Border border) border.Opacity = 1.0;
     }
-    
+
     private void OnDeleteTaskClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is MenuItem { DataContext: Task task })
-        {
-            MainWindowViewModel.OnDeleteTaskClick(task);
-        }
+        if (sender is MenuItem { DataContext: Task task }) MainWindowViewModel.OnDeleteTaskClick(task);
     }
-    
+
     private void OnChangeThemeClick(object? s, RoutedEventArgs e)
     {
         MainWindowViewModel.OnChangeThemeClick();
-        
+
         if (MainData.Settings.IsThemeDark)
-        {
             ChangeThemeMenuItem.Header = "Change Theme (Current: Dark)";
-        }
         else
-        {
             ChangeThemeMenuItem.Header = "Change Theme (Current: Light)";
-        }
     }
-    
-    private void Tasks_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+
+    private void Tasks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         Dispatcher.UIThread.Post(SetBackgroundColorOfBorder, DispatcherPriority.Loaded);
     }
-    
+
     private void OnStateBorderDataContextChanged(object? sender, EventArgs e)
     {
         if (sender is not Border border)
@@ -154,21 +115,19 @@ public partial class MainWindow : Window
     private void SetBackgroundColorOfBorder()
     {
         var itemsControl = this.FindControl<ItemsControl>("TasksGrid");
-        if (itemsControl?.Presenter?.Panel == null) 
+        if (itemsControl?.Presenter?.Panel == null)
             return;
 
-        int index = 0;
+        var index = 0;
         foreach (var child in itemsControl.Presenter.Panel.Children)
-        {
-            if (child is ContentPresenter contentPresenter && 
-                contentPresenter.Child is Border border && 
+            if (child is ContentPresenter contentPresenter &&
+                contentPresenter.Child is Border border &&
                 border.Classes.Contains("TaskRowBorder"))
             {
-                border.Background = index % 2 == 0 
-                    ? Brushes.DimGray 
+                border.Background = index % 2 == 0
+                    ? Brushes.DimGray
                     : Brushes.DarkGray;
                 index++;
             }
-        }
     }
 }

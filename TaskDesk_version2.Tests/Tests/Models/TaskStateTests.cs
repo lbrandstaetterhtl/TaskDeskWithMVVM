@@ -1,14 +1,32 @@
 ﻿using TaskDesk_version2.Models;
-using Xunit;
-using System.Collections.Generic;
 
 namespace TaskDesk_version2.Tests.Tests.Models;
 
 /// <summary>
-/// Unit-Tests für TaskState Enum und StateConverter Klasse
+///     Unit-Tests für TaskState Enum und StateConverter Klasse
 /// </summary>
 public class TaskStateTests
 {
+    #region Round-Trip Tests (Bidirektionale Konvertierung)
+
+    [Theory]
+    [InlineData(TaskState.Pending)]
+    [InlineData(TaskState.InProgress)]
+    [InlineData(TaskState.Completed)]
+    [InlineData(TaskState.OnHold)]
+    [InlineData(TaskState.Cancelled)]
+    public void StateConversion_RoundTrip_ReturnsOriginalState(TaskState originalState)
+    {
+        // Act
+        var stringRepresentation = StateConverter.StateToString(originalState);
+        var convertedBack = StateConverter.StringToState(stringRepresentation);
+
+        // Assert
+        Assert.Equal(originalState, convertedBack);
+    }
+
+    #endregion
+
     #region StateToString Tests
 
     [Fact]
@@ -207,34 +225,14 @@ public class TaskStateTests
     }
 
     [Theory]
-    [InlineData("pending...")]  // Kleinbuchstaben
-    [InlineData("PENDING...")]  // Großbuchstaben
+    [InlineData("pending...")] // Kleinbuchstaben
+    [InlineData("PENDING...")] // Großbuchstaben
     [InlineData(" Pending... ")] // Mit Leerzeichen
-    [InlineData("Pending")]     // Ohne Auslassungszeichen
+    [InlineData("Pending")] // Ohne Auslassungszeichen
     public void StringToState_InvalidFormats_ThrowsKeyNotFoundException(string invalidFormat)
     {
         // Act & Assert
         Assert.Throws<KeyNotFoundException>(() => StateConverter.StringToState(invalidFormat));
-    }
-
-    #endregion
-
-    #region Round-Trip Tests (Bidirektionale Konvertierung)
-
-    [Theory]
-    [InlineData(TaskState.Pending)]
-    [InlineData(TaskState.InProgress)]
-    [InlineData(TaskState.Completed)]
-    [InlineData(TaskState.OnHold)]
-    [InlineData(TaskState.Cancelled)]
-    public void StateConversion_RoundTrip_ReturnsOriginalState(TaskState originalState)
-    {
-        // Act
-        var stringRepresentation = StateConverter.StateToString(originalState);
-        var convertedBack = StateConverter.StringToState(stringRepresentation);
-
-        // Assert
-        Assert.Equal(originalState, convertedBack);
     }
 
     #endregion

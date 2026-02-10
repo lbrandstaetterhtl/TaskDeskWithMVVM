@@ -1,14 +1,11 @@
-﻿using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.Models;
 
 /// <summary>
-/// Unit-Tests für die Group-Klasse und GroupsOperator
+///     Unit-Tests für die Group-Klasse und GroupsOperator
 /// </summary>
 public class GroupTests : IDisposable
 {
@@ -27,6 +24,55 @@ public class GroupTests : IDisposable
         MainData.Users.Clear();
         MainData.Tasks.Clear();
     }
+
+    #region GroupsOperator.GetListFromIds Tests
+
+    [Fact]
+    public void GetListFromIds_WithValidIds_ReturnsCorrectGroups()
+    {
+        // Arrange
+        var groups = new ObservableCollection<Group>
+        {
+            new() { Id = 1, Name = "Group A" },
+            new() { Id = 2, Name = "Group B" }
+        };
+        var ids = new List<int> { 1 };
+
+        // Act
+        var result = GroupsOperator.GetListFromIds(ids, groups);
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("Group A", result[0].Name);
+    }
+
+    #endregion
+
+    #region GroupsOperator.GetIdsFromList Tests
+
+    [Fact]
+    public void GetIdsFromList_WithMatchingGroups_ReturnsCorrectIds()
+    {
+        // Arrange
+        var allGroups = new ObservableCollection<Group>
+        {
+            new() { Id = 1, Name = "Group A" },
+            new() { Id = 2, Name = "Group B" }
+        };
+        var selectedGroups = new ObservableCollection<Group>
+        {
+            new() { Id = 1, Name = "Group A" }
+        };
+
+        // Act
+        var result = GroupsOperator.GetIdsFromList(selectedGroups, allGroups);
+
+        // Assert
+        Assert.Single(result);
+        Assert.Contains(1, result);
+    }
+
+    #endregion
 
     #region Group Constructor Tests
 
@@ -83,10 +129,10 @@ public class GroupTests : IDisposable
         // Arrange
         var users = new List<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" },
-            new User { Id = 2, FullName = "Anna Schmidt" }
+            new() { Id = 1, FullName = "Max Mustermann" },
+            new() { Id = 2, FullName = "Anna Schmidt" }
         };
-        
+
         var group = new Group("TestGroup", "Test", new List<int> { 1, 2 });
 
         // Act
@@ -102,9 +148,9 @@ public class GroupTests : IDisposable
         // Arrange
         var users = new List<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" }
+            new() { Id = 1, FullName = "Max Mustermann" }
         };
-        
+
         var group = new Group("TestGroup", "Test", new List<int> { 1 });
 
         // Act
@@ -134,9 +180,9 @@ public class GroupTests : IDisposable
         // Arrange
         var users = new List<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" }
+            new() { Id = 1, FullName = "Max Mustermann" }
         };
-        
+
         var group = new Group("TestGroup", "Test", new List<int> { 99, 100 }); // Nicht existierende IDs
 
         // Act
@@ -156,10 +202,10 @@ public class GroupTests : IDisposable
         // Arrange
         var tasks = new List<Task>
         {
-            new Task { Id = 1, Title = "Task 1" },
-            new Task { Id = 2, Title = "Task 2" }
+            new() { Id = 1, Title = "Task 1" },
+            new() { Id = 2, Title = "Task 2" }
         };
-        
+
         var group = new Group("TestGroup", "Test", new List<int>());
         group.TaskIds = new List<int> { 1, 2 };
 
@@ -194,9 +240,9 @@ public class GroupTests : IDisposable
         // Arrange
         var groups = new ObservableCollection<Group>
         {
-            new Group { Id = 1, Name = "Group A" },
-            new Group { Id = 2, Name = "Group B" },
-            new Group { Id = 3, Name = "Group C" }
+            new() { Id = 1, Name = "Group A" },
+            new() { Id = 2, Name = "Group B" },
+            new() { Id = 3, Name = "Group C" }
         };
         var names = new List<string> { "Group A", "Group C" };
 
@@ -215,7 +261,7 @@ public class GroupTests : IDisposable
         // Arrange
         var groups = new ObservableCollection<Group>
         {
-            new Group { Id = 1, Name = "Group A" }
+            new() { Id = 1, Name = "Group A" }
         };
         var names = new List<string> { "Non Existing Group" };
 
@@ -232,7 +278,7 @@ public class GroupTests : IDisposable
         // Arrange
         var groups = new ObservableCollection<Group>
         {
-            new Group { Id = 1, Name = "Group A" }
+            new() { Id = 1, Name = "Group A" }
         };
         var names = new List<string>();
 
@@ -253,9 +299,9 @@ public class GroupTests : IDisposable
         // Arrange
         var groups = new List<Group>
         {
-            new Group { Id = 1, Name = "Group A" },
-            new Group { Id = 2, Name = "Group B" },
-            new Group { Id = 3, Name = "Group C" }
+            new() { Id = 1, Name = "Group A" },
+            new() { Id = 2, Name = "Group B" },
+            new() { Id = 3, Name = "Group C" }
         };
         var ids = new List<int> { 1, 3 };
 
@@ -274,7 +320,7 @@ public class GroupTests : IDisposable
         // Arrange
         var groups = new List<Group>
         {
-            new Group { Id = 1, Name = "Group A" }
+            new() { Id = 1, Name = "Group A" }
         };
         var ids = new List<int> { 99, 100 };
 
@@ -283,29 +329,6 @@ public class GroupTests : IDisposable
 
         // Assert
         Assert.Empty(result);
-    }
-
-    #endregion
-
-    #region GroupsOperator.GetListFromIds Tests
-
-    [Fact]
-    public void GetListFromIds_WithValidIds_ReturnsCorrectGroups()
-    {
-        // Arrange
-        var groups = new ObservableCollection<Group>
-        {
-            new Group { Id = 1, Name = "Group A" },
-            new Group { Id = 2, Name = "Group B" }
-        };
-        var ids = new List<int> { 1 };
-
-        // Act
-        var result = GroupsOperator.GetListFromIds(ids, groups);
-
-        // Assert
-        Assert.Single(result);
-        Assert.Equal("Group A", result[0].Name);
     }
 
     #endregion
@@ -371,32 +394,6 @@ public class GroupTests : IDisposable
 
         // Assert
         Assert.Null(result);
-    }
-
-    #endregion
-
-    #region GroupsOperator.GetIdsFromList Tests
-
-    [Fact]
-    public void GetIdsFromList_WithMatchingGroups_ReturnsCorrectIds()
-    {
-        // Arrange
-        var allGroups = new ObservableCollection<Group>
-        {
-            new Group { Id = 1, Name = "Group A" },
-            new Group { Id = 2, Name = "Group B" }
-        };
-        var selectedGroups = new ObservableCollection<Group>
-        {
-            new Group { Id = 1, Name = "Group A" }
-        };
-
-        // Act
-        var result = GroupsOperator.GetIdsFromList(selectedGroups, allGroups);
-
-        // Assert
-        Assert.Single(result);
-        Assert.Contains(1, result);
     }
 
     #endregion

@@ -1,28 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
 using TaskDesk_version2.Models;
+using TaskDesk_version2.Views;
 
 namespace TaskDesk_version2.ViewModels;
 
 public class ManageUsersWindowViewModel : INotifyPropertyChanged
 {
-    private User _originalUser;
-    private string _fullname = string.Empty;
+    private ObservableCollection<Group> _allGroups = MainData.Groups;
+    private ObservableCollection<Task> _allTasks = MainData.Tasks;
+    private ObservableCollection<User> _allUsers = MainData.Users;
+    private ObservableCollection<Group> _assignedGroups = new();
+    private ObservableCollection<Task> _assignedTasks = new();
     private string _email = string.Empty;
+    private string _fullname = string.Empty;
+    private User _originalUser;
     private string _password = string.Empty;
     private string _roleString;
-    private ObservableCollection<Task> _assignedTasks = new();
-    private ObservableCollection<Group> _assignedGroups = new();
-    private ObservableCollection<Task> _allTasks = MainData.Tasks;
-    private ObservableCollection<Group> _allGroups = MainData.Groups;
-    private ObservableCollection<User> _allUsers = MainData.Users;
-    private User? _selectedUser;
     private string _searchInput = string.Empty;
+    private User? _selectedUser;
+    public Action? RequestClose;
+
+    public ManageUsersWindowViewModel(User user)
+    {
+        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
+        SaveCommand = new RelayCommand(SaveUser);
+
+        User? matchingUser = null;
+        foreach (var u in _allUsers)
+            if (u.Id == user.Id)
+            {
+                matchingUser = u;
+                break;
+            }
+
+        var actualUser = matchingUser ?? user;
+
+        OriginalUser = actualUser;
+        SelectedUser = actualUser;
+
+        Fullname = actualUser.FullName;
+        Email = actualUser.Email;
+        Password = actualUser.Password;
+        RoleString = RoleConverter.RoleToString(actualUser.Role);
+        AssignedGroups = GroupsOperator.GetListFromIds(actualUser.GroupIds, AllGroups);
+        AssignedTasks = TasksOperator.GetListFromIds(actualUser.TaskIds, AllTasks);
+
+        AppLogger.Warn($"{Fullname}, {Email}, {Password}, {RoleString}");
+    }
 
     public User? SelectedUser
     {
@@ -186,45 +215,14 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
         }
     }
 
+    public ICommand SaveCommand { get; }
+    public ICommand CancelCommand { get; }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    public ICommand SaveCommand { get; }
-    public ICommand CancelCommand { get; }
-    public Action? RequestClose;
-
-    public ManageUsersWindowViewModel(User user)
-    {   
-        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
-        SaveCommand = new RelayCommand(SaveUser);
-
-        User? matchingUser = null;
-        foreach (var u in _allUsers)
-        {
-            if (u.Id == user.Id)
-            {
-                matchingUser = u;
-                break;
-            }
-        }
-
-        var actualUser = matchingUser ?? user;
-    
-        OriginalUser = actualUser;
-        SelectedUser = actualUser;
-    
-        Fullname = actualUser.FullName;
-        Email = actualUser.Email;
-        Password = actualUser.Password;
-        RoleString = RoleConverter.RoleToString(actualUser.Role);
-        AssignedGroups = GroupsOperator.GetListFromIds(actualUser.GroupIds, AllGroups);
-        AssignedTasks = TasksOperator.GetListFromIds(actualUser.TaskIds, AllTasks);
-        
-        AppLogger.Warn($"{Fullname}, {Email}, {Password}, {RoleString}");
     }
 
     public void UpdateData()
@@ -244,20 +242,18 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
         {
             var desktop = App.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
 
-            if (SelectedUser == null)
-            {
-                return;
-            }
+            if (SelectedUser == null) return;
 
-            if (string.IsNullOrEmpty(Fullname) || string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) || string.IsNullOrEmpty(RoleString))
+            if (string.IsNullOrEmpty(Fullname) || string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password) ||
+                string.IsNullOrEmpty(RoleString))
             {
-                var errorWindow = new Views.ErrorWindow("All fields must be filled out.");
+                var errorWindow = new ErrorWindow("All fields must be filled out.");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
 
                 return;
             }
 
-            User updatedUser = new User
+            var updatedUser = new User
             {
                 Id = SelectedUser.Id,
                 FullName = Fullname,
@@ -268,51 +264,33 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
                 TaskIds = TasksOperator.GetIdsFromList(AssignedTasks, MainData.Tasks)
             };
 
-            for (int i = 0; i < MainData.Users.Count; i++)
-            {
+            for (var i = 0; i < MainData.Users.Count; i++)
                 if (MainData.Users[i].Id == updatedUser.Id)
                 {
                     MainData.Users.RemoveAt(i);
                     MainData.Users.Insert(i, updatedUser);
                     break;
                 }
-            }
 
-            foreach (Group group in MainData.Groups)
-            {
+            foreach (var group in MainData.Groups)
                 if (updatedUser.GroupIds.Contains(group.Id))
                 {
-                    if (!group.UserIds.Contains(updatedUser.Id))
-                    {
-                        group.UserIds.Add(updatedUser.Id);
-                    }
+                    if (!group.UserIds.Contains(updatedUser.Id)) group.UserIds.Add(updatedUser.Id);
                 }
                 else
                 {
-                    if (group.UserIds.Contains(updatedUser.Id))
-                    {
-                        group.UserIds.Remove(updatedUser.Id);
-                    }
+                    if (group.UserIds.Contains(updatedUser.Id)) group.UserIds.Remove(updatedUser.Id);
                 }
-            }
 
-            foreach (Task task in MainData.Tasks)
-            {
+            foreach (var task in MainData.Tasks)
                 if (updatedUser.TaskIds.Contains(task.Id))
                 {
-                    if (!task.UserIds.Contains(updatedUser.Id))
-                    {
-                        task.UserIds.Add(updatedUser.Id);
-                    }
+                    if (!task.UserIds.Contains(updatedUser.Id)) task.UserIds.Add(updatedUser.Id);
                 }
                 else
                 {
-                    if (task.UserIds.Contains(updatedUser.Id))
-                    {
-                        task.UserIds.Remove(updatedUser.Id);
-                    }
+                    if (task.UserIds.Contains(updatedUser.Id)) task.UserIds.Remove(updatedUser.Id);
                 }
-            }
 
             MainData.Tasks[0] = MainData.Tasks[0];
 
@@ -327,7 +305,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
 
             AppLogger.Error("Error saving user: " + ex.Message);
 
-            var errorWindow = new Views.ErrorWindow($"An error occurred while saving the user: {ex.Message}");
+            var errorWindow = new ErrorWindow($"An error occurred while saving the user: {ex.Message}");
             await errorWindow.ShowDialog(desktop.Windows[0]);
         }
     }
@@ -342,19 +320,12 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
         {
             var filteredUsers = new ObservableCollection<User>();
             foreach (var user in MainData.Users)
-            {
                 if (user.FullName.Contains(SearchInput, StringComparison.OrdinalIgnoreCase) ||
                     user.Email.Contains(SearchInput, StringComparison.OrdinalIgnoreCase) ||
                     user.Id.ToString().Contains(SearchInput, StringComparison.OrdinalIgnoreCase))
-                {
                     filteredUsers.Add(user);
-                }
-            }
 
-            if (filteredUsers.Count > 0)
-            {
-                AllUsers = filteredUsers;
-            }
+            if (filteredUsers.Count > 0) AllUsers = filteredUsers;
         }
     }
 
@@ -372,41 +343,27 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
     {
         SearchInput = string.Empty;
     }
-    
+
     public void UpdateToFirstUser()
     {
-        if (MainData.Users.Count > 0)
-        {
-            SelectedUser = MainData.Users[0];
-        }
+        if (MainData.Users.Count > 0) SelectedUser = MainData.Users[0];
     }
-    
+
     public void DeleteUser()
     {
-        if (SelectedUser == null)
-        {
-            return;
-        }
-        
+        if (SelectedUser == null) return;
+
         var deletedUserId = SelectedUser.Id;
 
         MainData.Users.Remove(SelectedUser);
 
         foreach (var group in MainData.Groups)
-        {
             if (group.UserIds.Contains(deletedUserId))
-            {
                 group.UserIds.Remove(deletedUserId);
-            }
-        }
 
         foreach (var task in MainData.Tasks)
-        {
             if (task.UserIds.Contains(deletedUserId))
-            {
                 task.UserIds.Remove(deletedUserId);
-            }
-        }
 
         AppLogger.Info("Deleted user: ID: " + deletedUserId);
 

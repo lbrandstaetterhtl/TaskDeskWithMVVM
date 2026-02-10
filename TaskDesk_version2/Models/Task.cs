@@ -1,50 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Converters;
+using TaskDesk_version2.Views;
 
 namespace TaskDesk_version2.Models;
 
 public class Task
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public DateOnly DueDate { get; set; }
-    public TaskState State { get; set; }
-
-    public string StateAsString
-    {
-        get => GetTaskStateAsString();
-        set {}
-    }
-    public List<int> GroupIds { get; set; } = new List<int>();
-    public List<int> UserIds { get; set; } = new List<int>();
-
-    public string GroupsAsString
-    {
-        get => GetGroupsAsString(MainData.Groups);
-        set {  }
-    }
-
-    public string UsersAsString
-    {
-        get => GetUsersAsString(MainData.Users);
-        set {  }
-    }
-    
-    public string DateAsString
-    {
-        get => GetDateAsString();
-        set { }
-    }
-
-    public Task(int id, string title, string description, DateOnly dueDate, TaskState state, List<int> groupIds, List<int> userIds)
+    public Task(int id, string title, string description, DateOnly dueDate, TaskState state, List<int> groupIds,
+        List<int> userIds)
     {
         Id = id;
         Title = title;
@@ -57,7 +26,42 @@ public class Task
         UsersAsString = GetUsersAsString(MainData.Users);
     }
 
-    public Task() { }
+    public Task()
+    {
+    }
+
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public DateOnly DueDate { get; set; }
+    public TaskState State { get; set; }
+
+    public string StateAsString
+    {
+        get => GetTaskStateAsString();
+        set { }
+    }
+
+    public List<int> GroupIds { get; set; } = new();
+    public List<int> UserIds { get; set; } = new();
+
+    public string GroupsAsString
+    {
+        get => GetGroupsAsString(MainData.Groups);
+        set { }
+    }
+
+    public string UsersAsString
+    {
+        get => GetUsersAsString(MainData.Users);
+        set { }
+    }
+
+    public string DateAsString
+    {
+        get => GetDateAsString();
+        set { }
+    }
 
     public string GetTaskStateAsString()
     {
@@ -66,42 +70,34 @@ public class Task
 
     private string GetUsersAsString(ObservableCollection<User> allUsers)
     {
-        List<string> userNames = new List<string>();
-        
+        var userNames = new List<string>();
+
         foreach (var id in UserIds)
-        {
-            foreach (var user in allUsers)
+        foreach (var user in allUsers)
+            if (id == user.Id)
             {
-                if (id == user.Id)
-                {
-                    userNames.Add(user.FullName);
-                    break;
-                }
+                userNames.Add(user.FullName);
+                break;
             }
-        }
 
         return userNames.Count > 0 ? string.Join(", ", userNames) : "No users assigned";
     }
-    
+
     private string GetGroupsAsString(ObservableCollection<Group> allGroups)
     {
-        List<string> groupNames = new List<string>();
-        
+        var groupNames = new List<string>();
+
         foreach (var id in GroupIds)
-        {
-            foreach (var group in allGroups)
+        foreach (var group in allGroups)
+            if (id == group.Id)
             {
-                if (id == group.Id)
-                {
-                    groupNames.Add(group.Name);
-                    break;
-                }
+                groupNames.Add(group.Name);
+                break;
             }
-        }
 
         return groupNames.Count > 0 ? string.Join(", ", groupNames) : "No groups assigned";
     }
-    
+
     private string GetDateAsString()
     {
         return DueDate.ToString("dd/MM/yyyy");
@@ -112,37 +108,36 @@ public static class TasksOperator
 {
     public static ObservableCollection<Task> LoadTasksFromJson()
     {
-        if (Avalonia.Controls.Design.IsDesignMode)
-        {
-            return null;
-        }
-        
+        if (Design.IsDesignMode) return null;
+
         try
         {
-            string filePath = MainData.DataPath + @"\tasks.json";
+            var filePath = MainData.DataPath + @"\tasks.json";
 
             if (!File.Exists(filePath))
             {
                 File.Create(filePath).Close();
-                
+
                 AppLogger.Warn($"No {filePath} found");
                 AppLogger.Info($"{filePath} created");
 
                 return new ObservableCollection<Task>();
             }
 
-            string json = File.ReadAllText(filePath);
-            
+            var json = File.ReadAllText(filePath);
+
             AppLogger.Info($"Tasks loaded from {filePath}");
 
-            return System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<Task>>(json) ??
+            return JsonSerializer.Deserialize<ObservableCollection<Task>>(json) ??
                    new ObservableCollection<Task>();
         }
         catch (Exception ex)
         {
-            var errorWindow = new Views.ErrorWindow("Error loading tasks from JSON:\n" + ex.Message);
-            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
-            
+            var errorWindow = new ErrorWindow("Error loading tasks from JSON:\n" + ex.Message);
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow!
+                : null);
+
             AppLogger.Error("Error loading tasks: " + ex.Message);
             return new ObservableCollection<Task>();
         }
@@ -150,33 +145,32 @@ public static class TasksOperator
 
     public static void SaveTasksToJson(ObservableCollection<Task> tasks)
     {
-        if (Avalonia.Controls.Design.IsDesignMode)
-        {
-            return;
-        }
-        
+        if (Design.IsDesignMode) return;
+
         try
         {
-            string filePath = MainData.DataPath + @"\tasks.json";
+            var filePath = MainData.DataPath + @"\tasks.json";
 
-            string json = System.Text.Json.JsonSerializer.Serialize(tasks, new System.Text.Json.JsonSerializerOptions
+            var json = JsonSerializer.Serialize(tasks, new JsonSerializerOptions
             {
                 WriteIndented = true
             });
 
             File.WriteAllText(filePath, json);
-            
+
             AppLogger.Info($"Tasks saved to {filePath}");
         }
         catch (Exception ex)
         {
-            var errorWindow = new Views.ErrorWindow("Error saving tasks to JSON:\n" + ex.Message);
-            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow! : null);
-            
+            var errorWindow = new ErrorWindow("Error saving tasks to JSON:\n" + ex.Message);
+            errorWindow.ShowDialog(App.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow!
+                : null);
+
             AppLogger.Error("Error saving tasks: " + ex.Message);
         }
     }
-    
+
     public static int GetNextTaskId()
     {
         if (MainData.Tasks.Count == 0)
@@ -184,41 +178,33 @@ public static class TasksOperator
 
         return MainData.Tasks.Max(t => t.Id) + 1;
     }
-    
+
     public static ObservableCollection<Task> GetListFromIds(List<int> taskIds, ObservableCollection<Task> allTasks)
     {
-        ObservableCollection<Task> tasks = new ObservableCollection<Task>();
-        
+        var tasks = new ObservableCollection<Task>();
+
         foreach (var id in taskIds)
-        {
-            foreach (var task in allTasks)
+        foreach (var task in allTasks)
+            if (id == task.Id)
             {
-                if (id == task.Id)
-                {
-                    tasks.Add(task);
-                    break;
-                }
+                tasks.Add(task);
+                break;
             }
-        }
 
         return tasks;
     }
-    
+
     public static List<int> GetIdsFromList(ObservableCollection<Task> tasks, ObservableCollection<Task> allTasks)
     {
-        List<int> ids = new List<int>();
-        
+        var ids = new List<int>();
+
         foreach (var task in tasks)
-        {
-            foreach (var t in allTasks)
+        foreach (var t in allTasks)
+            if (t.Id == task.Id)
             {
-                if (t.Id == task.Id)
-                {
-                    ids.Add(t.Id);
-                    break;
-                }
+                ids.Add(t.Id);
+                break;
             }
-        }
 
         return ids;
     }

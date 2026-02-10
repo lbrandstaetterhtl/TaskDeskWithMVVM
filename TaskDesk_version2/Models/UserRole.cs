@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TaskDesk_version2.Models;
 
@@ -21,7 +22,7 @@ public static class RoleConverter
             _ => throw new KeyNotFoundException($"Role '{role}' not recognized.")
         };
     }
-    
+
     public static UserRole StringToRole(string role)
     {
         return role switch
@@ -31,5 +32,17 @@ public static class RoleConverter
             "Read-Only" => UserRole.ReadOnly,
             _ => throw new KeyNotFoundException($"Role '{role}' not recognized.")
         };
+    }
+
+    public static List<string> GetAllRoleStrings()
+    {
+        var roleStrings = new List<string>();
+        foreach (var enumValue in Enum.GetValues(typeof(UserRole)))
+        {
+            var value = (UserRole)enumValue;
+            roleStrings.Add(RoleToString(value));
+        }
+
+        return roleStrings;
     }
 }

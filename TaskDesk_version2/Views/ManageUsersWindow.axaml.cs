@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Dynamic;
-using System.Reflection.Metadata.Ecma335;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
 
@@ -10,8 +7,8 @@ namespace TaskDesk_version2.Views;
 
 public partial class ManageUsersWindow : Window
 {
-    private bool _init;
-    
+    private readonly bool _init;
+
     public ManageUsersWindow(User user)
     {
         InitializeComponent();
@@ -27,10 +24,7 @@ public partial class ManageUsersWindow : Window
         vm.RequestClose += Close;
         UserList.SelectedItem = vm.SelectedUser;
 
-        UserList.SelectionChanged += (_, _) =>
-        {
-            IdBox.Text = "ID: " + vm.SelectedUser?.Id;
-        };
+        UserList.SelectionChanged += (_, _) => { IdBox.Text = "ID: " + vm.SelectedUser?.Id; };
 
         SearchBar.TextChanged += (_, _) =>
         {
@@ -56,21 +50,21 @@ public partial class ManageUsersWindow : Window
                     vm.UpdateData();
             }
         };
-        
+
         Closing += OnClosing;
         Opened += OnOpened;
-        
+
         _init = false;
     }
-    
+
     private void SetRoleCombo(UserRole role)
     {
         foreach (var enumValue in Enum.GetValues(typeof(UserRole)))
         {
-            UserRole value = (UserRole)enumValue;
+            var value = (UserRole)enumValue;
             RoleComboBox.Items.Add(RoleConverter.RoleToString(value));
         }
-        
+
         RoleComboBox.SelectedItem = RoleConverter.RoleToString(role);
     }
 
@@ -78,7 +72,7 @@ public partial class ManageUsersWindow : Window
     {
         AppLogger.Info("------------ Manage Users Window Closed -------------");
     }
-    
+
     private void OnOpened(object? s, EventArgs e)
     {
         AppLogger.Info("------------ Manage Users Window Opened -------------");

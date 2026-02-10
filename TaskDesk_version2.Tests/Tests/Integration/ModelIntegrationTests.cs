@@ -1,14 +1,10 @@
-﻿﻿using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.Integration;
 
 /// <summary>
-/// Integrationstests die das Zusammenspiel zwischen verschiedenen Modellen testen
+///     Integrationstests die das Zusammenspiel zwischen verschiedenen Modellen testen
 /// </summary>
 public class ModelIntegrationTests : IDisposable
 {
@@ -28,6 +24,114 @@ public class ModelIntegrationTests : IDisposable
         MainData.Tasks.Clear();
     }
 
+    #region ID Generation Tests
+
+    [Fact]
+    public void IdGeneration_MultipleEntities_GeneratesUniqueIds()
+    {
+        MainData.Users.Clear();
+        MainData.Groups.Clear();
+        MainData.Tasks.Clear();
+
+        Assert.Empty(MainData.Users);
+        Assert.Empty(MainData.Groups);
+        Assert.Empty(MainData.Tasks);
+
+        // Act - Create 10 of each entity with explicit IDs
+        for (var i = 1; i <= 10; i++)
+        {
+            var user = new User { Id = i, FullName = $"User {i}" };
+            MainData.Users.Add(user);
+        }
+
+        for (var i = 1; i <= 10; i++)
+        {
+            var group = new Group { Id = i, Name = $"Group {i}" };
+            MainData.Groups.Add(group);
+        }
+
+        for (var i = 1; i <= 10; i++)
+        {
+            var task = new Task { Id = i, Title = $"Task {i}" };
+            MainData.Tasks.Add(task);
+        }
+
+        // Assert - Verify 10 entities were added
+        Assert.Equal(10, MainData.Users.Count);
+        Assert.Equal(10, MainData.Groups.Count);
+        Assert.Equal(10, MainData.Tasks.Count);
+
+        // Verify IDs are unique
+        var userIdList = MainData.Users.Select(u => u.Id).ToList();
+        var groupIdList = MainData.Groups.Select(g => g.Id).ToList();
+        var taskIdList = MainData.Tasks.Select(t => t.Id).ToList();
+
+        Assert.Equal(10, userIdList.Count);
+        Assert.Equal(10, groupIdList.Count);
+        Assert.Equal(10, taskIdList.Count);
+
+        // Verify GetNextId returns the next expected value
+        Assert.Equal(11, GroupsOperator.GetNextGroupId());
+        Assert.Equal(11, UsersOperator.GetNextUserId());
+        Assert.Equal(11, TasksOperator.GetNextTaskId());
+    }
+
+    #endregion
+
+    #region User Role Permission Tests
+
+    [Fact]
+    public void UserRoles_DifferentRoles_CanCoexist()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        var admin = new User { Id = 1, FullName = "Admin", Role = UserRole.Admin };
+        var user = new User { Id = 2, FullName = "User", Role = UserRole.User };
+        var readOnly = new User { Id = 3, FullName = "ReadOnly", Role = UserRole.ReadOnly };
+
+        // Act
+        MainData.Users.Add(admin);
+        MainData.Users.Add(user);
+        MainData.Users.Add(readOnly);
+
+        // Assert
+        Assert.Equal(3, MainData.Users.Count);
+        Assert.Equal(UserRole.Admin, MainData.Users[0].Role);
+        Assert.Equal(UserRole.User, MainData.Users[1].Role);
+        Assert.Equal(UserRole.ReadOnly, MainData.Users[2].Role);
+    }
+
+    #endregion
+
+    #region Circular Reference Prevention Tests
+
+    [Fact]
+    public void CircularReferences_UserGroupRelationship_IsConsistent()
+    {
+        // Arrange
+        MainData.Users.Clear();
+        MainData.Groups.Clear();
+
+        var user = new User { Id = 1, FullName = "User", GroupIds = new List<int> { 1 } };
+        var group = new Group { Id = 1, Name = "Group", UserIds = new List<int> { 1 } };
+
+        MainData.Users.Add(user);
+        MainData.Groups.Add(group);
+
+        // Assert - Verify bidirectional relationship
+        Assert.Contains(1, user.GroupIds);
+        Assert.Contains(1, group.UserIds);
+
+        // Remove from one side
+        user.GroupIds.Remove(1);
+
+        // Group still has reference (needs manual cleanup in real scenario)
+        Assert.Contains(1, group.UserIds);
+        Assert.DoesNotContain(1, user.GroupIds);
+    }
+
+    #endregion
+
     #region User-Group Relationship Tests
 
     [Fact]
@@ -37,7 +141,7 @@ public class ModelIntegrationTests : IDisposable
         var group1 = new Group { Id = 1, Name = "Development" };
         var group2 = new Group { Id = 2, Name = "Testing" };
         var group3 = new Group { Id = 3, Name = "DevOps" };
-        
+
         MainData.Groups.Add(group1);
         MainData.Groups.Add(group2);
         MainData.Groups.Add(group3);
@@ -53,7 +157,7 @@ public class ModelIntegrationTests : IDisposable
 
         // Assert
         Assert.Equal(3, user.GroupIds.Count);
-        
+
         var groups = new List<Group> { group1, group2, group3 };
         var groupsString = user.GetGroupsAsString(groups);
         Assert.Contains("Development", groupsString);
@@ -68,7 +172,7 @@ public class ModelIntegrationTests : IDisposable
         var user1 = new User { Id = 1, FullName = "User 1" };
         var user2 = new User { Id = 2, FullName = "User 2" };
         var user3 = new User { Id = 3, FullName = "User 3" };
-        
+
         MainData.Users.Add(user1);
         MainData.Users.Add(user2);
         MainData.Users.Add(user3);
@@ -83,7 +187,7 @@ public class ModelIntegrationTests : IDisposable
 
         // Assert
         Assert.Equal(3, group.UserIds.Count);
-        
+
         var users = new List<User> { user1, user2, user3 };
         var usersString = group.GetUsersAsString(users);
         Assert.Contains("User 1", usersString);
@@ -126,7 +230,7 @@ public class ModelIntegrationTests : IDisposable
         var task1 = new Task { Id = 1, Title = "Task 1" };
         var task2 = new Task { Id = 2, Title = "Task 2" };
         var task3 = new Task { Id = 3, Title = "Task 3" };
-        
+
         MainData.Tasks.Add(task1);
         MainData.Tasks.Add(task2);
         MainData.Tasks.Add(task3);
@@ -141,7 +245,7 @@ public class ModelIntegrationTests : IDisposable
 
         // Assert
         Assert.Equal(3, user.TaskIds.Count);
-        
+
         var tasks = new List<Task> { task1, task2, task3 };
         var tasksString = user.GetTasksAsString(tasks);
         Assert.Contains("Task 1", tasksString);
@@ -161,9 +265,9 @@ public class ModelIntegrationTests : IDisposable
 
         // Act
         var task = new Task(
-            1, 
-            "Shared Task", 
-            "Description", 
+            1,
+            "Shared Task",
+            "Description",
             DateOnly.FromDateTime(DateTime.Now),
             TaskState.Pending,
             new List<int>(),
@@ -225,7 +329,7 @@ public class ModelIntegrationTests : IDisposable
 
         // Assert
         Assert.Equal(3, group.TaskIds.Count);
-        
+
         var tasks = new List<Task> { task1, task2, task3 };
         var tasksString = group.GetTasksAsString(tasks);
         Assert.Contains("Task 1", tasksString);
@@ -246,40 +350,55 @@ public class ModelIntegrationTests : IDisposable
         MainData.Tasks.Clear();
 
         // Erstelle Benutzer
-        var user1 = new User { Id = 1, FullName = "Developer 1", GroupIds = new List<int> { 1 }, TaskIds = new List<int> { 1, 2 } };
-        var user2 = new User { Id = 2, FullName = "Developer 2", GroupIds = new List<int> { 1 }, TaskIds = new List<int> { 2, 3 } };
+        var user1 = new User
+            { Id = 1, FullName = "Developer 1", GroupIds = new List<int> { 1 }, TaskIds = new List<int> { 1, 2 } };
+        var user2 = new User
+            { Id = 2, FullName = "Developer 2", GroupIds = new List<int> { 1 }, TaskIds = new List<int> { 2, 3 } };
         MainData.Users.Add(user1);
         MainData.Users.Add(user2);
 
         // Erstelle Gruppe
-        var devGroup = new Group { Id = 1, Name = "Development", UserIds = new List<int> { 1, 2 }, TaskIds = new List<int> { 1, 2, 3 } };
+        var devGroup = new Group
+            { Id = 1, Name = "Development", UserIds = new List<int> { 1, 2 }, TaskIds = new List<int> { 1, 2, 3 } };
         MainData.Groups.Add(devGroup);
 
         // Erstelle Tasks
-        var task1 = new Task { Id = 1, Title = "Feature A", State = TaskState.InProgress, GroupIds = new List<int> { 1 }, UserIds = new List<int> { 1 } };
-        var task2 = new Task { Id = 2, Title = "Feature B", State = TaskState.Pending, GroupIds = new List<int> { 1 }, UserIds = new List<int> { 1, 2 } };
-        var task3 = new Task { Id = 3, Title = "Bug Fix", State = TaskState.Completed, GroupIds = new List<int> { 1 }, UserIds = new List<int> { 2 } };
+        var task1 = new Task
+        {
+            Id = 1, Title = "Feature A", State = TaskState.InProgress, GroupIds = new List<int> { 1 },
+            UserIds = new List<int> { 1 }
+        };
+        var task2 = new Task
+        {
+            Id = 2, Title = "Feature B", State = TaskState.Pending, GroupIds = new List<int> { 1 },
+            UserIds = new List<int> { 1, 2 }
+        };
+        var task3 = new Task
+        {
+            Id = 3, Title = "Bug Fix", State = TaskState.Completed, GroupIds = new List<int> { 1 },
+            UserIds = new List<int> { 2 }
+        };
         MainData.Tasks.Add(task1);
         MainData.Tasks.Add(task2);
         MainData.Tasks.Add(task3);
 
         // Assert - Überprüfe alle Beziehungen
-        
+
         // User 1 hat 2 Tasks
         Assert.Equal(2, user1.TaskIds.Count);
-        
+
         // User 2 hat 2 Tasks
         Assert.Equal(2, user2.TaskIds.Count);
-        
+
         // Gruppe hat 2 Benutzer
         Assert.Equal(2, devGroup.UserIds.Count);
-        
+
         // Gruppe hat 3 Tasks
         Assert.Equal(3, devGroup.TaskIds.Count);
-        
+
         // Task 2 ist beiden Benutzern zugewiesen
         Assert.Equal(2, task2.UserIds.Count);
-        
+
         // Alle Tasks gehören zur Development-Gruppe
         Assert.All(new[] { task1, task2, task3 }, t => Assert.Contains(1, t.GroupIds));
     }
@@ -312,15 +431,15 @@ public class ModelIntegrationTests : IDisposable
         // Assert
         // User 1 ist nur in 1 Gruppe
         Assert.Single(user1.GroupIds);
-        
+
         // User 2 ist in 2 Gruppen (Dev und QA)
         Assert.Equal(2, user2.GroupIds.Count);
         Assert.Contains(1, user2.GroupIds);
         Assert.Contains(2, user2.GroupIds);
-        
+
         // User 3 ist in 2 Gruppen (QA und Ops)
         Assert.Equal(2, user3.GroupIds.Count);
-        
+
         // Dev-Gruppe hat 2 Benutzer
         Assert.Equal(2, devGroup.UserIds.Count);
     }
@@ -375,60 +494,6 @@ public class ModelIntegrationTests : IDisposable
 
     #endregion
 
-    #region ID Generation Tests
-
-    [Fact]
-    public void IdGeneration_MultipleEntities_GeneratesUniqueIds()
-    {
-        MainData.Users.Clear();
-        MainData.Groups.Clear();
-        MainData.Tasks.Clear();
-
-        Assert.Empty(MainData.Users);
-        Assert.Empty(MainData.Groups);
-        Assert.Empty(MainData.Tasks);
-
-        // Act - Create 10 of each entity with explicit IDs
-        for (int i = 1; i <= 10; i++)
-        {
-            var user = new User { Id = i, FullName = $"User {i}" };
-            MainData.Users.Add(user);
-        }
-
-        for (int i = 1; i <= 10; i++)
-        {
-            var group = new Group { Id = i, Name = $"Group {i}" };
-            MainData.Groups.Add(group);
-        }
-
-        for (int i = 1; i <= 10; i++)
-        {
-            var task = new Task { Id = i, Title = $"Task {i}" };
-            MainData.Tasks.Add(task);
-        }
-
-        // Assert - Verify 10 entities were added
-        Assert.Equal(10, MainData.Users.Count);
-        Assert.Equal(10, MainData.Groups.Count);
-        Assert.Equal(10, MainData.Tasks.Count);
-
-        // Verify IDs are unique
-        var userIdList = MainData.Users.Select(u => u.Id).ToList();
-        var groupIdList = MainData.Groups.Select(g => g.Id).ToList();
-        var taskIdList = MainData.Tasks.Select(t => t.Id).ToList();
-
-        Assert.Equal(10, userIdList.Count);
-        Assert.Equal(10, groupIdList.Count);
-        Assert.Equal(10, taskIdList.Count);
-
-        // Verify GetNextId returns the next expected value
-        Assert.Equal(11, GroupsOperator.GetNextGroupId());
-        Assert.Equal(11, UsersOperator.GetNextUserId());
-        Assert.Equal(11, TasksOperator.GetNextTaskId());
-    }
-
-    #endregion
-
     #region Lookup Tests
 
     [Fact]
@@ -451,12 +516,8 @@ public class ModelIntegrationTests : IDisposable
         // Act - Finde alle Gruppen, in denen der Benutzer ist
         var userGroups = new List<Group>();
         foreach (var group in MainData.Groups)
-        {
             if (group.UserIds.Contains(user.Id))
-            {
                 userGroups.Add(group);
-            }
-        }
 
         // Assert
         Assert.Equal(3, userGroups.Count);
@@ -482,12 +543,8 @@ public class ModelIntegrationTests : IDisposable
         // Act
         var groupTasks = new List<Task>();
         foreach (var task in MainData.Tasks)
-        {
             if (task.GroupIds.Contains(group.Id))
-            {
                 groupTasks.Add(task);
-            }
-        }
 
         // Assert
         Assert.Equal(2, groupTasks.Count);
@@ -528,17 +585,17 @@ public class ModelIntegrationTests : IDisposable
     {
         // Arrange
         MainData.Tasks.Clear();
-        
+
         // Test from each state
         foreach (TaskState state in Enum.GetValues(typeof(TaskState)))
         {
             if (state == TaskState.Cancelled) continue;
 
             var task = new Task { Id = 1, Title = "Test", State = state };
-            
+
             // Act
             task.State = TaskState.Cancelled;
-            
+
             // Assert
             Assert.Equal(TaskState.Cancelled, task.State);
         }
@@ -560,34 +617,9 @@ public class ModelIntegrationTests : IDisposable
         Assert.Equal(TaskState.OnHold, task.State);
 
         task.State = TaskState.InProgress;
-        
+
         // Assert
         Assert.Equal(TaskState.InProgress, task.State);
-    }
-
-    #endregion
-
-    #region User Role Permission Tests
-
-    [Fact]
-    public void UserRoles_DifferentRoles_CanCoexist()
-    {
-        // Arrange
-        MainData.Users.Clear();
-        var admin = new User { Id = 1, FullName = "Admin", Role = UserRole.Admin };
-        var user = new User { Id = 2, FullName = "User", Role = UserRole.User };
-        var readOnly = new User { Id = 3, FullName = "ReadOnly", Role = UserRole.ReadOnly };
-
-        // Act
-        MainData.Users.Add(admin);
-        MainData.Users.Add(user);
-        MainData.Users.Add(readOnly);
-
-        // Assert
-        Assert.Equal(3, MainData.Users.Count);
-        Assert.Equal(UserRole.Admin, MainData.Users[0].Role);
-        Assert.Equal(UserRole.User, MainData.Users[1].Role);
-        Assert.Equal(UserRole.ReadOnly, MainData.Users[2].Role);
     }
 
     #endregion
@@ -602,7 +634,7 @@ public class ModelIntegrationTests : IDisposable
         var tasks = new List<Task>();
 
         // Act
-        for (int i = 1; i <= 50; i++)
+        for (var i = 1; i <= 50; i++)
         {
             var task = new Task
             {
@@ -616,10 +648,10 @@ public class ModelIntegrationTests : IDisposable
 
         // Assert
         Assert.Equal(50, MainData.Tasks.Count);
-        
+
         var completedCount = MainData.Tasks.Count(t => t.State == TaskState.Completed);
         var pendingCount = MainData.Tasks.Count(t => t.State == TaskState.Pending);
-        
+
         Assert.Equal(25, completedCount);
         Assert.Equal(25, pendingCount);
     }
@@ -634,52 +666,18 @@ public class ModelIntegrationTests : IDisposable
         var group = new Group { Id = 1, Name = "Test Group", UserIds = new List<int> { 1, 2, 3, 4, 5 } };
         MainData.Groups.Add(group);
 
-        for (int i = 1; i <= 5; i++)
-        {
+        for (var i = 1; i <= 5; i++)
             MainData.Users.Add(new User { Id = i, FullName = $"User {i}", GroupIds = new List<int> { 1 } });
-        }
 
         // Act - Remove users 2, 3, 4
         var usersToRemove = new[] { 2, 3, 4 };
-        foreach (var userId in usersToRemove)
-        {
-            group.UserIds.Remove(userId);
-        }
+        foreach (var userId in usersToRemove) group.UserIds.Remove(userId);
 
         // Assert
         Assert.Equal(2, group.UserIds.Count);
         Assert.Contains(1, group.UserIds);
         Assert.Contains(5, group.UserIds);
         Assert.DoesNotContain(2, group.UserIds);
-    }
-
-    #endregion
-
-    #region Circular Reference Prevention Tests
-
-    [Fact]
-    public void CircularReferences_UserGroupRelationship_IsConsistent()
-    {
-        // Arrange
-        MainData.Users.Clear();
-        MainData.Groups.Clear();
-
-        var user = new User { Id = 1, FullName = "User", GroupIds = new List<int> { 1 } };
-        var group = new Group { Id = 1, Name = "Group", UserIds = new List<int> { 1 } };
-
-        MainData.Users.Add(user);
-        MainData.Groups.Add(group);
-
-        // Assert - Verify bidirectional relationship
-        Assert.Contains(1, user.GroupIds);
-        Assert.Contains(1, group.UserIds);
-
-        // Remove from one side
-        user.GroupIds.Remove(1);
-        
-        // Group still has reference (needs manual cleanup in real scenario)
-        Assert.Contains(1, group.UserIds);
-        Assert.DoesNotContain(1, user.GroupIds);
     }
 
     #endregion
@@ -738,9 +736,9 @@ public class ModelIntegrationTests : IDisposable
 
         // Act
         var today = DateOnly.FromDateTime(DateTime.Now);
-        var actuallyOverdue = MainData.Tasks.Where(t => 
-            t.DueDate < today && 
-            t.State != TaskState.Completed && 
+        var actuallyOverdue = MainData.Tasks.Where(t =>
+            t.DueDate < today &&
+            t.State != TaskState.Completed &&
             t.State != TaskState.Cancelled
         ).ToList();
 

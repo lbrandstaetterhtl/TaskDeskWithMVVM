@@ -11,71 +11,75 @@
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <StackPanel Classes="CellInAddWindows" Grid.Row="0">
-            
-            <TextBlock Classes="primary" Text="Title:" VerticalAlignment="Center"/>
-            
-            <TextBox Width="200" Watermark="Enter a title for the task" Text="{Binding TaskTitle, Mode=TwoWay}"/>
-            
+
+            <TextBlock Classes="primary" Text="Title:" VerticalAlignment="Center" />
+
+            <TextBox Width="200" Watermark="Enter a title for the task" Text="{Binding TaskTitle, Mode=TwoWay}" />
+
         </StackPanel>
-        
+
         <StackPanel Classes="CellInAddWindows" Grid.Row="1">
-            
-            <TextBlock Classes="primary" Text="Description:" VerticalAlignment="Center"/>
-            
+
+            <TextBlock Classes="primary" Text="Description:" VerticalAlignment="Center" />
+
             <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
-                <TextBox Classes="DescriptionTextBoxInAddWindows" Watermark="Enter a description for the task" Text="{Binding TaskDescription, Mode=TwoWay}"/>
+                <TextBox Classes="DescriptionTextBoxInAddWindows" Watermark="Enter a description for the task"
+                         Text="{Binding TaskDescription, Mode=TwoWay}" />
             </ScrollViewer>
         </StackPanel>
-        
+
         <StackPanel Classes="CellInAddWindows" Grid.Row="2">
-            
-            <TextBlock Classes="primary" Text="Target Date:" VerticalAlignment="Center"/>
-            
-            <DatePicker Margin="5" SelectedDate="{Binding DateOn, Mode=TwoWay}"/>
-            
+
+            <TextBlock Classes="primary" Text="Target Date:" VerticalAlignment="Center" />
+
+            <DatePicker Margin="5" SelectedDate="{Binding DateOn, Mode=TwoWay}" />
+
         </StackPanel>
-        
+
         <StackPanel Classes="CellInAddWindows" Grid.Row="3">
-            
-            <TextBlock Classes="primary" Text="State:" VerticalAlignment="Center"/>
-            
-            <ComboBox Name="StateCombo" PlaceholderText="Select a state" SelectedItem="{Binding TaskStateString}"/>
-            
+
+            <TextBlock Classes="primary" Text="State:" VerticalAlignment="Center" />
+
+            <ComboBox ItemsSource="{Binding TaskStateOptions, Mode=OneWay}" PlaceholderText="Select a state"
+                      SelectedItem="{Binding TaskStateString}" />
+
         </StackPanel>
-        
+
         <StackPanel Classes="CellInAddWindows" Grid.Row="4">
-            
-            <TextBlock Classes="primary" Text="Groups:" VerticalAlignment="Center"/>
-            
+
+            <TextBlock Classes="primary" Text="Groups:" VerticalAlignment="Center" />
+
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ListBox Classes="UsersOrGroupsList" Name="GroupList" SelectedItems="{Binding GroupNames}"/>
+                <ListBox Classes="UsersOrGroupsList" ItemsSource="{Binding AllGroupNames, Mode=OneWay}"
+                         SelectedItems="{Binding GroupNames}" />
             </ScrollViewer>
-            
+
         </StackPanel>
-        
+
         <StackPanel Classes="CellInAddWindows" Grid.Row="5">
-            
-            <TextBlock Classes="primary" Text="Users:" VerticalAlignment="Center"/>
-            
+
+            <TextBlock Classes="primary" Text="Users:" VerticalAlignment="Center" />
+
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ListBox Classes="UsersOrGroupsList" Name="UserList" SelectedItems="{Binding UserNames}"/>
+                <ListBox Classes="UsersOrGroupsList" ItemsSource="{Binding AllUserFullNames, Mode=OneWay}"
+                         SelectedItems="{Binding UserNames}" />
             </ScrollViewer>
-            
+
         </StackPanel>
-        
+
         <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-            <Button Content="Cancel" Command="{Binding CancelCommand}"/>
-            <Button Content="OK" Command="{Binding SaveCommand}" IsDefault="True"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" />
+            <Button Content="OK" Command="{Binding SaveCommand}" IsDefault="True" />
         </StackPanel>
     </Grid>
 

@@ -2,23 +2,32 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
-using System.Xml;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using TaskDesk_version2.Models;
+using TaskDesk_version2.Views;
 
 namespace TaskDesk_version2.ViewModels;
 
 public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
 {
-    private string _taskTitle = string.Empty;
-    private string _taskDescription = string.Empty;
     private DateTimeOffset? _dateOn = DateTimeOffset.Now;
-    private string _taskStateString = string.Empty;
     private List<string> _groupNames = new();
+    private string _taskDescription = string.Empty;
+    private string _taskStateString = string.Empty;
+    private string _taskTitle = string.Empty;
     private List<string> _userNames = new();
+
+    public AddTaskWindowViewModel()
+    {
+        SaveCommand = new RelayCommand(SaveTask);
+        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
+    }
+
+    public List<string> AllUserFullNames => UsersOperator.GetAllUserFullNames();
+    public List<string> AllGroupNames => GroupsOperator.GetAllGroupNames();
+    public List<string> TaskStateOptions => StateConverter.GetAllStateStrings();
 
     public string TaskTitle
     {
@@ -84,7 +93,7 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public List<string> UserNames
     {
         get => _userNames;
@@ -97,18 +106,13 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
-    
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public event Action? RequestClose;
 
-    public AddTaskWindowViewModel()
-    {
-        SaveCommand = new RelayCommand(SaveTask);
-        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
-    }
-    
     private async void SaveTask()
     {
         try
@@ -129,9 +133,9 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
             }
             catch (Exception)
             {
-                var errorWindow = new Views.ErrorWindow("Invalid Task State provided.", "User Error: Invalid Input");
+                var errorWindow = new ErrorWindow("Invalid Task State provided.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
-                
+
                 return;
             }
 
@@ -139,14 +143,15 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
 
             if (string.IsNullOrEmpty(TaskTitle) || string.IsNullOrEmpty(TaskDescription))
             {
-                var errorWindow = new Views.ErrorWindow("Title and Description cannot be empty.", "User Error: Invalid Input");
+                var errorWindow =
+                    new ErrorWindow("Title and Description cannot be empty.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
 
             if (id < 1)
             {
-                var errorWindow = new Views.ErrorWindow("Failed to generate a valid Task ID.", "Invalid ID generated");
+                var errorWindow = new ErrorWindow("Failed to generate a valid Task ID.", "Invalid ID generated");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
@@ -158,21 +163,15 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
             foreach (var userId in userIds)
             {
                 var user = UsersOperator.GetUserById(userId);
-                if (user != null)
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() => user.TaskIds.Add(id));
-                }
+                if (user != null) await Dispatcher.UIThread.InvokeAsync(() => user.TaskIds.Add(id));
             }
 
             foreach (var groupId in groupIds)
             {
                 var group = GroupsOperator.GetGroupById(groupId);
-                if (group != null)
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() => group.TaskIds.Add(id));
-                }
+                if (group != null) await Dispatcher.UIThread.InvokeAsync(() => group.TaskIds.Add(id));
             }
-            
+
             AppLogger.Info("New task added: ID: " + newTask.Id);
 
             RequestClose?.Invoke();
@@ -181,14 +180,13 @@ public sealed class AddTaskWindowViewModel : INotifyPropertyChanged
         {
             if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
-            
+
             AppLogger.Error("Error adding new task: " + ex.Message);
 
-            var errorWindow = new Views.ErrorWindow($"An error occurred while saving the task: {ex.Message}");
+            var errorWindow = new ErrorWindow($"An error occurred while saving the task: {ex.Message}");
             await errorWindow.ShowDialog(desktop.Windows[0]);
         }
     }
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged(string propertyName)
     {

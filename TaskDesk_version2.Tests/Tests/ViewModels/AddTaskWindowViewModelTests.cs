@@ -1,13 +1,10 @@
-﻿using TaskDesk_version2.ViewModels;
-using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
+﻿using TaskDesk_version2.Models;
+using TaskDesk_version2.ViewModels;
 
 namespace TaskDesk_version2.Tests.Tests.ViewModels;
 
 /// <summary>
-/// Unit-Tests für AddTaskWindowViewModel
+///     Unit-Tests für AddTaskWindowViewModel
 /// </summary>
 public class AddTaskWindowViewModelTests : IDisposable
 {
@@ -26,6 +23,49 @@ public class AddTaskWindowViewModelTests : IDisposable
         MainData.Users.Clear();
         MainData.Groups.Clear();
     }
+
+    #region UserNames Property Tests
+
+    [Fact]
+    public void UserNames_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var viewModel = new AddTaskWindowViewModel();
+        var propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.UserNames))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.UserNames = new List<string> { "User 1", "User 2" };
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+        Assert.Equal(2, viewModel.UserNames.Count);
+    }
+
+    #endregion
+
+    #region RequestClose Event Tests
+
+    [Fact]
+    public void CancelCommand_InvokesRequestClose()
+    {
+        // Arrange
+        var viewModel = new AddTaskWindowViewModel();
+        var requestCloseInvoked = false;
+        viewModel.RequestClose += () => requestCloseInvoked = true;
+
+        // Act
+        viewModel.CancelCommand.Execute(null);
+
+        // Assert
+        Assert.True(requestCloseInvoked);
+    }
+
+    #endregion
 
     #region Constructor Tests
 
@@ -76,7 +116,7 @@ public class AddTaskWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddTaskWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.TaskTitle))
@@ -97,7 +137,7 @@ public class AddTaskWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddTaskWindowViewModel();
         viewModel.TaskTitle = "Same Title";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.TaskTitle))
@@ -148,7 +188,7 @@ public class AddTaskWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddTaskWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.TaskDescription))
@@ -186,7 +226,7 @@ public class AddTaskWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddTaskWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.DateOn))
@@ -250,7 +290,7 @@ public class AddTaskWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddTaskWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.TaskStateString))
@@ -306,7 +346,7 @@ public class AddTaskWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddTaskWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.GroupNames))
@@ -333,49 +373,6 @@ public class AddTaskWindowViewModelTests : IDisposable
 
         // Assert
         Assert.Empty(viewModel.GroupNames);
-    }
-
-    #endregion
-
-    #region UserNames Property Tests
-
-    [Fact]
-    public void UserNames_SetValue_RaisesPropertyChanged()
-    {
-        // Arrange
-        var viewModel = new AddTaskWindowViewModel();
-        bool propertyChangedRaised = false;
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            if (args.PropertyName == nameof(viewModel.UserNames))
-                propertyChangedRaised = true;
-        };
-
-        // Act
-        viewModel.UserNames = new List<string> { "User 1", "User 2" };
-
-        // Assert
-        Assert.True(propertyChangedRaised);
-        Assert.Equal(2, viewModel.UserNames.Count);
-    }
-
-    #endregion
-
-    #region RequestClose Event Tests
-
-    [Fact]
-    public void CancelCommand_InvokesRequestClose()
-    {
-        // Arrange
-        var viewModel = new AddTaskWindowViewModel();
-        bool requestCloseInvoked = false;
-        viewModel.RequestClose += () => requestCloseInvoked = true;
-
-        // Act
-        viewModel.CancelCommand.Execute(null);
-
-        // Assert
-        Assert.True(requestCloseInvoked);
     }
 
     #endregion

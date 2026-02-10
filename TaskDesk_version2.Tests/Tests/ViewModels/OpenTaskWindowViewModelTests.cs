@@ -1,15 +1,12 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
-using Xunit;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.ViewModels;
 
 /// <summary>
-/// Unit-Tests fuer OpenTaskWindowViewModel
+///     Unit-Tests fuer OpenTaskWindowViewModel
 /// </summary>
 public class OpenTaskWindowViewModelTests : IDisposable
 {
@@ -27,6 +24,77 @@ public class OpenTaskWindowViewModelTests : IDisposable
         MainData.Groups.Clear();
     }
 
+    #region AssignedUsers Property Tests
+
+    [Fact]
+    public void AssignedUsers_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
+        var viewModel = new OpenTaskWindowViewModel(task);
+        var propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.AssignedUsers))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.AssignedUsers = new ObservableCollection<User> { new() { Id = 1, FullName = "Test" } };
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+    }
+
+    #endregion
+
+    #region AssignedGroups Property Tests
+
+    [Fact]
+    public void AssignedGroups_SetValue_RaisesPropertyChanged()
+    {
+        // Arrange
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
+        var viewModel = new OpenTaskWindowViewModel(task);
+        var propertyChangedRaised = false;
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName == nameof(viewModel.AssignedGroups))
+                propertyChangedRaised = true;
+        };
+
+        // Act
+        viewModel.AssignedGroups = new ObservableCollection<Group> { new() { Id = 1, Name = "Test" } };
+
+        // Assert
+        Assert.True(propertyChangedRaised);
+    }
+
+    #endregion
+
+    #region CloseCommand Tests
+
+    [Fact]
+    public void CloseCommand_InvokesRequestClose()
+    {
+        // Arrange
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
+        var viewModel = new OpenTaskWindowViewModel(task);
+        var closed = false;
+        viewModel.RequestClose += () => closed = true;
+
+        // Act
+        viewModel.CloseCommand.Execute(null);
+
+        // Assert
+        Assert.True(closed);
+    }
+
+    #endregion
+
     #region Constructor Tests
 
     [Fact]
@@ -38,7 +106,7 @@ public class OpenTaskWindowViewModelTests : IDisposable
         MainData.Users.Add(user);
         MainData.Groups.Add(group);
         var task = new Task(5, "Title", "Desc", new DateOnly(2026, 12, 31), TaskState.InProgress,
-            new() { 2 }, new() { 1 });
+            new List<int> { 2 }, new List<int> { 1 });
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);
@@ -58,7 +126,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void Constructor_InitializesCommands()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);
@@ -72,7 +141,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void Constructor_WithNoAssignedUsers_CreatesEmptyList()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);
@@ -86,7 +156,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void Constructor_WithNoAssignedGroups_CreatesEmptyList()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);
@@ -104,9 +175,10 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void Title_SetValue_RaisesPropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Title))
@@ -125,9 +197,10 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void Title_SetSameValue_DoesNotRaisePropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Title))
@@ -149,9 +222,10 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void Description_SetValue_RaisesPropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Description))
@@ -170,9 +244,10 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void Description_SetSameValue_DoesNotRaisePropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Description))
@@ -194,9 +269,10 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void DueDate_SetValue_RaisesPropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.DueDate))
@@ -214,7 +290,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void DueDate_CanBeSetToNull()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
 
         // Act
@@ -232,9 +309,10 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void State_SetValue_RaisesPropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.State))
@@ -258,7 +336,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void State_CanBeSetToAllValidStates(string state)
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
 
         // Act
@@ -270,63 +349,16 @@ public class OpenTaskWindowViewModelTests : IDisposable
 
     #endregion
 
-    #region AssignedUsers Property Tests
-
-    [Fact]
-    public void AssignedUsers_SetValue_RaisesPropertyChanged()
-    {
-        // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
-        var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            if (args.PropertyName == nameof(viewModel.AssignedUsers))
-                propertyChangedRaised = true;
-        };
-
-        // Act
-        viewModel.AssignedUsers = new ObservableCollection<User> { new User { Id = 1, FullName = "Test" } };
-
-        // Assert
-        Assert.True(propertyChangedRaised);
-    }
-
-    #endregion
-
-    #region AssignedGroups Property Tests
-
-    [Fact]
-    public void AssignedGroups_SetValue_RaisesPropertyChanged()
-    {
-        // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
-        var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            if (args.PropertyName == nameof(viewModel.AssignedGroups))
-                propertyChangedRaised = true;
-        };
-
-        // Act
-        viewModel.AssignedGroups = new ObservableCollection<Group> { new Group { Id = 1, Name = "Test" } };
-
-        // Assert
-        Assert.True(propertyChangedRaised);
-    }
-
-    #endregion
-
     #region AllUsers Property Tests
 
     [Fact]
     public void AllUsers_SetValue_RaisesPropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.AllUsers))
@@ -346,7 +378,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
         // Arrange
         var user = new User { Id = 1, FullName = "Test User" };
         MainData.Users.Add(user);
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);
@@ -363,9 +396,10 @@ public class OpenTaskWindowViewModelTests : IDisposable
     public void AllGroups_SetValue_RaisesPropertyChanged()
     {
         // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
         var viewModel = new OpenTaskWindowViewModel(task);
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.AllGroups))
@@ -385,33 +419,14 @@ public class OpenTaskWindowViewModelTests : IDisposable
         // Arrange
         var group = new Group { Id = 1, Name = "Test Group" };
         MainData.Groups.Add(group);
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);
 
         // Assert
         Assert.Same(MainData.Groups, viewModel.AllGroups);
-    }
-
-    #endregion
-
-    #region CloseCommand Tests
-
-    [Fact]
-    public void CloseCommand_InvokesRequestClose()
-    {
-        // Arrange
-        var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
-        var viewModel = new OpenTaskWindowViewModel(task);
-        var closed = false;
-        viewModel.RequestClose += () => closed = true;
-
-        // Act
-        viewModel.CloseCommand.Execute(null);
-
-        // Assert
-        Assert.True(closed);
     }
 
     #endregion
@@ -424,7 +439,7 @@ public class OpenTaskWindowViewModelTests : IDisposable
         // Arrange & Act & Assert
         foreach (TaskState state in Enum.GetValues(typeof(TaskState)))
         {
-            var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), state, new(), new());
+            var task = new Task(1, "Title", "Desc", new DateOnly(2026, 1, 1), state, new List<int>(), new List<int>());
             var viewModel = new OpenTaskWindowViewModel(task);
             Assert.Equal(StateConverter.StateToString(state), viewModel.State);
         }
@@ -435,7 +450,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
     {
         // Arrange
         var specialTitle = "Task: <Test> & \"Quotes\" äöü";
-        var task = new Task(1, specialTitle, "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, specialTitle, "Desc", new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);
@@ -449,7 +465,8 @@ public class OpenTaskWindowViewModelTests : IDisposable
     {
         // Arrange
         var multilineDesc = "Line 1\nLine 2\nLine 3";
-        var task = new Task(1, "Title", multilineDesc, new DateOnly(2026, 1, 1), TaskState.Pending, new(), new());
+        var task = new Task(1, "Title", multilineDesc, new DateOnly(2026, 1, 1), TaskState.Pending, new List<int>(),
+            new List<int>());
 
         // Act
         var viewModel = new OpenTaskWindowViewModel(task);

@@ -1,14 +1,12 @@
-﻿﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.ViewModels;
-using Xunit;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.ViewModels;
 
 /// <summary>
-/// Unit-Tests fuer MainWindowViewModel
+///     Unit-Tests fuer MainWindowViewModel
 /// </summary>
 public class MainWindowViewModelTests : IDisposable
 {
@@ -79,14 +77,11 @@ public class MainWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new MainWindowViewModel();
-        var newTasks = new ObservableCollection<Task> { new Task { Id = 2, Title = "Task 2" } };
+        var newTasks = new ObservableCollection<Task> { new() { Id = 2, Title = "Task 2" } };
         var propertyRaised = false;
         viewModel.PropertyChanged += (_, args) =>
         {
-            if (args.PropertyName == nameof(viewModel.Tasks))
-            {
-                propertyRaised = true;
-            }
+            if (args.PropertyName == nameof(viewModel.Tasks)) propertyRaised = true;
         };
 
         // Act
@@ -105,10 +100,7 @@ public class MainWindowViewModelTests : IDisposable
         var propertyRaised = false;
         viewModel.PropertyChanged += (_, args) =>
         {
-            if (args.PropertyName == nameof(viewModel.Tasks))
-            {
-                propertyRaised = true;
-            }
+            if (args.PropertyName == nameof(viewModel.Tasks)) propertyRaised = true;
         };
 
         // Act
@@ -138,8 +130,8 @@ public class MainWindowViewModelTests : IDisposable
         var viewModel = new MainWindowViewModel();
         var newTasks = new ObservableCollection<Task>
         {
-            new Task { Id = 10, Title = "New Task 1" },
-            new Task { Id = 11, Title = "New Task 2" }
+            new() { Id = 10, Title = "New Task 1" },
+            new() { Id = 11, Title = "New Task 2" }
         };
 
         // Act
@@ -209,10 +201,7 @@ public class MainWindowViewModelTests : IDisposable
         var viewModel = new MainWindowViewModel();
 
         // Act & Assert
-        var exception = Record.Exception(() =>
-        {
-            viewModel.PropertyChanged += (_, _) => { };
-        });
+        var exception = Record.Exception(() => { viewModel.PropertyChanged += (_, _) => { }; });
         Assert.Null(exception);
     }
 
@@ -221,7 +210,7 @@ public class MainWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new MainWindowViewModel();
-        int notificationCount = 0;
+        var notificationCount = 0;
         viewModel.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Tasks))
@@ -278,10 +267,7 @@ public class MainWindowViewModelTests : IDisposable
     public void Tasks_WithLargeNumber_HandledCorrectly()
     {
         // Arrange
-        for (int i = 0; i < 100; i++)
-        {
-            MainData.Tasks.Add(new Task { Id = i, Title = $"Task {i}" });
-        }
+        for (var i = 0; i < 100; i++) MainData.Tasks.Add(new Task { Id = i, Title = $"Task {i}" });
 
         // Act
         var viewModel = new MainWindowViewModel();

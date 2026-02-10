@@ -1,15 +1,31 @@
-﻿using TaskDesk_version2;
-using Xunit;
-using System;
-using System.IO;
-
-namespace TaskDesk_version2.Tests.Tests;
+﻿namespace TaskDesk_version2.Tests.Tests;
 
 /// <summary>
-/// Unit-Tests für die AppLogger-Klasse
+///     Unit-Tests für die AppLogger-Klasse
 /// </summary>
 public class AppLoggerTests
 {
+    #region Thread Safety Tests (Basic)
+
+    [Fact]
+    public void Logger_MultipleCallsInSequence_DoNotThrow()
+    {
+        // Act & Assert
+        var exception = Record.Exception(() =>
+        {
+            for (var i = 0; i < 100; i++)
+            {
+                AppLogger.Info($"Info message {i}");
+                AppLogger.Warn($"Warn message {i}");
+                AppLogger.Error($"Error message {i}");
+            }
+        });
+
+        Assert.Null(exception);
+    }
+
+    #endregion
+
     #region GetLogFilePath Tests
 
     [Fact]
@@ -90,7 +106,7 @@ public class AppLoggerTests
 
         // Act & Assert - sollte keine Exception werfen
         var exception = Record.Exception(() => AppLogger.Info(message));
-        
+
         // Da wir im Design-Mode sind oder die Methode fehlertolerant ist,
         // sollte keine Exception geworfen werden
         Assert.Null(exception);
@@ -137,7 +153,7 @@ public class AppLoggerTests
         var message = "Test error message";
 
         // Act & Assert
-        var exception = Record.Exception(() => AppLogger.Error(message, null));
+        var exception = Record.Exception(() => AppLogger.Error(message));
         Assert.Null(exception);
     }
 
@@ -212,27 +228,6 @@ public class AppLoggerTests
         // Act & Assert
         var recordedException = Record.Exception(() => AppLogger.Error("Test", outerException));
         Assert.Null(recordedException);
-    }
-
-    #endregion
-
-    #region Thread Safety Tests (Basic)
-
-    [Fact]
-    public void Logger_MultipleCallsInSequence_DoNotThrow()
-    {
-        // Act & Assert
-        var exception = Record.Exception(() =>
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                AppLogger.Info($"Info message {i}");
-                AppLogger.Warn($"Warn message {i}");
-                AppLogger.Error($"Error message {i}");
-            }
-        });
-
-        Assert.Null(exception);
     }
 
     #endregion

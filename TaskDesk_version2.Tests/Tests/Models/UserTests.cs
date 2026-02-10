@@ -1,14 +1,11 @@
-﻿using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.Models;
 
 /// <summary>
-/// Unit-Tests für die User-Klasse und UsersOperator
+///     Unit-Tests für die User-Klasse und UsersOperator
 /// </summary>
 public class UserTests : IDisposable
 {
@@ -27,6 +24,32 @@ public class UserTests : IDisposable
         MainData.Groups.Clear();
         MainData.Tasks.Clear();
     }
+
+    #region UsersOperator.GetIdsFromList Tests
+
+    [Fact]
+    public void GetIdsFromList_WithMatchingUsers_ReturnsCorrectIds()
+    {
+        // Arrange
+        var allUsers = new ObservableCollection<User>
+        {
+            new() { Id = 1, FullName = "User 1" },
+            new() { Id = 2, FullName = "User 2" }
+        };
+        var selectedUsers = new ObservableCollection<User>
+        {
+            new() { Id = 1, FullName = "User 1" }
+        };
+
+        // Act
+        var result = UsersOperator.GetIdsFromList(selectedUsers, allUsers);
+
+        // Assert
+        Assert.Single(result);
+        Assert.Contains(1, result);
+    }
+
+    #endregion
 
     #region User Constructor Tests
 
@@ -179,11 +202,11 @@ public class UserTests : IDisposable
         // Arrange
         var tasks = new List<Task>
         {
-            new Task { Id = 1, Title = "Task 1" },
-            new Task { Id = 2, Title = "Task 2" },
-            new Task { Id = 3, Title = "Task 3" }
+            new() { Id = 1, Title = "Task 1" },
+            new() { Id = 2, Title = "Task 2" },
+            new() { Id = 3, Title = "Task 3" }
         };
-        
+
         var user = new User { TaskIds = new List<int> { 1, 3 } };
 
         // Act
@@ -213,9 +236,9 @@ public class UserTests : IDisposable
         // Arrange
         var tasks = new List<Task>
         {
-            new Task { Id = 1, Title = "Task 1" }
+            new() { Id = 1, Title = "Task 1" }
         };
-        
+
         var user = new User { TaskIds = new List<int> { 99, 100 } };
 
         // Act
@@ -235,11 +258,11 @@ public class UserTests : IDisposable
         // Arrange
         var groups = new List<Group>
         {
-            new Group { Id = 1, Name = "Development" },
-            new Group { Id = 2, Name = "Marketing" },
-            new Group { Id = 3, Name = "Sales" }
+            new() { Id = 1, Name = "Development" },
+            new() { Id = 2, Name = "Marketing" },
+            new() { Id = 3, Name = "Sales" }
         };
-        
+
         var user = new User { GroupIds = new List<int> { 1, 3 } };
 
         // Act
@@ -273,9 +296,9 @@ public class UserTests : IDisposable
         // Arrange
         var users = new ObservableCollection<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" },
-            new User { Id = 2, FullName = "Anna Schmidt" },
-            new User { Id = 3, FullName = "Peter Müller" }
+            new() { Id = 1, FullName = "Max Mustermann" },
+            new() { Id = 2, FullName = "Anna Schmidt" },
+            new() { Id = 3, FullName = "Peter Müller" }
         };
         var names = new List<string> { "Max Mustermann", "Peter Müller" };
 
@@ -294,7 +317,7 @@ public class UserTests : IDisposable
         // Arrange
         var users = new ObservableCollection<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" }
+            new() { Id = 1, FullName = "Max Mustermann" }
         };
         var names = new List<string> { "Non Existing User" };
 
@@ -311,7 +334,7 @@ public class UserTests : IDisposable
         // Arrange
         var users = new ObservableCollection<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" }
+            new() { Id = 1, FullName = "Max Mustermann" }
         };
         var names = new List<string>();
 
@@ -328,7 +351,7 @@ public class UserTests : IDisposable
         // Arrange
         var users = new ObservableCollection<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" }
+            new() { Id = 1, FullName = "Max Mustermann" }
         };
         var names = new List<string> { "max mustermann" };
 
@@ -349,8 +372,8 @@ public class UserTests : IDisposable
         // Arrange
         var users = new ObservableCollection<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" },
-            new User { Id = 2, FullName = "Anna Schmidt" }
+            new() { Id = 1, FullName = "Max Mustermann" },
+            new() { Id = 2, FullName = "Anna Schmidt" }
         };
         var ids = new List<int> { 1 };
 
@@ -368,7 +391,7 @@ public class UserTests : IDisposable
         // Arrange
         var users = new ObservableCollection<User>
         {
-            new User { Id = 1, FullName = "Max Mustermann" }
+            new() { Id = 1, FullName = "Max Mustermann" }
         };
         var ids = new List<int> { 99, 100 };
 
@@ -385,9 +408,9 @@ public class UserTests : IDisposable
         // Arrange
         var users = new ObservableCollection<User>
         {
-            new User { Id = 1, FullName = "User 1" },
-            new User { Id = 2, FullName = "User 2" },
-            new User { Id = 3, FullName = "User 3" }
+            new() { Id = 1, FullName = "User 1" },
+            new() { Id = 2, FullName = "User 2" },
+            new() { Id = 3, FullName = "User 3" }
         };
         var ids = new List<int> { 1, 3 };
 
@@ -396,32 +419,6 @@ public class UserTests : IDisposable
 
         // Assert
         Assert.Equal(2, result.Count);
-    }
-
-    #endregion
-
-    #region UsersOperator.GetIdsFromList Tests
-
-    [Fact]
-    public void GetIdsFromList_WithMatchingUsers_ReturnsCorrectIds()
-    {
-        // Arrange
-        var allUsers = new ObservableCollection<User>
-        {
-            new User { Id = 1, FullName = "User 1" },
-            new User { Id = 2, FullName = "User 2" }
-        };
-        var selectedUsers = new ObservableCollection<User>
-        {
-            new User { Id = 1, FullName = "User 1" }
-        };
-
-        // Act
-        var result = UsersOperator.GetIdsFromList(selectedUsers, allUsers);
-
-        // Assert
-        Assert.Single(result);
-        Assert.Contains(1, result);
     }
 
     #endregion

@@ -1,39 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 namespace TaskDesk_version2.Models;
 
 public class Settings
 {
     public int LastLoggedInUserId { get; set; }
-    public List<int> SavedUserIds { get; set; } = new List<int>();
-    public bool IsThemeDark { get; set; } = false;
-    
-    
-    public Settings()
-    {
-        
-    }
-    
+    public List<int> SavedUserIds { get; set; } = new();
+    public bool IsThemeDark { get; set; }
+
+
     public User GetLastLoggedInUser()
     {
         return UsersOperator.GetUserById(LastLoggedInUserId);
     }
-    
+
     public List<string> GetSavedUserEmails()
     {
-        List<string> emails = new List<string>();
-        
+        var emails = new List<string>();
+
         foreach (var id in SavedUserIds)
         {
             var user = UsersOperator.GetUserById(id);
-            if (user != null)
-            {
-                emails.Add(user.Email);
-            }
+            if (user != null) emails.Add(user.Email);
         }
-        
+
         return emails;
     }
 }
@@ -48,11 +41,11 @@ public static class SettingsOperator
             if (File.Exists(filePath))
             {
                 var json = File.ReadAllText(filePath);
-                var settings = System.Text.Json.JsonSerializer.Deserialize<Settings>(json);
+                var settings = JsonSerializer.Deserialize<Settings>(json);
                 AppLogger.Info($"Settings loaded from {filePath}");
                 return settings ?? new Settings();
             }
-            
+
             AppLogger.Warn($"No {filePath} found");
             File.Create(filePath).Close();
             AppLogger.Info($"{filePath} created");
@@ -64,13 +57,13 @@ public static class SettingsOperator
             return new Settings();
         }
     }
-    
+
     public static void SaveSettingsToJson(Settings settings)
     {
         try
         {
             var filePath = Path.Combine(MainData.DataPath, "settings.json");
-            var json = System.Text.Json.JsonSerializer.Serialize(settings, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(filePath, json);
             AppLogger.Info($"Settings saved to {filePath}");
         }

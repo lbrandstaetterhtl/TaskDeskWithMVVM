@@ -1,14 +1,30 @@
 ﻿using TaskDesk_version2.Models;
-using Xunit;
-using System.Collections.Generic;
 
 namespace TaskDesk_version2.Tests.Tests.Models;
 
 /// <summary>
-/// Unit-Tests für UserRole Enum und RoleConverter Klasse
+///     Unit-Tests für UserRole Enum und RoleConverter Klasse
 /// </summary>
 public class UserRoleTests
 {
+    #region Round-Trip Tests (Bidirektionale Konvertierung)
+
+    [Theory]
+    [InlineData(UserRole.Admin)]
+    [InlineData(UserRole.User)]
+    [InlineData(UserRole.ReadOnly)]
+    public void RoleConversion_RoundTrip_ReturnsOriginalRole(UserRole originalRole)
+    {
+        // Act
+        var stringRepresentation = RoleConverter.RoleToString(originalRole);
+        var convertedBack = RoleConverter.StringToRole(stringRepresentation);
+
+        // Assert
+        Assert.Equal(originalRole, convertedBack);
+    }
+
+    #endregion
+
     #region RoleToString Tests
 
     [Fact]
@@ -151,34 +167,16 @@ public class UserRoleTests
     }
 
     [Theory]
-    [InlineData("admin")]       // Kleinbuchstaben
-    [InlineData("ADMIN")]       // Großbuchstaben
-    [InlineData(" Admin ")]     // Mit Leerzeichen
+    [InlineData("admin")] // Kleinbuchstaben
+    [InlineData("ADMIN")] // Großbuchstaben
+    [InlineData(" Admin ")] // Mit Leerzeichen
     [InlineData("Administrator")] // Andere Schreibweise
-    [InlineData("read-only")]   // Kleinbuchstaben mit Bindestrich
-    [InlineData("ReadOnly")]    // Ohne Bindestrich
+    [InlineData("read-only")] // Kleinbuchstaben mit Bindestrich
+    [InlineData("ReadOnly")] // Ohne Bindestrich
     public void StringToRole_InvalidFormats_ThrowsKeyNotFoundException(string invalidFormat)
     {
         // Act & Assert
         Assert.Throws<KeyNotFoundException>(() => RoleConverter.StringToRole(invalidFormat));
-    }
-
-    #endregion
-
-    #region Round-Trip Tests (Bidirektionale Konvertierung)
-
-    [Theory]
-    [InlineData(UserRole.Admin)]
-    [InlineData(UserRole.User)]
-    [InlineData(UserRole.ReadOnly)]
-    public void RoleConversion_RoundTrip_ReturnsOriginalRole(UserRole originalRole)
-    {
-        // Act
-        var stringRepresentation = RoleConverter.RoleToString(originalRole);
-        var convertedBack = RoleConverter.StringToRole(stringRepresentation);
-
-        // Assert
-        Assert.Equal(originalRole, convertedBack);
     }
 
     #endregion

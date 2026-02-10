@@ -4,21 +4,30 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using TaskDesk_version2.Models;
+using TaskDesk_version2.Views;
 
 namespace TaskDesk_version2.ViewModels;
 
 public class AddUserWindowViewModel : INotifyPropertyChanged
 {
-    private string _fullname = string.Empty;
     private string _email = string.Empty;
+    private string _fullname = string.Empty;
+    private List<string> _groupnames = new();
     private string _password = string.Empty;
     private string _roleString;
-    private List<string> _groupnames = new();
-    
+
+    public AddUserWindowViewModel()
+    {
+        SaveCommand = new RelayCommand(SaveUser);
+        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
+    }
+
+    public List<string> AllGroupNames => GroupsOperator.GetAllGroupNames();
+    public List<string> RoleOptions => RoleConverter.GetAllRoleStrings();
+
     public string Fullname
     {
         get => _fullname;
@@ -31,7 +40,7 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public string Email
     {
         get => _email;
@@ -44,7 +53,7 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public string Password
     {
         get => _password;
@@ -57,7 +66,7 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public string RoleString
     {
         get => _roleString;
@@ -70,7 +79,7 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public List<string> GroupNames
     {
         get => _groupnames;
@@ -83,33 +92,27 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
-    
-    public event Action? RequestClose;
-    
+
     public event PropertyChangedEventHandler? PropertyChanged;
-    
+
+    public event Action? RequestClose;
+
     private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-    
-    public AddUserWindowViewModel()
-    {
-        SaveCommand = new RelayCommand(SaveUser);
-        CancelCommand = new RelayCommand(() => RequestClose?.Invoke());
-    }
-    
+
     private bool IsValidEmail(string email)
     {
         try
         {
             const string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            
+
             var result = Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
-            
+
             return result;
         }
         catch
@@ -125,27 +128,28 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             errorMessage = "Password must be at least 8 characters long.";
             return false;
         }
-        
-        if (password.Contains("@") || password.Contains("#") || password.Contains("$") || password.Contains("%") || password.Contains("&"))
+
+        if (password.Contains("@") || password.Contains("#") || password.Contains("$") || password.Contains("%") ||
+            password.Contains("&"))
         {
             errorMessage = "Password cannot contain special characters (@, #, $, %, &).";
             return false;
         }
-        
+
         var lowercasePassword = password.ToLower();
         var lowercaseEmail = Email.ToLower();
         var lowercaseFullname = Fullname.ToLower();
-        
+
         if (lowercasePassword.Contains(lowercaseEmail) || lowercasePassword.Contains(lowercaseFullname))
         {
             errorMessage = "Password cannot contain 3 or more consecutive characters from email or full name.";
             return false;
         }
-        
+
         errorMessage = string.Empty;
         return true;
     }
-    
+
     private async void SaveUser()
     {
         try
@@ -157,21 +161,21 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
 
             if (Fullname == string.Empty || Email == string.Empty || Password == string.Empty)
             {
-                var errorWindow = new Views.ErrorWindow("Please fill in all required fields.", "User Error: Invalid Input");
+                var errorWindow = new ErrorWindow("Please fill in all required fields.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
-            
+
             if (!IsValidEmail(Email))
             {
-                var errorWindow = new Views.ErrorWindow("Please enter a valid email address.", "User Error: Invalid Input");
+                var errorWindow = new ErrorWindow("Please enter a valid email address.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
-            
+
             if (!IsValidPassword(Password, out var passwordError))
             {
-                var errorWindow = new Views.ErrorWindow(passwordError, "User Error: Invalid Input");
+                var errorWindow = new ErrorWindow(passwordError, "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
@@ -183,7 +187,7 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             }
             catch (Exception)
             {
-                var errorWindow = new Views.ErrorWindow("Invalid role selected.", "User Error: Invalid Input");
+                var errorWindow = new ErrorWindow("Invalid role selected.", "User Error: Invalid Input");
                 await errorWindow.ShowDialog(desktop.Windows[0]);
                 return;
             }
@@ -195,12 +199,9 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
             foreach (var groupId in groupIds)
             {
                 var group = GroupsOperator.GetGroupById(groupId);
-                if (group != null)
-                {
-                    group.UserIds.Add(newUser.Id);
-                }
+                if (group != null) group.UserIds.Add(newUser.Id);
             }
-            
+
             AppLogger.Info("New user added: ID: " + newUser.Id);
 
             RequestClose?.Invoke();
@@ -209,10 +210,10 @@ public class AddUserWindowViewModel : INotifyPropertyChanged
         {
             if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
-            
-            var errorWindow = new Views.ErrorWindow($"An error occurred while saving the user: {e.Message}");
+
+            var errorWindow = new ErrorWindow($"An error occurred while saving the user: {e.Message}");
             await errorWindow.ShowDialog(desktop.Windows[0]);
-            
+
             AppLogger.Error("Error while saving user: " + e.Message);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TaskDesk_version2.Models;
 
@@ -37,5 +38,17 @@ public static class StateConverter
             "Cancelled!" => TaskState.Cancelled,
             _ => throw new KeyNotFoundException($"State '{state}' not recognized.")
         };
+    }
+
+    public static List<string> GetAllStateStrings()
+    {
+        var stateStrings = new List<string>();
+        foreach (var enumValue in Enum.GetValues(typeof(TaskState)))
+        {
+            var value = (TaskState)enumValue;
+            stateStrings.Add(StateToString(value));
+        }
+
+        return stateStrings;
     }
 }

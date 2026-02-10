@@ -1,13 +1,10 @@
-﻿using TaskDesk_version2.ViewModels;
-using TaskDesk_version2.Models;
-using Xunit;
-using System;
-using System.Collections.Generic;
+﻿using TaskDesk_version2.Models;
+using TaskDesk_version2.ViewModels;
 
 namespace TaskDesk_version2.Tests.Tests.ViewModels;
 
 /// <summary>
-/// Unit-Tests für AddUserWindowViewModel
+///     Unit-Tests für AddUserWindowViewModel
 /// </summary>
 public class AddUserWindowViewModelTests : IDisposable
 {
@@ -26,6 +23,25 @@ public class AddUserWindowViewModelTests : IDisposable
         MainData.Groups.Clear();
         MainData.Tasks.Clear();
     }
+
+    #region RequestClose Event Tests
+
+    [Fact]
+    public void CancelCommand_InvokesRequestClose()
+    {
+        // Arrange
+        var viewModel = new AddUserWindowViewModel();
+        var requestCloseInvoked = false;
+        viewModel.RequestClose += () => requestCloseInvoked = true;
+
+        // Act
+        viewModel.CancelCommand.Execute(null);
+
+        // Assert
+        Assert.True(requestCloseInvoked);
+    }
+
+    #endregion
 
     #region Constructor Tests
 
@@ -63,7 +79,7 @@ public class AddUserWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddUserWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Fullname))
@@ -84,7 +100,7 @@ public class AddUserWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddUserWindowViewModel();
         viewModel.Fullname = "Max Mustermann";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Fullname))
@@ -135,7 +151,7 @@ public class AddUserWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddUserWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Email))
@@ -156,7 +172,7 @@ public class AddUserWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddUserWindowViewModel();
         viewModel.Email = "test@example.com";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Email))
@@ -210,7 +226,7 @@ public class AddUserWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddUserWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Password))
@@ -231,7 +247,7 @@ public class AddUserWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddUserWindowViewModel();
         viewModel.Password = "Password123";
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.Password))
@@ -296,7 +312,7 @@ public class AddUserWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddUserWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.RoleString))
@@ -336,7 +352,7 @@ public class AddUserWindowViewModelTests : IDisposable
     {
         // Arrange
         var viewModel = new AddUserWindowViewModel();
-        bool propertyChangedRaised = false;
+        var propertyChangedRaised = false;
         viewModel.PropertyChanged += (sender, args) =>
         {
             if (args.PropertyName == nameof(viewModel.GroupNames))
@@ -381,25 +397,6 @@ public class AddUserWindowViewModelTests : IDisposable
 
     #endregion
 
-    #region RequestClose Event Tests
-
-    [Fact]
-    public void CancelCommand_InvokesRequestClose()
-    {
-        // Arrange
-        var viewModel = new AddUserWindowViewModel();
-        bool requestCloseInvoked = false;
-        viewModel.RequestClose += () => requestCloseInvoked = true;
-
-        // Act
-        viewModel.CancelCommand.Execute(null);
-
-        // Assert
-        Assert.True(requestCloseInvoked);
-    }
-
-    #endregion
-
     #region Data Binding Tests
 
     [Fact]
@@ -429,10 +426,7 @@ public class AddUserWindowViewModelTests : IDisposable
         // Arrange
         var viewModel = new AddUserWindowViewModel();
         var changedProperties = new List<string>();
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            changedProperties.Add(args.PropertyName!);
-        };
+        viewModel.PropertyChanged += (sender, args) => { changedProperties.Add(args.PropertyName!); };
 
         // Act
         viewModel.Fullname = "Name";

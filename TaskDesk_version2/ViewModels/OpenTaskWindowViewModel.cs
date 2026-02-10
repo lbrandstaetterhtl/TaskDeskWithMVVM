@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -12,16 +11,33 @@ namespace TaskDesk_version2.ViewModels;
 
 public class OpenTaskWindowViewModel : INotifyPropertyChanged
 {
-    private string _title = string.Empty;
+    private readonly Task _originalTask;
+    private ObservableCollection<Group> _allGroups = MainData.Groups;
+    private ObservableCollection<User> _allUsers = MainData.Users;
+    private ObservableCollection<Group> _assignedGroups = new();
+    private ObservableCollection<User> _assignedUsers = new();
     private string _description = string.Empty;
     private DateTimeOffset? _dueDate = DateTimeOffset.Now;
     private string _state = string.Empty;
-    private ObservableCollection<User> _assignedUsers = new();
-    private ObservableCollection<Group> _assignedGroups = new();
-    private readonly Task _originalTask;
-    private ObservableCollection<User> _allUsers = MainData.Users;
-    private ObservableCollection<Group> _allGroups = MainData.Groups;
-    
+    private string _title = string.Empty;
+    public Action? RequestClose;
+
+    public OpenTaskWindowViewModel(Task task)
+    {
+        SaveTaskCommand = new RelayCommand(SaveTask);
+        CloseCommand = new RelayCommand(() => RequestClose?.Invoke());
+
+        Title = task.Title;
+        Description = task.Description;
+        DueDate = new DateTimeOffset(task.DueDate.ToDateTime(TimeOnly.MinValue));
+        State = task.GetTaskStateAsString();
+
+        AssignedGroups = GroupsOperator.GetListFromIds(task.GroupIds, MainData.Groups);
+        AssignedUsers = UsersOperator.GetListFromIds(task.UserIds, MainData.Users);
+
+        _originalTask = task;
+    }
+
     public string Title
     {
         get => _title;
@@ -34,7 +50,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ObservableCollection<User> AllUsers
     {
         get => _allUsers;
@@ -47,7 +63,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ObservableCollection<Group> AllGroups
     {
         get => _allGroups;
@@ -60,7 +76,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public string Description
     {
         get => _description;
@@ -73,7 +89,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public DateTimeOffset? DueDate
     {
         get => _dueDate;
@@ -86,7 +102,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public string State
     {
         get => _state;
@@ -99,7 +115,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ObservableCollection<User> AssignedUsers
     {
         get => _assignedUsers;
@@ -112,7 +128,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ObservableCollection<Group> AssignedGroups
     {
         get => _assignedGroups;
@@ -125,42 +141,22 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
             }
         }
     }
-    
+
     public ICommand SaveTaskCommand { get; }
     public ICommand CloseCommand { get; }
-    public Action? RequestClose;
-    
+
     public event PropertyChangedEventHandler? PropertyChanged;
-    
+
     private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    public OpenTaskWindowViewModel(Task task)
-    {
-        SaveTaskCommand = new RelayCommand(SaveTask);
-        CloseCommand = new RelayCommand(() => RequestClose?.Invoke());
-        
-        Title = task.Title;
-        Description = task.Description;
-        DueDate = new DateTimeOffset(task.DueDate.ToDateTime(TimeOnly.MinValue));
-        State = task.GetTaskStateAsString();
-        
-        AssignedGroups = GroupsOperator.GetListFromIds(task.GroupIds, MainData.Groups);
-        AssignedUsers = UsersOperator.GetListFromIds(task.UserIds, MainData.Users);
-        
-        _originalTask = task;
     }
 
     private async void SaveTask()
     {
         try
         {
-            if (App.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
+            if (App.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
 
             if (Title == string.Empty || Description == string.Empty || DueDate == null || State == string.Empty)
             {
@@ -186,54 +182,39 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
 
             var due = DateOnly.FromDateTime(DueDate?.DateTime ?? DateTime.Now);
 
-            var updatedTask = new Task(_originalTask.Id, Title, Description, due, taskState, assignedGroupIds, assignedUserIds);
+            var updatedTask = new Task(_originalTask.Id, Title, Description, due, taskState, assignedGroupIds,
+                assignedUserIds);
 
-            for (int i = 0; i < MainData.Tasks.Count; i++)
-            {
+            for (var i = 0; i < MainData.Tasks.Count; i++)
                 if (MainData.Tasks[i].Id == _originalTask.Id)
                 {
                     MainData.Tasks.RemoveAt(i);
                     MainData.Tasks.Insert(i, updatedTask);
                     break;
                 }
-            }
 
-            for (int i = 0; i < MainData.Users.Count; i++)
-            {
+            for (var i = 0; i < MainData.Users.Count; i++)
                 if (assignedUserIds.Contains(MainData.Users[i].Id))
                 {
                     if (!MainData.Users[i].TaskIds.Contains(_originalTask.Id))
-                    {
                         MainData.Users[i].TaskIds.Add(_originalTask.Id);
-                    }
                 }
                 else
                 {
                     if (MainData.Users[i].TaskIds.Contains(_originalTask.Id))
-                    {
                         MainData.Users[i].TaskIds.Remove(_originalTask.Id);
-                    }
                 }
-            }
 
             foreach (var group in MainData.Groups)
-            {
                 if (assignedGroupIds.Contains(group.Id))
                 {
-                    if (!group.TaskIds.Contains(_originalTask.Id))
-                    {
-                        group.TaskIds.Add(_originalTask.Id);
-                    }
+                    if (!group.TaskIds.Contains(_originalTask.Id)) group.TaskIds.Add(_originalTask.Id);
                 }
                 else
                 {
-                    if (group.TaskIds.Contains(_originalTask.Id))
-                    {
-                        group.TaskIds.Remove(_originalTask.Id);
-                    }
+                    if (group.TaskIds.Contains(_originalTask.Id)) group.TaskIds.Remove(_originalTask.Id);
                 }
-            }
-            
+
             AppLogger.Info("Task updated: ID: " + updatedTask.Id);
 
             RequestClose?.Invoke();
@@ -242,7 +223,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
         {
             if (App.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return;
-            
+
             AppLogger.Error("Error saving user: " + ex.Message);
 
             var errorWindow = new ErrorWindow($"An error occurred while saving the task: {ex.Message}");
