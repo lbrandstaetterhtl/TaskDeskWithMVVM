@@ -1,4 +1,4 @@
-﻿using TaskDesk_version2.Models;
+﻿﻿using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
 namespace TaskDesk_version2.Tests.Tests.Integration;
@@ -52,7 +52,7 @@ public class ModelIntegrationTests : IDisposable
 
         for (var i = 1; i <= 10; i++)
         {
-            var task = new Task { Id = i, Title = $"Task {i}" };
+            var task = new Task { Id = i, Title = $"Task {i}", Description = $"Desc {i}" };
             MainData.Tasks.Add(task);
         }
 
@@ -227,9 +227,9 @@ public class ModelIntegrationTests : IDisposable
     public void User_CanBeAssignedToMultipleTasks()
     {
         // Arrange
-        var task1 = new Task { Id = 1, Title = "Task 1" };
-        var task2 = new Task { Id = 2, Title = "Task 2" };
-        var task3 = new Task { Id = 3, Title = "Task 3" };
+        var task1 = new Task { Id = 1, Title = "Task 1", Description = "Desc 1" };
+        var task2 = new Task { Id = 2, Title = "Task 2", Description = "Desc 2" };
+        var task3 = new Task { Id = 3, Title = "Task 3", Description = "Desc 3" };
 
         MainData.Tasks.Add(task1);
         MainData.Tasks.Add(task2);
@@ -315,9 +315,9 @@ public class ModelIntegrationTests : IDisposable
     public void Group_CanHaveMultipleTasks()
     {
         // Arrange
-        var task1 = new Task { Id = 1, Title = "Task 1" };
-        var task2 = new Task { Id = 2, Title = "Task 2" };
-        var task3 = new Task { Id = 3, Title = "Task 3" };
+        var task1 = new Task { Id = 1, Title = "Task 1", Description = "Desc 1" };
+        var task2 = new Task { Id = 2, Title = "Task 2", Description = "Desc 2" };
+        var task3 = new Task { Id = 3, Title = "Task 3", Description = "Desc 3" };
 
         // Act
         var group = new Group
@@ -477,7 +477,7 @@ public class ModelIntegrationTests : IDisposable
         MainData.Users.Clear();
         MainData.Tasks.Clear();
 
-        var task = new Task { Id = 1, Title = "New Task", UserIds = new List<int>() };
+        var task = new Task { Id = 1, Title = "New Task", Description = "Desc", UserIds = new List<int>() };
         MainData.Tasks.Add(task);
 
         var user = new User { Id = 1, FullName = "Worker", TaskIds = new List<int>() };
@@ -533,9 +533,9 @@ public class ModelIntegrationTests : IDisposable
         var group = new Group { Id = 1, Name = "Target Group" };
         MainData.Groups.Add(group);
 
-        var task1 = new Task { Id = 1, Title = "Task 1", GroupIds = new List<int> { 1 } };
-        var task2 = new Task { Id = 2, Title = "Task 2", GroupIds = new List<int> { 1 } };
-        var task3 = new Task { Id = 3, Title = "Task 3", GroupIds = new List<int> { 2 } }; // Andere Gruppe
+        var task1 = new Task { Id = 1, Title = "Task 1", Description = "Desc 1", GroupIds = new List<int> { 1 } };
+        var task2 = new Task { Id = 2, Title = "Task 2", Description = "Desc 2", GroupIds = new List<int> { 1 } };
+        var task3 = new Task { Id = 3, Title = "Task 3", Description = "Desc 3", GroupIds = new List<int> { 2 } }; // Andere Gruppe
         MainData.Tasks.Add(task1);
         MainData.Tasks.Add(task2);
         MainData.Tasks.Add(task3);
@@ -566,6 +566,7 @@ public class ModelIntegrationTests : IDisposable
         {
             Id = 1,
             Title = "Workflow Task",
+            Description = "Workflow",
             State = TaskState.Pending
         };
         MainData.Tasks.Add(task);
@@ -591,7 +592,7 @@ public class ModelIntegrationTests : IDisposable
         {
             if (state == TaskState.Cancelled) continue;
 
-            var task = new Task { Id = 1, Title = "Test", State = state };
+            var task = new Task { Id = 1, Title = "Test", Description = "Desc", State = state };
 
             // Act
             task.State = TaskState.Cancelled;
@@ -693,9 +694,9 @@ public class ModelIntegrationTests : IDisposable
         var yesterday = today.AddDays(-1);
         var tomorrow = today.AddDays(1);
 
-        MainData.Tasks.Add(new Task { Id = 1, Title = "Past", DueDate = yesterday });
-        MainData.Tasks.Add(new Task { Id = 2, Title = "Today", DueDate = today });
-        MainData.Tasks.Add(new Task { Id = 3, Title = "Future", DueDate = tomorrow });
+        MainData.Tasks.Add(new Task { Id = 1, Title = "Past", Description = "Past", DueDate = yesterday });
+        MainData.Tasks.Add(new Task { Id = 2, Title = "Today", Description = "Today", DueDate = today });
+        MainData.Tasks.Add(new Task { Id = 3, Title = "Future", Description = "Future", DueDate = tomorrow });
 
         // Act
         var overdueTasks = MainData.Tasks.Where(t => t.DueDate < today).ToList();

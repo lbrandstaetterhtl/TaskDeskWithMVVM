@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -24,6 +25,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
     private string _searchInput = string.Empty;
     private User? _selectedUser;
     public Action? RequestClose;
+    public List<string> RoleOptions { get; } = RoleConverter.GetAllRoleStrings();
 
     public ManageUsersWindowViewModel(User user)
     {

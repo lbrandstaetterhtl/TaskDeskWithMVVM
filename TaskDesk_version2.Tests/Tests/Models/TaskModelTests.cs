@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿﻿using System.Collections.ObjectModel;
 using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
@@ -288,8 +288,8 @@ public class TaskTests : IDisposable
     {
         // Arrange
         MainData.Tasks.Clear();
-        MainData.Tasks.Add(new Task { Id = 5, Title = "Task 1" });
-        MainData.Tasks.Add(new Task { Id = 3, Title = "Task 2" });
+        MainData.Tasks.Add(new Task { Id = 5, Title = "Task 1", Description = "Desc" });
+        MainData.Tasks.Add(new Task { Id = 3, Title = "Task 2", Description = "Desc" });
 
         // Act
         var result = TasksOperator.GetNextTaskId();
@@ -303,8 +303,8 @@ public class TaskTests : IDisposable
     {
         // Arrange
         MainData.Tasks.Clear();
-        MainData.Tasks.Add(new Task { Id = 1, Title = "Task 1" });
-        MainData.Tasks.Add(new Task { Id = 100, Title = "Task 2" });
+        MainData.Tasks.Add(new Task { Id = 1, Title = "Task 1", Description = "Desc" });
+        MainData.Tasks.Add(new Task { Id = 100, Title = "Task 2", Description = "Desc" });
 
         // Act
         var result = TasksOperator.GetNextTaskId();
@@ -318,7 +318,7 @@ public class TaskTests : IDisposable
     {
         // Arrange
         MainData.Tasks.Clear();
-        MainData.Tasks.Add(new Task { Id = 42, Title = "Single Task" });
+        MainData.Tasks.Add(new Task { Id = 42, Title = "Single Task", Description = "Desc" });
 
         // Act
         var result = TasksOperator.GetNextTaskId();

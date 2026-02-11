@@ -18,24 +18,11 @@ public partial class OpenTaskWindow : Window
         vm.RequestClose += Close;
 
         _task = task;
-
-        SetStateCombo();
-
+        
         IdBlock.Text = "ID: " + _task.Id;
 
         Opened += OnOpened;
         Closing += OnClosing;
-    }
-
-    private void SetStateCombo()
-    {
-        foreach (var enumValue in Enum.GetValues(typeof(TaskState)))
-        {
-            var value = (TaskState)enumValue;
-            StateCombo.Items.Add(StateConverter.StateToString(value));
-        }
-
-        StateCombo.SelectedItem = StateConverter.StateToString(_task.State);
     }
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)

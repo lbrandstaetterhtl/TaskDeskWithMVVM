@@ -99,7 +99,7 @@
             </Border>
             
             <ScrollViewer Grid.IsSharedSizeScope="True" Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ItemsControl x:Name="TasksGrid" ItemsSource="{Binding Tasks}">
+            <ItemsControl x:Name="TasksGrid" ItemsSource="{Binding FilteredTasks}">
                 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -137,6 +137,38 @@
             </ItemsControl>
             </ScrollViewer>
         </Grid>
+        
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <TextBox Watermark="Search Tasks..." Margin="5" Text="{Binding SearchText}"/>
+            
+            <TextBlock Text="Filters:" FontWeight="Bold" Classes="primary"/>
+            
+            <TextBlock Text="Select State Filter: " Classes="primary"/>
+            
+            <ListBox SelectionMode="Multiple, Toggle" ItemsSource="{Binding StateOptions}" SelectedItems="{Binding StateFilter}"/> <!-- TODO: Add state filter options and bind to view model -->
+            
+            <TextBlock Text="Select User Filter: " Classes="primary"/>
+            
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="100">
+                <ListBox SelectionMode="Multiple, Toggle" ItemsSource="{Binding AllUsers}" SelectedItems="{Binding UserFilter}"/> <!-- TODO: Add user filter options and bind to view model -->
+            </ScrollViewer>
+
+            <TextBlock Text="Select Group Filter: " Classes="primary"/>
+            
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="100">
+                <ListBox SelectionMode="Multiple, Toggle" ItemsSource="{Binding AllGroups}" SelectedItems="{Binding GroupFilter}"/> <!-- TODO: Add group filter options and bind to view model -->
+            </ScrollViewer>
+            
+            <CheckBox Content="Date Filter" IsChecked="{Binding IsDateFilterEnabled}"/>
+            
+            <DatePicker SelectedDate="{Binding SearchDueDate}" IsEnabled="{Binding IsDateFilterEnabled}"/> <!-- TODO: Bind to view model -->
+            
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Apply Filters" Command="{Binding ApplyFiltersCommand}" Margin="5"/>
+                <Button Content="Clear Filters" Command="{Binding ClearFiltersCommand}" Margin="5"/>
+            </StackPanel>
+            
+        </StackPanel>
     </Grid>
 
 </Window>

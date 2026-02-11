@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿﻿using System.Collections.ObjectModel;
 using TaskDesk_version2.Models;
 using Task = TaskDesk_version2.Models.Task;
 
@@ -80,7 +80,7 @@ public class MainDataTests : IDisposable
     public void Tasks_CanAddTask()
     {
         // Act
-        MainData.Tasks.Add(new Task { Id = 1, Title = "Test Task" });
+        MainData.Tasks.Add(new Task { Id = 1, Title = "Test Task", Description = "Desc" });
 
         // Assert
         Assert.Single(MainData.Tasks);
@@ -90,7 +90,7 @@ public class MainDataTests : IDisposable
     public void Tasks_CanRemoveTask()
     {
         // Arrange
-        var task = new Task { Id = 1, Title = "Test Task" };
+        var task = new Task { Id = 1, Title = "Test Task", Description = "Desc" };
         MainData.Tasks.Add(task);
 
         // Act
@@ -104,8 +104,8 @@ public class MainDataTests : IDisposable
     public void Tasks_CanClear()
     {
         // Arrange
-        MainData.Tasks.Add(new Task { Id = 1, Title = "Task 1" });
-        MainData.Tasks.Add(new Task { Id = 2, Title = "Task 2" });
+        MainData.Tasks.Add(new Task { Id = 1, Title = "Task 1", Description = "Desc 1" });
+        MainData.Tasks.Add(new Task { Id = 2, Title = "Task 2", Description = "Desc 2" });
 
         // Act
         MainData.Tasks.Clear();
@@ -288,7 +288,7 @@ public class MainDataTests : IDisposable
     public void Collections_AreIndependent()
     {
         // Arrange & Act
-        MainData.Tasks.Add(new Task { Id = 1, Title = "Task" });
+        MainData.Tasks.Add(new Task { Id = 1, Title = "Task", Description = "Desc" });
         MainData.Users.Add(new User { Id = 1, FullName = "User" });
         MainData.Groups.Add(new Group { Id = 1, Name = "Group" });
 
@@ -302,7 +302,7 @@ public class MainDataTests : IDisposable
     public void Collections_CanBeAccessedSimultaneously()
     {
         // Arrange
-        MainData.Tasks.Add(new Task { Id = 1, Title = "Task" });
+        MainData.Tasks.Add(new Task { Id = 1, Title = "Task", Description = "Desc" });
         MainData.Users.Add(new User { Id = 1, FullName = "User" });
         MainData.Groups.Add(new Group { Id = 1, Name = "Group" });
 
@@ -327,7 +327,7 @@ public class MainDataTests : IDisposable
         // Act
         for (var i = 0; i < 1000; i++)
         {
-            MainData.Tasks.Add(new Task { Id = i, Title = $"Task {i}" });
+            MainData.Tasks.Add(new Task { Id = i, Title = $"Task {i}", Description = "Desc" });
             MainData.Users.Add(new User { Id = i, FullName = $"User {i}" });
             MainData.Groups.Add(new Group { Id = i, Name = $"Group {i}" });
         }

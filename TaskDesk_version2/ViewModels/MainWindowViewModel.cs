@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Input;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
+using DynamicData;
 using TaskDesk_version2.Models;
 using TaskDesk_version2.Views;
 
@@ -11,34 +14,157 @@ namespace TaskDesk_version2.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
-    private ObservableCollection<Task> _tasks = new();
+    public ObservableCollection<Task> Tasks => MainData.Tasks;
+    private ObservableCollection<Task> _filteredTasks = new();
+    public List<string> StateOptions => StateConverter.GetAllStateStrings();
+    public List<string> AllUsers => UsersOperator.GetAllUserFullNames();
+    public List<string> AllGroups => GroupsOperator.GetAllGroupNames();
+    private string _searchText = string.Empty;
+    private ObservableCollection<string> _stateFilter = new();
+    private ObservableCollection<string> _userFilter = new();
+    private ObservableCollection<string> _groupFilter = new();
+    private DateTimeOffset _searchDueDate = DateTimeOffset.Now;
+    private bool _isDateFilterEnabled;
 
     public MainWindowViewModel()
     {
-        Tasks = MainData.Tasks;
+        FilteredTasks = new ObservableCollection<Task>(MainData.Tasks);
+        LogoutCommand = new RelayCommand(OnLogoutClick);
+        ApplyFiltersCommand = new RelayCommand(ApplyFilters);
+        ClearFiltersCommand = new RelayCommand(ClearFilters);
+        
+        // Subscribe to MainData.Tasks CollectionChanged event
+        MainData.Tasks.CollectionChanged += OnMainDataTasksChanged;
     }
-
-    public ObservableCollection<Task> Tasks
+    
+    private void OnMainDataTasksChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        get => _tasks;
+        // Re-apply filters when MainData.Tasks changes
+        RefreshFilteredTasks();
+    }
+    
+    private void RefreshFilteredTasks()
+    {
+        // Check if any filters are active
+        bool hasActiveFilters = !string.IsNullOrWhiteSpace(SearchText) ||
+                                IsDateFilterEnabled ||
+                                UserFilter.Count > 0 ||
+                                GroupFilter.Count > 0 ||
+                                StateFilter.Count > 0;
+        
+        if (hasActiveFilters)
+        {
+            // Re-apply current filters
+            ApplyFilters();
+        }
+        else
+        {
+            // No filters active, show all tasks
+            FilteredTasks = new ObservableCollection<Task>(MainData.Tasks);
+        }
+    }
+    
+    public ObservableCollection<Task> FilteredTasks
+    {
+        get => _filteredTasks;
         set
         {
-            if (_tasks != value)
+            if (_filteredTasks != value)
             {
-                _tasks = value;
-                OnPropertyChanged(nameof(Tasks));
+                _filteredTasks = value;
+                OnPropertyChanged(nameof(FilteredTasks));
+            }
+        }
+    }
+
+    public DateTimeOffset SearchDueDate
+    {
+        get => _searchDueDate;
+        set
+        {
+            if (_searchDueDate != value)
+            {
+                _searchDueDate = value;
+                OnPropertyChanged(nameof(SearchDueDate));
+            }
+        }
+    }
+
+    public ObservableCollection<string> StateFilter
+    {
+        get => _stateFilter;
+        set
+        {
+            if (_stateFilter != value)
+            {
+                _stateFilter = value;
+                OnPropertyChanged(nameof(StateFilter));
+            }
+        }
+    }
+    
+    public ObservableCollection<string> UserFilter
+    {
+        get => _userFilter;
+        set
+        {
+            if (_userFilter != value)
+            {
+                _userFilter = value;
+                OnPropertyChanged(nameof(UserFilter));
+            }
+        }
+    }
+    
+    public ObservableCollection<string> GroupFilter
+    {
+        get => _groupFilter;
+        set
+        {
+            if (_groupFilter != value)
+            {
+                _groupFilter = value;
+                OnPropertyChanged(nameof(GroupFilter));
+            }
+        }
+    }
+    
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (_searchText != value)
+            {
+                _searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+            }
+        }
+    }
+
+    public bool IsDateFilterEnabled
+    {
+        get => _isDateFilterEnabled;
+        set
+        {
+            if (_isDateFilterEnabled != value)
+            {
+                _isDateFilterEnabled = value;
+                OnPropertyChanged(nameof(IsDateFilterEnabled));
             }
         }
     }
 
     public ICommand LogoutCommand { get; set; }
+    public ICommand ApplyFiltersCommand { get; set; }
+    
+    public ICommand ClearFiltersCommand { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        LogoutCommand = new RelayCommand(OnLogoutClick);
     }
 
     public async void OnAddTaskClick()
@@ -502,7 +628,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public static async void OnLogoutClick()
+    private static async void OnLogoutClick()
     {
         try
         {
@@ -529,5 +655,142 @@ public class MainWindowViewModel : INotifyPropertyChanged
             await errorWindow.ShowDialog(desktop.Windows[0]);
             AppLogger.Error("Error during logout: " + ex.Message);
         }
+    }
+    
+    private void ApplyFilters()
+    {
+        bool filtersApplied = false;
+        FilteredTasks.Clear();
+        
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            FilteredTasks = SearchInTasksForString(SearchText);
+            return;
+        }
+
+        if (IsDateFilterEnabled)
+        {
+            FilteredTasks.AddRange(SearchInTasksForDate(SearchDueDate));
+            filtersApplied = true;
+        }
+
+        if (UserFilter.Count > 0)
+        {
+            FilteredTasks.AddRange(SearchInTasksForUsers(UserFilter));
+            filtersApplied = true;
+        }
+
+        if (GroupFilter.Count > 0)
+        {
+            FilteredTasks.AddRange(SearchInTasksForGroups(GroupFilter));
+            filtersApplied = true;
+        }
+
+        if (StateFilter.Count > 0)
+        {
+            FilteredTasks.AddRange(SearchInTasksForStates(StateFilter));
+            filtersApplied = true;
+        }
+        
+        if (!filtersApplied)
+        {
+            FilteredTasks = new ObservableCollection<Task>(MainData.Tasks);
+        }
+    }
+    
+    private ObservableCollection<Task> SearchInTasksForString(string searchText)
+    {
+        var lowerSearchText = searchText.ToLower();
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in MainData.Tasks)
+        {
+            if (task.Title.ToLower().Contains(lowerSearchText) || task.Description.ToLower().Contains(lowerSearchText))
+            {
+                result.Add(task);
+            }
+        }
+
+        return result;
+    }
+    
+    private ObservableCollection<Task> SearchInTasksForDate(DateTimeOffset date)
+    {
+        var result = new ObservableCollection<Task>();
+        var dateOnly = DateOnly.FromDateTime(date.DateTime);
+
+        foreach (var task in MainData.Tasks)
+            if (task.DueDate == dateOnly)
+                result.Add(task);
+
+        return result;
+    }
+    
+    private ObservableCollection<Task> SearchInTasksForUsers(IList<string> userFullNames)
+    {
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in MainData.Tasks)
+        {
+           foreach (var userId in task.UserIds)
+           {
+                var user = UsersOperator.GetUserById(userId);
+                if (user != null && userFullNames.Contains(user.FullName))
+                {
+                    result.Add(task);
+                    break;
+                }
+           }
+        }
+
+        return result;
+    }
+    
+    private ObservableCollection<Task> SearchInTasksForGroups(IList<string> groupNames)
+    {
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in MainData.Tasks)
+        {
+            foreach (var groupId in task.GroupIds)
+            {
+                var group = GroupsOperator.GetGroupById(groupId);
+                if (group != null && groupNames.Contains(group.Name))
+                {
+                    result.Add(task);
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+    
+    private ObservableCollection<Task> SearchInTasksForStates(IList<string> stateStrings)
+    {
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in MainData.Tasks)
+        {
+            var stateString = StateConverter.StateToString(task.State);
+
+            if (stateStrings.Contains(stateString))
+            {
+                result.Add(task);
+            }
+        }
+
+        return result;
+    }
+    
+    private void ClearFilters()
+    {
+        SearchText = string.Empty;
+        StateFilter = new ObservableCollection<string>();
+        UserFilter = new ObservableCollection<string>();
+        GroupFilter = new ObservableCollection<string>();
+        IsDateFilterEnabled = false;
+        SearchDueDate = DateTimeOffset.Now;
+        FilteredTasks = new ObservableCollection<Task>(MainData.Tasks);
     }
 }

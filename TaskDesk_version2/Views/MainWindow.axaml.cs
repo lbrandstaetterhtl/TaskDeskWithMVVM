@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -13,6 +14,8 @@ namespace TaskDesk_version2.Views;
 
 public partial class MainWindow : Window
 {
+    private ObservableCollection<Task>? _currentFilteredTasks;
+    
     public MainWindow()
     {
         InitializeComponent();
@@ -25,16 +28,48 @@ public partial class MainWindow : Window
             ChangeThemeMenuItem.Header += " (Current: Dark)";
         else
             ChangeThemeMenuItem.Header += " (Current: Light)";
+        
+        // Subscribe to initial FilteredTasks changes
+        _currentFilteredTasks = vm.FilteredTasks;
+        if (_currentFilteredTasks != null)
+            _currentFilteredTasks.CollectionChanged += Tasks_CollectionChanged;
+        
+        // Listen for FilteredTasks property replacement (after ApplyFilters/ClearFilters)
+        vm.PropertyChanged += ViewModelOnPropertyChanged;
 
         Closing += OnClosing;
         Opened += OnOpened;
+    }
+
+    private void ViewModelOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainWindowViewModel.FilteredTasks) && sender is MainWindowViewModel vm)
+        {
+            // Unsubscribe from old FilteredTasks
+            if (_currentFilteredTasks != null)
+                _currentFilteredTasks.CollectionChanged -= Tasks_CollectionChanged;
+            
+            // Subscribe to new FilteredTasks
+            _currentFilteredTasks = vm.FilteredTasks;
+            if (_currentFilteredTasks != null)
+                _currentFilteredTasks.CollectionChanged += Tasks_CollectionChanged;
+            
+            // After FilteredTasks was replaced (ApplyFilters or ClearFilters), update row backgrounds
+            Dispatcher.UIThread.Post(SetBackgroundColorOfBorder, DispatcherPriority.Loaded);
+        }
     }
 
     private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
         if (Design.IsDesignMode) return;
 
-        if (DataContext is MainWindowViewModel vm) vm.Tasks.CollectionChanged -= Tasks_CollectionChanged;
+        if (DataContext is MainWindowViewModel vm)
+        {
+            vm.Tasks.CollectionChanged -= Tasks_CollectionChanged;
+            vm.PropertyChanged -= ViewModelOnPropertyChanged;
+            if (_currentFilteredTasks != null)
+                _currentFilteredTasks.CollectionChanged -= Tasks_CollectionChanged;
+        }
 
         TasksOperator.SaveTasksToJson(MainData.Tasks);
 
@@ -53,7 +88,13 @@ public partial class MainWindow : Window
     {
         if (Design.IsDesignMode) return;
 
-        if (DataContext is MainWindowViewModel vm) vm.Tasks.CollectionChanged += Tasks_CollectionChanged;
+        if (DataContext is MainWindowViewModel vm)
+        {
+            vm.Tasks.CollectionChanged += Tasks_CollectionChanged;
+            // Ensure PropertyChanged is subscribed (already added in ctor, but keep consistent if DataContext changes)
+            vm.PropertyChanged -= ViewModelOnPropertyChanged;
+            vm.PropertyChanged += ViewModelOnPropertyChanged;
+        }
 
         Dispatcher.UIThread.Post(SetBackgroundColorOfBorder, DispatcherPriority.Loaded);
 

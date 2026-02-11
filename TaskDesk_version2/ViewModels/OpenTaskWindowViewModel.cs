@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -21,6 +22,7 @@ public class OpenTaskWindowViewModel : INotifyPropertyChanged
     private string _state = string.Empty;
     private string _title = string.Empty;
     public Action? RequestClose;
+    public List<string> StateOptions { get; } = StateConverter.GetAllStateStrings();
 
     public OpenTaskWindowViewModel(Task task)
     {

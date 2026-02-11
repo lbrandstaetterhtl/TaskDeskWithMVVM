@@ -16,7 +16,6 @@ public partial class ManageUsersWindow : Window
         _init = true;
 
         var vm = new ManageUsersWindowViewModel(user);
-        SetRoleCombo(vm.OriginalUser.Role);
         DataContext = vm;
 
         IdBox.Text = "ID: " + vm.OriginalUser.Id;
@@ -55,17 +54,6 @@ public partial class ManageUsersWindow : Window
         Opened += OnOpened;
 
         _init = false;
-    }
-
-    private void SetRoleCombo(UserRole role)
-    {
-        foreach (var enumValue in Enum.GetValues(typeof(UserRole)))
-        {
-            var value = (UserRole)enumValue;
-            RoleComboBox.Items.Add(RoleConverter.RoleToString(value));
-        }
-
-        RoleComboBox.SelectedItem = RoleConverter.RoleToString(role);
     }
 
     private void OnClosing(object? s, WindowClosingEventArgs e)
