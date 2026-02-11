@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TaskDesk_version2.Views.MainWindow"
+        xmlns:local="using:TaskDesk_version2.Models"
         x:DataType="vm:MainWindowViewModel"
         Title="TaskDesk"
         MinHeight="600"
@@ -12,133 +13,128 @@
         WindowState="Maximized">
 
     <Design.DataContext>
-        <vm:MainWindowViewModel />
+        <vm:MainWindowViewModel/>
     </Design.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
+        
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <Menu Classes="RootMenu" Grid.ColumnSpan="2" Grid.Row="0" Grid.Column="0">
             <MenuItem Header="Tasks">
-                <MenuItem Header="Add Task" Command="{Binding OnAddTaskClick}" />
-                <Separator />
-                <MenuItem Header="Clear All Tasks" Command="{Binding OnClearAllTasksClick}" />
-                <MenuItem Header="Clear Completed Tasks" Command="{Binding OnClearCompletedTasksClick}" />
-                <MenuItem Header="Clear Cancelled Tasks" Command="{Binding OnClearCancelledTasksClick}" />
-                <MenuItem Header="Clear Overdue Tasks" Command="{Binding OnClearOverdueTasksClick}" />
+                <MenuItem Header="Add Task" Command="{Binding OnAddTaskClick}"/>
+                <Separator/>
+                <MenuItem Header="Clear All Tasks" Command="{Binding OnClearAllTasksClick}"/>
+                <MenuItem Header="Clear Completed Tasks" Command="{Binding OnClearCompletedTasksClick}"/>
+                <MenuItem Header="Clear Cancelled Tasks" Command="{Binding OnClearCancelledTasksClick}"/>
+                <MenuItem Header="Clear Overdue Tasks" Command="{Binding OnClearOverdueTasksClick}"/>
             </MenuItem>
-
+            
             <MenuItem Header="Users">
-                <MenuItem Header="Add User" Command="{Binding OnAddUserClick}" />
-                <MenuItem Header="Manage Users" Command="{Binding OnManageUsersClick}" />
-                <Separator />
-                <MenuItem Header="Clear All Users" Command="{Binding OnClearAllUsersClick}" />
+                <MenuItem Header="Add User" Command="{Binding OnAddUserClick}"/>
+                <MenuItem Header="Manage Users" Command="{Binding OnManageUsersClick}"/>
+                <Separator/>
+                <MenuItem Header="Clear All Users" Command="{Binding OnClearAllUsersClick}"/>
             </MenuItem>
-
+            
             <MenuItem Header="Groups">
-                <MenuItem Header="Add Group" Command="{Binding OnAddGroupClick}" />
-                <MenuItem Header="Manage Groups" />
-                <Separator />
-                <MenuItem Header="Clear All Groups" Command="{Binding OnClearAllGroupsClick}" />
+                <MenuItem Header="Add Group" Command="{Binding OnAddGroupClick}"/>
+                <MenuItem Header="Manage Groups"/>
+                <Separator/>
+                <MenuItem Header="Clear All Groups" Command="{Binding OnClearAllGroupsClick}"/>
             </MenuItem>
-
+            
             <MenuItem Header="Settings">
-                <MenuItem Name="ChangeThemeMenuItem" Header="Change Theme" Click="OnChangeThemeClick" />
-                <MenuItem Header="Save Current User" Command="{Binding OnSaveCurrentUserClick}" />
-                <MenuItem Header="Clear Saved Users" Command="{Binding OnClearSavedUsersClick}" />
+                <MenuItem Name="ChangeThemeMenuItem" Header="Change Theme" Click="OnChangeThemeClick"/>
+                <MenuItem Header="Save Current User" Command="{Binding OnSaveCurrentUserClick}"/>
+                <MenuItem Header="Clear Saved Users" Command="{Binding OnClearSavedUsersClick}"/>
             </MenuItem>
-
+            
             <MenuItem Header="Account">
-                <MenuItem Header="Logout" Command="{Binding LogoutCommand}" />
-                <MenuItem Header="Edit Your User" />
+                <MenuItem Header="Logout" Command="{Binding LogoutCommand}"/>
+                <MenuItem Header="Edit Your User"/>
             </MenuItem>
         </Menu>
-
+        
         <Grid Grid.Row="1" Grid.Column="0">
-
+            
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
+            
             <Grid.ColumnDefinitions>
-                <ColumnDefinition SharedSizeGroup="c1" />
+                <ColumnDefinition SharedSizeGroup="c1"/>
             </Grid.ColumnDefinitions>
-
+            
             <Border Classes="TaskRowBorder" Grid.Row="0" Background="DarkGray">
-                <StackPanel Grid.IsSharedSizeScope="True" Classes="Row">
-                    <Border Classes="NormalBorder">
-                        <TextBlock Text="Title" Classes="TaskListHeader" />
-                    </Border>
-                    <Border Classes="NormalBorder">
-                        <TextBlock Text="Description" Classes="TaskListHeader" />
-                    </Border>
-                    <Border Classes="NormalBorder">
-                        <TextBlock Text="Due Date" Classes="TaskListHeader" />
-                    </Border>
-                    <Border Classes="NormalBorder">
-                        <TextBlock Text="Users" Classes="TaskListHeader" />
-                    </Border>
-                    <Border Classes="NormalBorder">
-                        <TextBlock Text="Groups" Classes="TaskListHeader" />
-                    </Border>
-                    <Border Classes="NormalBorder">
-                        <TextBlock Text="State" Classes="TaskListHeader" />
-                    </Border>
-                </StackPanel>
+            <StackPanel Grid.IsSharedSizeScope="True" Classes="Row">
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Title" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Description" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Due Date" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                    <TextBlock Text="Users" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                <TextBlock Text="Groups" Classes="TaskListHeader"/>
+                </Border>
+                <Border Classes="NormalBorder">
+                <TextBlock Text="State" Classes="TaskListHeader"/>
+                </Border>
+            </StackPanel>
             </Border>
-
+            
             <ScrollViewer Grid.IsSharedSizeScope="True" Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="TasksGrid" ItemsSource="{Binding Tasks}">
-
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Classes="TaskRowBorder" DoubleTapped="TaskDoubleClick"
-                                    PointerEntered="PointerEntered" PointerExited="PointerExited">
-                                <Border.ContextFlyout>
-                                    <MenuFlyout>
-                                        <MenuItem Header="Open Task" Click="OnTaskOpenClick" />
-                                        <MenuItem Header="Delete Task" Click="OnDeleteTaskClick" />
-                                    </MenuFlyout>
-                                </Border.ContextFlyout>
-
-                                <StackPanel Classes="Row">
-                                    <Border ToolTip.Tip="{Binding Title}" Classes="NormalBorder"
-                                            PointerEntered="PointerEntered" PointerExited="PointerExited">
-                                        <TextBlock Classes="TaskProperty" Text="{Binding Title}" />
-                                    </Border>
-                                    <Border ToolTip.Tip="{Binding Description}" Classes="NormalBorder"
-                                            PointerEntered="PointerEntered" PointerExited="PointerExited">
-                                        <TextBlock Classes="TaskProperty" Text="{Binding Description}" />
-                                    </Border>
-                                    <Border Classes="NormalBorder">
-                                        <TextBlock Classes="TaskProperty" Text="{Binding DateAsString}" />
-                                    </Border>
-                                    <Border ToolTip.Tip="{Binding UsersAsString}" Classes="NormalBorder"
-                                            PointerEntered="PointerEntered" PointerExited="PointerExited">
-                                        <TextBlock Classes="TaskProperty" Text="{Binding UsersAsString}" />
-                                    </Border>
-                                    <Border ToolTip.Tip="{Binding GroupsAsString}" Classes="NormalBorder"
-                                            PointerEntered="PointerEntered" PointerExited="PointerExited">
-                                        <TextBlock Classes="TaskProperty" Text="{Binding GroupsAsString}" />
-                                    </Border>
-                                    <Border DataContextChanged="OnStateBorderDataContextChanged" Classes="NormalBorder">
-                                        <TextBlock Classes="TaskProperty" Text="{Binding StateAsString}" />
-                                    </Border>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+            <ItemsControl x:Name="TasksGrid" ItemsSource="{Binding Tasks}">
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="TaskRowBorder" DoubleTapped="TaskDoubleClick" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                            <Border.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuItem Header="Open Task" Click="OnTaskOpenClick"/>
+                                    <MenuItem Header="Delete Task" Click="OnDeleteTaskClick"/>
+                                </MenuFlyout>
+                            </Border.ContextFlyout>
+                            
+                            <StackPanel Classes="Row">
+                                <Border ToolTip.Tip="{Binding Title}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding Title}"/>
+                                </Border>
+                                <Border ToolTip.Tip="{Binding Description}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding Description}"/>
+                                </Border>
+                                <Border Classes="NormalBorder">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding DateAsString}"/>
+                                </Border>
+                                <Border ToolTip.Tip="{Binding UsersAsString}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding UsersAsString}"/>
+                                </Border>
+                                <Border ToolTip.Tip="{Binding GroupsAsString}" Classes="NormalBorder" PointerEntered="PointerEntered" PointerExited="PointerExited">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding GroupsAsString}"/>
+                                </Border>
+                                <Border DataContextChanged="OnStateBorderDataContextChanged">
+                                    <TextBlock Classes="TaskProperty" Text="{Binding StateAsString}"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             </ScrollViewer>
         </Grid>
     </Grid>
