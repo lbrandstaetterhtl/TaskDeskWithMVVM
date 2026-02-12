@@ -208,4 +208,89 @@ public static class TasksOperator
 
         return ids;
     }
+    
+    public static ObservableCollection<Task> SearchInTasksForString(string searchText, IList<Task> allTasks)
+    {
+        var lowerSearchText = searchText.ToLower();
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in allTasks)
+        {
+            if (task.Title.ToLower().Contains(lowerSearchText) || task.Description.ToLower().Contains(lowerSearchText))
+            {
+                result.Add(task);
+            }
+        }
+
+        return result;
+    }
+    
+    public static ObservableCollection<Task> SearchInTasksForDate(DateTimeOffset date, IList<Task> allTasks)
+    {
+        var result = new ObservableCollection<Task>();
+        var dateOnly = DateOnly.FromDateTime(date.DateTime);
+
+        foreach (var task in allTasks)
+            if (task.DueDate == dateOnly)
+                result.Add(task);
+
+        return result;
+    }
+    
+    public static ObservableCollection<Task> SearchInTasksForUsers(IList<string> userFullNames, IList<Task> allTasks)
+    {
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in allTasks)
+        {
+           foreach (var userId in task.UserIds)
+           {
+                var user = UsersOperator.GetUserById(userId);
+                if (user != null && userFullNames.Contains(user.FullName))
+                {
+                    result.Add(task);
+                    break;
+                }
+           }
+        }
+
+        return result;
+    }
+    
+    public static ObservableCollection<Task> SearchInTasksForGroups(IList<string> groupNames, IList<Task> allTasks)
+    {
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in allTasks)
+        {
+            foreach (var groupId in task.GroupIds)
+            {
+                var group = GroupsOperator.GetGroupById(groupId);
+                if (group != null && groupNames.Contains(group.Name))
+                {
+                    result.Add(task);
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+    
+    public static ObservableCollection<Task> SearchInTasksForStates(IList<string> stateStrings, IList<Task> allTasks)
+    {
+        var result = new ObservableCollection<Task>();
+
+        foreach (var task in allTasks)
+        {
+            var stateString = StateConverter.StateToString(task.State);
+
+            if (stateStrings.Contains(stateString))
+            {
+                result.Add(task);
+            }
+        }
+
+        return result;
+    }
 }

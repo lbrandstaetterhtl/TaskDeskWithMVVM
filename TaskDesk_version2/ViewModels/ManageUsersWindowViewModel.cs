@@ -346,7 +346,7 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
         SearchInput = string.Empty;
     }
 
-    public void UpdateToFirstUser()
+    private void UpdateToFirstUser()
     {
         if (MainData.Users.Count > 0) SelectedUser = MainData.Users[0];
     }
@@ -363,9 +363,15 @@ public class ManageUsersWindowViewModel : INotifyPropertyChanged
             if (group.UserIds.Contains(deletedUserId))
                 group.UserIds.Remove(deletedUserId);
 
-        foreach (var task in MainData.Tasks)
+        for (int i = 0; i < MainData.Tasks.Count; i++)
+        {
+            var task = MainData.Tasks[i];
             if (task.UserIds.Contains(deletedUserId))
+            {
                 task.UserIds.Remove(deletedUserId);
+                MainData.Tasks[i] = task;
+            }
+        }
 
         AppLogger.Info("Deleted user: ID: " + deletedUserId);
 

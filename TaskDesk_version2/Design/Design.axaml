@@ -63,9 +63,10 @@
         </Style>
         
         <Style Selector="ListBox.UsersOrGroupsList">
-                <Setter Property="Width" Value="200"/>
+                <Setter Property="MinWidth" Value="200"/>
                 <Setter Property="Height" Value="100"/>
                 <Setter Property="Margin" Value="5"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="SelectionMode" Value="Multiple, Toggle"/>
         </Style>
         
@@ -86,6 +87,13 @@
                 <Setter Property="CornerRadius" Value="6"/>
                 <Setter Property="Padding" Value="5"/>
                 <Setter Property="Background" Value="LightSlateGray"/>
+        </Style>
+        
+        <Style Selector="Border.DarkGrayBorder">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="CornerRadius" Value="6"/>
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="Background" Value="DarkGray"/>
         </Style>
         
         <Style Selector="Border.Pending">
@@ -136,4 +144,10 @@
         <Style Selector="MenuItem">
                 <Setter Property="Background" Value="DarkGray"/>
         </Style>
+        
+        <Style Selector="TextBlock.FilterLabel">
+                <Setter Property="FontSize" Value="18"/>
+        </Style>
+        
+        
 </Styles>

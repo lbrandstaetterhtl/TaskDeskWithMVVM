@@ -29,12 +29,10 @@ public partial class MainWindow : Window
         else
             ChangeThemeMenuItem.Header += " (Current: Light)";
         
-        // Subscribe to initial FilteredTasks changes
         _currentFilteredTasks = vm.FilteredTasks;
         if (_currentFilteredTasks != null)
             _currentFilteredTasks.CollectionChanged += Tasks_CollectionChanged;
         
-        // Listen for FilteredTasks property replacement (after ApplyFilters/ClearFilters)
         vm.PropertyChanged += ViewModelOnPropertyChanged;
 
         Closing += OnClosing;
@@ -45,16 +43,13 @@ public partial class MainWindow : Window
     {
         if (e.PropertyName == nameof(MainWindowViewModel.FilteredTasks) && sender is MainWindowViewModel vm)
         {
-            // Unsubscribe from old FilteredTasks
             if (_currentFilteredTasks != null)
                 _currentFilteredTasks.CollectionChanged -= Tasks_CollectionChanged;
             
-            // Subscribe to new FilteredTasks
             _currentFilteredTasks = vm.FilteredTasks;
             if (_currentFilteredTasks != null)
                 _currentFilteredTasks.CollectionChanged += Tasks_CollectionChanged;
             
-            // After FilteredTasks was replaced (ApplyFilters or ClearFilters), update row backgrounds
             Dispatcher.UIThread.Post(SetBackgroundColorOfBorder, DispatcherPriority.Loaded);
         }
     }
@@ -91,7 +86,6 @@ public partial class MainWindow : Window
         if (DataContext is MainWindowViewModel vm)
         {
             vm.Tasks.CollectionChanged += Tasks_CollectionChanged;
-            // Ensure PropertyChanged is subscribed (already added in ctor, but keep consistent if DataContext changes)
             vm.PropertyChanged -= ViewModelOnPropertyChanged;
             vm.PropertyChanged += ViewModelOnPropertyChanged;
         }

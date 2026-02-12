@@ -263,13 +263,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
             foreach (var userId in task.UserIds)
             {
                 var user = UsersOperator.GetUserById(userId);
-                if (user != null && user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
+                if (user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
             }
 
             foreach (var groupId in task.GroupIds)
             {
                 var group = GroupsOperator.GetGroupById(groupId);
-                if (group != null && group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
+                if (group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
             }
         }
         catch (Exception ex)
@@ -439,13 +439,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     foreach (var userId in task.UserIds)
                     {
                         var user = UsersOperator.GetUserById(userId);
-                        if (user != null && user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
+                        if (user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
                     }
 
                     foreach (var groupId in task.GroupIds)
                     {
                         var group = GroupsOperator.GetGroupById(groupId);
-                        if (group != null && group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
+                        if (group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
                     }
 
                     MainData.Tasks.RemoveAt(i);
@@ -490,13 +490,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     foreach (var userId in task.UserIds)
                     {
                         var user = UsersOperator.GetUserById(userId);
-                        if (user != null && user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
+                        if (user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
                     }
 
                     foreach (var groupId in task.GroupIds)
                     {
                         var group = GroupsOperator.GetGroupById(groupId);
-                        if (group != null && group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
+                        if (group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
                     }
 
                     MainData.Tasks.RemoveAt(i);
@@ -542,13 +542,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     foreach (var userId in task.UserIds)
                     {
                         var user = UsersOperator.GetUserById(userId);
-                        if (user != null && user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
+                        if (user.TaskIds.Contains(task.Id)) user.TaskIds.Remove(task.Id);
                     }
 
                     foreach (var groupId in task.GroupIds)
                     {
                         var group = GroupsOperator.GetGroupById(groupId);
-                        if (group != null && group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
+                        if (group.TaskIds.Contains(task.Id)) group.TaskIds.Remove(task.Id);
                     }
 
                     MainData.Tasks.RemoveAt(i);
@@ -664,31 +664,31 @@ public class MainWindowViewModel : INotifyPropertyChanged
         
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
-            FilteredTasks = SearchInTasksForString(SearchText);
-            return;
+            FilteredTasks.AddRange(TasksOperator.SearchInTasksForString(SearchText, MainData.Tasks));
+            filtersApplied = true;
         }
 
         if (IsDateFilterEnabled)
         {
-            FilteredTasks.AddRange(SearchInTasksForDate(SearchDueDate));
+            FilteredTasks.AddRange(TasksOperator.SearchInTasksForDate(SearchDueDate, MainData.Tasks));
             filtersApplied = true;
         }
 
         if (UserFilter.Count > 0)
         {
-            FilteredTasks.AddRange(SearchInTasksForUsers(UserFilter));
+            FilteredTasks.AddRange(TasksOperator.SearchInTasksForUsers(UserFilter, MainData.Tasks));
             filtersApplied = true;
         }
 
         if (GroupFilter.Count > 0)
         {
-            FilteredTasks.AddRange(SearchInTasksForGroups(GroupFilter));
+            FilteredTasks.AddRange(TasksOperator.SearchInTasksForGroups(GroupFilter, MainData.Tasks));
             filtersApplied = true;
         }
 
         if (StateFilter.Count > 0)
         {
-            FilteredTasks.AddRange(SearchInTasksForStates(StateFilter));
+            FilteredTasks.AddRange(TasksOperator.SearchInTasksForStates(StateFilter, MainData.Tasks));
             filtersApplied = true;
         }
         
@@ -696,91 +696,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             FilteredTasks = new ObservableCollection<Task>(MainData.Tasks);
         }
-    }
-    
-    private ObservableCollection<Task> SearchInTasksForString(string searchText)
-    {
-        var lowerSearchText = searchText.ToLower();
-        var result = new ObservableCollection<Task>();
-
-        foreach (var task in MainData.Tasks)
-        {
-            if (task.Title.ToLower().Contains(lowerSearchText) || task.Description.ToLower().Contains(lowerSearchText))
-            {
-                result.Add(task);
-            }
-        }
-
-        return result;
-    }
-    
-    private ObservableCollection<Task> SearchInTasksForDate(DateTimeOffset date)
-    {
-        var result = new ObservableCollection<Task>();
-        var dateOnly = DateOnly.FromDateTime(date.DateTime);
-
-        foreach (var task in MainData.Tasks)
-            if (task.DueDate == dateOnly)
-                result.Add(task);
-
-        return result;
-    }
-    
-    private ObservableCollection<Task> SearchInTasksForUsers(IList<string> userFullNames)
-    {
-        var result = new ObservableCollection<Task>();
-
-        foreach (var task in MainData.Tasks)
-        {
-           foreach (var userId in task.UserIds)
-           {
-                var user = UsersOperator.GetUserById(userId);
-                if (user != null && userFullNames.Contains(user.FullName))
-                {
-                    result.Add(task);
-                    break;
-                }
-           }
-        }
-
-        return result;
-    }
-    
-    private ObservableCollection<Task> SearchInTasksForGroups(IList<string> groupNames)
-    {
-        var result = new ObservableCollection<Task>();
-
-        foreach (var task in MainData.Tasks)
-        {
-            foreach (var groupId in task.GroupIds)
-            {
-                var group = GroupsOperator.GetGroupById(groupId);
-                if (group != null && groupNames.Contains(group.Name))
-                {
-                    result.Add(task);
-                    break;
-                }
-            }
-        }
-
-        return result;
-    }
-    
-    private ObservableCollection<Task> SearchInTasksForStates(IList<string> stateStrings)
-    {
-        var result = new ObservableCollection<Task>();
-
-        foreach (var task in MainData.Tasks)
-        {
-            var stateString = StateConverter.StateToString(task.State);
-
-            if (stateStrings.Contains(stateString))
-            {
-                result.Add(task);
-            }
-        }
-
-        return result;
     }
     
     private void ClearFilters()

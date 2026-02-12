@@ -141,27 +141,40 @@
         <StackPanel Grid.Row="1" Grid.Column="1">
             <TextBox Watermark="Search Tasks..." Margin="5" Text="{Binding SearchText}"/>
             
-            <TextBlock Text="Filters:" FontWeight="Bold" Classes="primary"/>
+            <Expander Header="Filters" Margin="5">
+                <StackPanel>
             
-            <TextBlock Text="Select State Filter: " Classes="primary"/>
-            
-            <ListBox SelectionMode="Multiple, Toggle" ItemsSource="{Binding StateOptions}" SelectedItems="{Binding StateFilter}"/> <!-- TODO: Add state filter options and bind to view model -->
-            
-            <TextBlock Text="Select User Filter: " Classes="primary"/>
-            
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="100">
-                <ListBox SelectionMode="Multiple, Toggle" ItemsSource="{Binding AllUsers}" SelectedItems="{Binding UserFilter}"/> <!-- TODO: Add user filter options and bind to view model -->
-            </ScrollViewer>
+                    <Border Classes="DarkGrayBorder">
+                    <TextBlock Text="Select State Filter: " Classes="primary FilterLabel" ToolTip.Tip="Select one or more states to filter"/>
+                    </Border>
+                    
+                    <Border BorderThickness="1" Margin="0,5,0,5" BorderBrush="DarkGray"/>
+                    <ListBox Classes="UsersOrGroupsList" ItemsSource="{Binding StateOptions}" SelectedItems="{Binding StateFilter}"/>
+                    
+                    <Border Classes="DarkGrayBorder">
+                    <TextBlock Text="Select User Filter: " Classes="primary FilterLabel" ToolTip.Tip="Select one or more users to filter"/>
+                    </Border>
+                    
+                    <Border BorderThickness="1" Margin="0,5,0,5" BorderBrush="DarkGray"/>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="100">
+                        <ListBox Classes="UsersOrGroupsList" ItemsSource="{Binding AllUsers}" SelectedItems="{Binding UserFilter}"/>
+                    </ScrollViewer>
 
-            <TextBlock Text="Select Group Filter: " Classes="primary"/>
+                    <Border Classes="DarkGrayBorder">
+                    <TextBlock Text="Select Group Filter: " Classes="primary FilterLabel" ToolTip.Tip="Select one or more groups to filter"/>
+                    </Border>
+                    
+                    <Border BorderThickness="1" Margin="0,5,0,5" BorderBrush="DarkGray"/>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="100">
+                        <ListBox Classes="UsersOrGroupsList" ItemsSource="{Binding AllGroups}" SelectedItems="{Binding GroupFilter}"/>
+                    </ScrollViewer>
             
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="100">
-                <ListBox SelectionMode="Multiple, Toggle" ItemsSource="{Binding AllGroups}" SelectedItems="{Binding GroupFilter}"/> <!-- TODO: Add group filter options and bind to view model -->
-            </ScrollViewer>
+                    <CheckBox Content="Date Filter" FontSize="18" IsChecked="{Binding IsDateFilterEnabled}"/>
             
-            <CheckBox Content="Date Filter" IsChecked="{Binding IsDateFilterEnabled}"/>
-            
-            <DatePicker SelectedDate="{Binding SearchDueDate}" IsEnabled="{Binding IsDateFilterEnabled}"/> <!-- TODO: Bind to view model -->
+                    <DatePicker SelectedDate="{Binding SearchDueDate}" IsEnabled="{Binding IsDateFilterEnabled}"/>
+                    
+                </StackPanel>
+            </Expander>
             
             <StackPanel Orientation="Horizontal">
                 <Button Content="Apply Filters" Command="{Binding ApplyFiltersCommand}" Margin="5"/>
