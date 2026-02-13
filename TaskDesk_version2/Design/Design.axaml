@@ -148,6 +148,4 @@
         <Style Selector="TextBlock.FilterLabel">
                 <Setter Property="FontSize" Value="18"/>
         </Style>
-        
-        
 </Styles>
