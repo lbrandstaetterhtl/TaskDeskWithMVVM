@@ -1,0 +1,16 @@
+﻿<!-- TODO: - Add functionality to the buttons (Add, Edit, Delete)
+          - Add functionality to the search bar (filter the list of groups based on the input)
+          - Add functionality to the Assigned users list (show the users assigned to the selected group) -->
+          
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TaskDesk_version2.ViewModels"
+        x:Class="TaskDesk_version2.Views.ManageGroupsWindow"
+        x:DataType="vm:ManageGroupsWindowViewModel"
+        Title="Manage Groups"
+        CanResize="False"
+        CanMaximize="False"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner">
+        
+</Window>

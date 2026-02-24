@@ -1,0 +1,74 @@
+﻿<!-- TODO: - Add functionality for editing own user details (full name, email, password)
+            - Add functionality for editing own user groups (show the groups the user is currently in and allow them to leave or join groups)
+            - Add functionality for editing own user role (show the current role and allow them to change it if they have permission) 
+            - Add functionality for saving the changes (validate the input and update the user details in the database) -->
+
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TaskDesk_version2.ViewModels"
+        x:Class="TaskDesk_version2.Views.EditYourUserWindow"
+        x:DataType="vm:EditYourUserWindowViewModel"
+        Title="Edit Your User Details"
+        CanResize="False"
+        CanMaximize="False"
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner">
+    
+    <!--<Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="0">
+
+            <TextBlock Classes="primary" Text="Full Name:" VerticalAlignment="Center" />
+
+            <TextBox Width="200" Watermark="Enter the full name" Text="{Binding FullName, Mode=TwoWay}" />
+        </StackPanel>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="1">
+
+            <TextBlock Classes="primary" Text="Email:" VerticalAlignment="Center" />
+
+            <TextBox Width="200" Watermark="Enter the email address" Text="{Binding Email, Mode=TwoWay}" />
+        </StackPanel>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="2">
+
+            <TextBlock Classes="primary" Text="Password:" VerticalAlignment="Center" />
+
+            <TextBox Width="200" Watermark="Enter the password" Text="{Binding Password, Mode=TwoWay}" />
+        </StackPanel>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="3">
+
+            <TextBlock Classes="primary" Text="Role:" VerticalAlignment="Center" />
+
+            <ComboBox Name="RoleComboBox" ItemsSource="{Binding RoleOptions, Mode=OneWay}" Width="200"
+                      PlaceholderText="Select a role" Margin="5" SelectedItem="{Binding RoleString}" />
+        </StackPanel>
+
+        <StackPanel Classes="CellInAddWindows" Grid.Row="4">
+
+            <TextBlock Classes="primary" Text="Groups:" VerticalAlignment="Center" />
+
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ListBox Classes="UsersOrGroupsList" Name="GroupList"
+                         ItemsSource="{Binding AllGroupNames, Mode=OneWay}" SelectedItems="{Binding GroupNames}" />
+            </ScrollViewer>
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="Cancel" Command="{Binding CancelCommand}" />
+            <Button Content="OK" Command="{Binding SaveCommand}" IsDefault="True" />
+        </StackPanel>
+    </Grid>-->
+    
+</Window>
+            
